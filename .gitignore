@@ -3,9 +3,7 @@
 /public/storage
 Homestead.yaml
 Homestead.json
-.env
 
 .gitattributes
-.env.example
 composer.lock
 composer.lock
