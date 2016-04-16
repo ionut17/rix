@@ -4,3 +4,8 @@ $label-color: #7f8c8d;
 $scheme-green: #2dcc70;
 $button-color: $scheme-green;
 $scheme-blue: #34485e;
+$scheme-lightgrey: #dadada;
+
+::-webkit-scrollbar {
+    display: none;
+}

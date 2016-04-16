@@ -41,9 +41,43 @@
       </div>
     </div>
   </nav>
+  <section class="status-wrapper">
+    <div class="container">
+      <div class="status-container">
+        <ul class="status-list">
+          <li>Recommended Content</li>
+          <li>My Content</li>
+          <li>More</li>
+        </ul>
+        <section class="search">
+          <input type="text" name="search" id="search" class="search-box" placeholder="Search">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </section>
+      </div>
+    </div>
+  </section>
 @endsection
 
 @section('content')
+
+  <div class="container">
+    <div class="content-container">
+      @for ($i = 0; $i < 16; $i++)
+          <div class="article-box">
+            <section class="image" style="background-image: url('{{ asset('img/test.jpg') }}')"></section>
+            <section class="content">
+              <h2>Article {{$i+1}}</h2>
+              <p class="description">
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+              </p>
+            </section>
+            <a href="#">
+              <button type="button" name="view-btn" class="button">Read</button>
+            </a>
+          </div>
+      @endfor
+    </div>
+  </div>
 
 @endsection
 
