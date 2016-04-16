@@ -11,9 +11,21 @@
 |
 */
 
+Route::get('/login','PageController@login');
+Route::get('/register','PageController@register');
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
+
+Route::get('/mycontent','ContentController@display');
+
+//Temporary
+Route::post('/login','PageController@login');
+Route::post('/register','PageController@register');
+Route::post('/mycontent','ContentController@display');
+
+
 
 /*
 |--------------------------------------------------------------------------

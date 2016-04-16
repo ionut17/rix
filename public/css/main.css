@@ -1,0 +1,181 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background-image: url("../img/bg.jpg");
+  background-position: center;
+  background-repeat: none;
+  background-size: cover;
+  background-attachment: fixed; }
+
+main.content {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; }
+
+.navigation-wrapper {
+  background-color: white; }
+
+.navigation-container {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; }
+
+ul.nav-items {
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  height: auto;
+  font-family: Montserrat, Monaco, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+  padding: 0; }
+  ul.nav-items li:not(:last-child) {
+    margin-right: 30px; }
+  ul.nav-items li a {
+    color: #34485e;
+    text-decoration: none; }
+    ul.nav-items li a i {
+      margin-right: 5px; }
+    ul.nav-items li a:hover {
+      color: #2dcc70; }
+    ul.nav-items li a:active {
+      color: #1b7842; }
+    ul.nav-items li a:visited {
+      color: #34485e; }
+      ul.nav-items li a:visited:hover {
+        color: #2dcc70; }
+
+.box {
+  width: 100%;
+  height: auto;
+  background-color: white;
+  padding: 30px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
+  margin-top: 10px; }
+  .box input {
+    width: 100%;
+    border: 0px;
+    padding: 10px;
+    display: flex;
+    flex-grow: 1;
+    background-color: #f4f5f8; }
+    .box input:not(:last-child) {
+      margin-bottom: 20px; }
+  .box input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    border: 0px;
+    box-shadow: none;
+    border-color: inherit;
+    display: inline-block;
+    margin-bottom: 0px; }
+    .box input[type='checkbox']:after {
+      position: absolute;
+      content: " ";
+      width: 20px;
+      height: 20px;
+      background-color: #f4f5f8;
+      display: inline-block;
+      visibility: visible; }
+    .box input[type='checkbox']:checked:after {
+      background: transparent; }
+    .box input[type='checkbox'] + label {
+      margin-left: 10px; }
+      .box input[type='checkbox'] + label:last-child {
+        margin-bottom: 0; }
+  .box label {
+    font-family: 'Montserrat', Monaco, sans-serif;
+    color: #7f8c8d;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px; }
+  .box + button.button {
+    margin-top: -10px; }
+
+button.button {
+  width: 100%;
+  height: 50px;
+  background-color: #2dcc70;
+  border: 0;
+  color: white;
+  font-family: 'Montserrat', Monaco, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 200ms ease-in-out; }
+  button.button:hover {
+    background-color: #53d98b; }
+
+.box-label {
+  font-family: 'Montserrat', Monaco, sans-serif;
+  color: #b8b8b8;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center; }
+  .box-label a {
+    color: #7f8c8d;
+    margin-left: 5px;
+    text-decoration: none; }
+    .box-label a:hover {
+      color: #4e5758; }
+
+.vertical-align {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .vertical-align .row {
+    width: 100%; }
+
+figure.logo, figure.logo.small {
+  margin: 0;
+  width: 25vw;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; }
+  figure.logo img, figure.logo.small img {
+    width: 250px;
+    height: inherit; }
+  figure.logo label, figure.logo.small label {
+    font-family: Raleway, Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #7f8c8d;
+    padding-top: 10px; }
+
+figure.small.logo {
+  width: 200px; }
+  figure.small.logo img {
+    width: 100px;
+    height: inherit; }
+  figure.small.logo label {
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 0px; }
+
+.loader {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+.main-wrapper {
+  display: none; }
