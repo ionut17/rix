@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-  My Content
+  @yield('article-title')
 @endsection
 
 @section('styles')
@@ -29,39 +29,16 @@
 
 @section('content')
 
-  <div class="container">
-    <div class="filter-container">
-      <div class="filters">
-        <div>Filters:</div>
-        <span>Sort by</span>
-        <span>Tags</span>
-      </div>
-      <ul class="pagination">
-        @for ($i=1;$i<=$page_count;$i++)
-          <li><a href="{{ URL::to('/mycontent/'.$i) }}" @if ($i==$page_number) class="selected" @endif>{{$i}}</a></li>
-        @endfor
-      </ul>
+  <div class="container article-wrapper">
+    <div class="article-container">
+      @yield('article-content')
     </div>
-    <div class="content-container">
-      @if (isset($content))
-        @foreach ($content as $entry)
-            <div class="article-box">
-              <section class="image" style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"></section>
-              <section class="tag"> {{$entry['type']}} </section>
-              <section class="content">
-                <h2>{{$entry['name']}}</h2>
-                <label>Repository: {{$entry['repo']}}</label>
-                <p class="description">
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                </p>
-              </section>
-              <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
-                <button type="button" name="view-btn" class="article-button">Read</button>
-              </a>
-            </div>
-        @endforeach
-      @else if
-        @for ($i = 0; $i < 16; $i++)
+    <div class="content-container side">
+      <div class="side-title">
+        Recommended content
+      </div>
+      <div class="side-content">
+        @for ($i = 0; $i < 2; $i++)
             <div class="article-box">
               <section class="image" style="background-image: url('{{ asset('img/articles/'.($i%4+1).'.jpg') }}')"></section>
               <section class="tag">
@@ -82,37 +59,22 @@
                   Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
                 </p>
               </section>
-              <a href="
-              @if ($i%4==0)
-                {{ URL::to('/article/code')}}
-              @elseif ($i%4==1)
-                {{ URL::to('/article/image')}}
-              @elseif ($i%4==2)
-                {{ URL::to('/article/image')}}
-              @else
-                {{ URL::to('/article/video')}}
-              @endif
-              ">
+              <a href="#">
                 <button type="button" name="view-btn" class="article-button">Read</button>
               </a>
             </div>
         @endfor
-      @endif
-    </div>
-    <div class="footer-container">
-      <ul class="pagination">
-        @for ($i=1;$i<=$page_count;$i++)
-          <li><a href="{{ URL::to('/mycontent/'.$i) }}" @if ($i==$page_number) class="selected" @endif>{{$i}}</a></li>
-        @endfor
-      </ul>
-      <button type="button" class="hide">Load More</button>
+      </div>
+      <div class="footer-container">
+        <button type="button">Load More</button>
+      </div>
     </div>
   </div>
 
 @endsection
 
 @section('footer')
-  <div class="container-fluid" style="margin-top:20px;">
+  <div class="container-fluid">
     <div class="footer-container">
       <p>© Copyright RiX 2016 - <a href="#">Documentation</a></p>
     </div>
