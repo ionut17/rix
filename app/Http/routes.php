@@ -18,6 +18,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+
 Route::get('/mycontent','ContentController@display');
 
 //Temporary
@@ -40,4 +41,9 @@ Route::post('/mycontent','ContentController@display');
 
 Route::group(['middleware' => ['web']], function () {
     //
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+    Route::get('/home', 'HomeController@index');
 });

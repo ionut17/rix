@@ -11,6 +11,10 @@ class ContentController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function __construct(){
+      $this->middleware('auth');
+    }
+
     public function display(){
       return view('content');
     }
