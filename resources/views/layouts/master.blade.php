@@ -25,7 +25,9 @@
           <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
       <div class="loader">
-          <i class="fa fa-cog fa-spin fa-5x fa-fw margin-bottom"></i>
+          <!-- <i class="fa fa-cog fa-spin fa-5x fa-fw margin-bottom"></i> -->
+          <!-- <i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i> -->
+          <i class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom"></i>
       </div>
 
       <div class="main-wrapper">
@@ -34,9 +36,9 @@
         <div class="container-fluid">
           @yield('content')
         </div>
+
+        @yield('footer')
       </div>
-
-
 
       @yield('scripts')
 
