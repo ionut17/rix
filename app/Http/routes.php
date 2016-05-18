@@ -30,6 +30,11 @@ Route::post('/login','PageController@login');
 Route::post('/register','PageController@register');
 Route::post('/mycontent','ContentController@show');
 
+//APIs
+
+Route::get('/register/github','GithubController@authorize');
+Route::get('/activate/github','GithubController@activate');
+
 
 
 /*

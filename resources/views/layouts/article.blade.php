@@ -76,7 +76,7 @@
 @section('footer')
   <div class="container-fluid">
     <div class="footer-container">
-      <p>© Copyright RiX 2016 - <a href="#">Documentation</a></p>
+      <p>© Copyright RiX 2016 - <a href="{{asset('RIX-doc/index.html')}}">Documentation</a></p>
     </div>
   </div>
 @endsection

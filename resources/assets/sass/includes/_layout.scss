@@ -52,6 +52,7 @@ ul.nav-items{
   text-transform: uppercase;
   margin:0;
   padding:0;
+  align-items: center;
 
   li{
     &:not(:last-child){
@@ -59,9 +60,28 @@ ul.nav-items{
     }
   }
 
+  figure.profile-picture{
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    border-radius: 50%;
+    background-color: lightgrey;
+    background-position: center;
+    background-size: cover;
+    border: 3px solid #e6e6e6;
+    box-sizing: border-box;
+    transition: 200ms all ease-in-out;
+    &:hover{
+      cursor: pointer;
+      border-color: $scheme-green;
+    }
+  }
+
   li a{
     color: $scheme-blue;
     text-decoration: none;
+    transition: 100ms all ease-in-out;
 
     i{
       margin-right: 5px;
@@ -131,6 +151,19 @@ ul.status-list{
   margin-top: 10px;
 
   input{
+    width: 100%;
+    border: 0px;
+    padding: 10px;
+    display: flex;
+    flex-grow: 1;
+    background-color: $input-background;
+
+    &:not(:last-child){
+      margin-bottom: 20px;
+    }
+  }
+
+  select{
     width: 100%;
     border: 0px;
     padding: 10px;
@@ -613,16 +646,21 @@ button.article-button{
   background: transparent;
 
   &.selected{
-    background-color: $scheme-green;
-    color: white;
+    // background-color: $scheme-green;
+    background-color: white;
+    // color: $scheme-green;
+    // color: white;
     &:hover{
-      background-color: lighten($scheme-green,10);
+      // color: black;
+      // background-color: white;
     }
   }
 
   &:hover{
-    color: white;
-    background-color: $scheme-green;
+    // color: white;
+    // color: $scheme-green;
+    background-color: white;
+    color: $text-grey;
   }
 }
 
@@ -668,6 +706,10 @@ button.article-button{
       background-color: #dadada;
       margin-top: -2px;
       color: $text-grey;
+      outline: 0;
+      &:focus{
+        outline: 0;
+      }
       &:hover{
         background-color: $scheme-green;
         color: white;
@@ -691,8 +733,36 @@ button.article-button{
     background-size: cover;
     border: 5px solid white;
     transition: 200ms all ease-in-out;
+    position: relative;
     &:hover{
       border-color: darken(white,10);
+      figure.hover-figure{
+        // display: flex;
+        visibility: visible;
+        background-color: rgba(0,0,0,0.6);
+      }
+    }
+
+    figure.hover-figure{
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: rgba(0,0,0,0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 200ms all ease-in-out;
+      i{
+        font-size: 20px;
+        color: white;
+      }
+
+      visibility: hidden;
+      // display: none;
     }
   }
 

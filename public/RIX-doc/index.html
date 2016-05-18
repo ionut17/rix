@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>RIX</title>
+  <link rel="stylesheet" href="scholarly.css">
+  <!-- <link rel="stylesheet" href="node_modules/prismjs/themes/prism-coy.css">
+  <script src="node_modules/prismjs/prism.js" defer></script> -->
+</head>
+<body prefix="schema: http://schema.org/ xsd: http://www.w3.org/2001/XMLSchema# sa: https://ns.science.ai/">
+  <header>
+    <p class="title">RIX</p>
+    <p class="subtitle">Resource Interactive Explorer</p>
+  </header>
+  <article id="what" typeof="schema:ScholarlyArticle" resource="#">
+    <h1>Documentatie RIX</h1>
+    <section>
+      <ol>
+        <li property="schema:author" typeof="sa:ContributorRole">
+          <a property="schema:author" href="http://students.info.uaic.ro/~anca.adascalitei" typeof="schema:Person">
+            <span property="schema:givenName">Anca</span>
+            <span property="schema:familyName">Adăscăliței, </span>
+          </a>
+
+          <a property="schema:author" href="http://students.info.uaic.ro/~eveline.giosanu" typeof="schema:Person">
+            <span property="schema:givenName">Eveline</span>
+            <span property="schema:familyName">Giosanu, </span>
+          </a>
+          <a property="schema:author" href="http://students.info.uaic.ro/~stefan.gordin" typeof="schema:Person">
+            <span property="schema:givenName">Stefan</span>
+            <span property="schema:familyName">Gordîn, </span>
+          </a>
+          <a property="schema:author" href="http://students.info.uaic.ro/~robert.iacob" typeof="schema:Person">
+            <span property="schema:givenName">Ionuț</span>
+            <span property="schema:familyName">Iacob</span>
+          </a>
+        </li>
+      </ol>
+    </section>
+    <section typeof="sa:Abstract" id="abstract">
+      <h2>Abstract</h2>
+      <p>
+        Acest proiect se dorește a fi un instrument Web de colectare, de regăsire și de vizualizare a informațiilor referitoare la resurse științifice și tehnologice (articole, cărți, rapoarte tehnice, prezentări, cod-sursă și altele) ale utilizatorilor din domeniul informaticii. Dezvoltând o aplicație de tip mash-up, se oferă informații de interes pentru o anumită persoană, pornind de la resursele multimedia deja colectate și clasificate via aplicații Web sociale precum Feedly, GitHub, Google Scholar, Slideshare, Vimeo. Informațiile (structurate pe diverse criterii) vor fi vizualizate în formate precum HTML, SVG sau text obișnuit. De asemenea, sistemul oferă acces la informații prin intermediul unui API REST.
+      </p>
+    </section>
+    <section typeof="sa:MaterialsAndMethods" id="motivation">
+      <h2>Motivatie</h2>
+      <p>
+        Aplicațiile existente la momentul actual încadrează informația de specialitate după tipul acesteia (cod, video-uri, articole etc.), astfel fiind dificil utilizatorilor să acceseze informații privind aceeași arie redate sub diferite forme.
+      </p>
+      <p>
+        Aplicația dorește a ușura procesul de regăsire a informațiilor deja accesate de utilizatori prin colectarea acestora și încadrarea lor în funcție de tematică. Pe baza diferitelor conturi asociate unor aplicații Web (precum: <code>GitHub</code>, <code>Feedly</code>, <code>Slideshare</code>, <code>Google Scholar</code>, <code>Vimeo</code>) introduse de către utilizator, acesta poate beneficia de vizualizarea tuturor informațiilor preferate în același loc. De asemenea, pe baza preferințelor i se vor oferi articole care vizează același subiect.
+      </p>
+      <p>
+        În continuare vom folosi termenul <code>articol</code> ca un termen general, acesta înglobând orice tip de informație (sub forme diferite) : video, articol - text, prezentare, cod etc.
+      </p>
+      <p> Bineînțeles, există posibilitatea recomandării de anumite articole și unui utilizator care nu are nici un cont specificat, aceasta se face în urma selectării anumitor tag-uri favorite de către beneficiar. Ușurința cu care utilizatorul va putea accesa doar informațiile pe care dorește să le vizualizeze, precum și regăsirea lor în același loc reprezintă nu doar un mod de a câștiga timp ci și un instrument util de a manipula informația de care are nevoie.
+      </p>
+      <p>
+        Principalele țeluri care au motivat crearea unei astfel de aplicații sunt:
+      </p>
+      <ul>
+        <li>
+          Încadrarea informației colectate de pe diferite site-uri sau aplicații într-un singur loc.
+        </li>
+        <li>
+          Recomandarea de articole pe baza preferințelor și accesărilor fiecărui utilizator în parte.
+        </li>
+        <li>
+          Clasificarea informațiilor colectate.
+        </li>
+      </ul>
+      <p>
+        În plus, pentru o utilizare cât mai facilă, aplicația poate fi accesată de pe diferite dispozitive.
+      </p>
+    </section>
+
+
+
+
+
+    <section typeof="sa:Results" id="definition">
+      <h2>Descrierea aplicatiei</h2>
+      <p>
+        RIX este o aplicație dedicată celor interesați de domeniul IT. Aplicația colectează informațiile din conturile utilizatorului și le stochează într-o bază de date SQL, utilizatorul având acces la acestea odată logat. După înregistrarea unui utilizator, acesta își alege ariile de interes și își adaugă apoi conturile aferente diferitelor aplicații. Informațiile deja accesate precum și cele recomandate îi vor fi afișate în pagini diferite, fiecare articol putând fi vizualizat separat.
+      </p>
+
+      <p>
+        Fiind o aplicație web, pentru realizarea acesteia vom utiliza HTML5, CSS3 și JavaScript pentru partea de front-end. Pe partea de back-end vom folosi framework-ul Laravel 5.2 ce are la bază limbajul PHP, care facilitează dezvoltarea aplicației într-o manieră MVC. Pentru stocarea de informații soluția aleasă este utilizarea unei baze de date Oracle.
+      </p>
+
+
+
+    </section>
+
+
+
+    <section id="file-headers">
+      <h2>Arhitectura aplicației</h2>
+      <br>
+
+
+      <img src=".\ARCH.png" alt="Diagrama arhitecturală"/>
+      <p class="imagetext">Fig. 1 - Diagrama arhitecturală a aplicației</p>
+
+      <h3> Workflow-ul aplicației</h3>
+      <p>Aplicația oferă userilor diferite articole aparținând aceleiași arii. Pentru a exista și posibilitatea oferirii de informații unor useri care nu au optat să-și introducă conturile aferente altor site-uri și aplicații Web, vor exista și articole deja colectate anterior. Colectarea se face astfel în două momente: înainte de lansarea aplicației și după înregistrarea userilor. Pentru fiecare tag (categorie) se va colecta inițial un anumit număr de articole provenite de pe aplicații deja menționate: GitHub, Feedly, Vimeo, GoogleScholar, SlideShare. </p>
+      <p> Primul contact al unui user cu aplicația noastră va fi prin pagina de înregistrare/autentificare. În momentul în care un user și-a creat un cont (username, password) acesta va putea să își creeze profilul (va putea alege diferite tag-uri preferate și de asemenea, va putea să-și introducă și conturile aferente aplicațiilor menționate mai sus). Un utilizator este restricționat să aleagă cel puțin o categorie preferată, altfel nu i s-ar putea afișa niciun articol.</p>
+      <p>
+        După etapa introductivă, de creare a profilului, utilizatorul are posibilitatea să vizualizeze doar conținutul propriu (diferite articole procurate din propriile conturi) prin pagina <code>My Content</code>  sau doar recomandări (acestea oferite pe baza preferințelor sale) prin pagina <code>Recommended Content</code>. De asemenea, în pagina principală poate vizuliza întregul său conținut, atât recomandări cât și ceea ce ține de profilul său.
+      </p>
+      <p>
+        În momentul in care un utilizator este interesat să găsească un anumit articol, acesta poate fi căutat prin butonul <code>Search</code>. De asemenea, <code>LOAD MORE</code> va afișa în continuare mai multe articole, în caz de acesta dorește să vizualizeze și restul conținutului. Câmpul <code>Settings</code> permite utilizatorului să își schimbe preferințele, indiferent că dorește să își adauge/șteargă un cont ori își adaugă/șterge anumite tag-uri. Bineînțeles, acesta poate să-și schimbe parola sau numele de utilizator oricând dorește, această facilitate putând fi găsită pe pagina <code>My Account</code>.
+      </p>
+      <p> Recomandările se fac pe baza preferințelor utilizatorului. După ce acesta-și va seta tag-urile favorite, în pagina de recomandări i se vor afișa articole pe care acesta nu a avut șansa să le acceseze încă. Bineînțeles, în baza de date sunt stocate pentru toate tag-urile, conținuturi (articole) atât din colectarea inițială, cât și din colectarea prin intermediul informațiilor introduse de utilizatori. Astfel, unui utilizator care și-a ales printre preferințe <code>Java</code>, i se pot oferi, ca și recomandări, articole colectate din conturile altor utilizatori ce au ales și ei <code>Java</code> ca fiind un "domeniu" de interes.
+      </p>
+      <p>
+        Deoarece se dorește ca utilizatorul să beneficieze de o cât mai eficientă vizualizare a articolelor, acesta-și poate filtra conținutul în funcție de tag-urile pe care le dorește, precum și sursa de proveniență. De asemenea, acesta le poate sorta în funcție de data la care au fost publicate și are și posibilitatea să i se afișeze doar conținutul deja citit sau cel încă neaccesat.
+      </p>
+      <p>
+        Fiind o practică destul de întâlnită în zilele noastre, pentru a eficientiza procesul de autentificare nu este necesar ca un utilizator să își introducă datele de fiecare dată când dorește să acceseze aplicația. Astfel, bifarea căsuței specifice câmpului <code>REMEMBER ME</code> va ajuta la reținerea informațiilor legate de utilizator prin memorarea SESSION ID ului, bineînțeles, framework-ul facilitând acestă procedură.
+      </p>
+
+    </section>
+
+    <section id="file-headers">
+
+        <h2>Tehnologii</h2>
+        <p>
+          Fiind o aplicație web, pentru realizarea acesteia vom utiliza <code>HTML5</code>, <code>CSS3</code> și <code>JavaScript</code> pentru partea de front-end. De asemenea vom folosi framework-ul <code>Bootstrap</code> pe partea de frontend si <code>Font Awesome</code> pentru iconiţele din aplicaţie.
+          Pe partea de back-end vom folosi framework-ul <code>Laravel 5.2</code> ce are la bază limbajul <code>PHP</code>, care facilitează dezvoltarea aplicației într-o manieră <code>MVC</code>. Pentru stocarea de informații soluția aleasă este utilizarea unei baze de date <code>Oracle</code>.
+          La nivel de dezvoltare vom folosi <code>GitHub</code> pentru comunicarea şi centralizarea datelor, dar şi pentru stocarea diferitelor versiuni ale aplicaţiei.
+        </p>
+        <p>
+
+        <h3>Front-end</h3>
+        <p>Aplicaţia va conţine câteva pagini principale prin care se va realiza interacţiunea cu utilizatorul.</p>
+
+        <h4>Login/Register</h4>
+        <p>
+          Utilizatorul îşi va crea un cont sau se va loga pe un cont existent în aplicaţia noastra.
+        </p>
+        <img src=".\IMGS\1-login.png" alt="Login"/>
+        <p class="imagetext">Fig. 2 - Pagina Login</p>
+
+        <h4>Pagina principala</h4>
+        <p>
+          În această pagină va fi prezentat întreg conţinutul utilizatorului şi va avea loc interacţiunea cu acesta. Astfel aceasta pagina va fi împărţită în 2 secţiuni:
+          <ul>
+            <li><code>Conţinut recomandat</code></li>
+            <li><code>Conţinut agregat</code></li>
+          </ul>
+          Conţinutul recomandat va conţine sugestii pentru utilizatorul curent de noi articole similare ce ar putea fi o ţintă de interes. Acest conţinut va fi gasit pe baza conţinutului
+          agregat din conturile ataşate de către utilizator.
+        </p>
+        <img src=".\IMGS\2-main-page.png" alt="Main Page"/>
+        <p class="imagetext">Fig. 3 - Pagina principală</p>
+
+        <h4>Pagina de conţinut</h4>
+        <p>
+          În pagina de conţinut se va prezenta conţinutul integral al unui articol selectat de utilizator. Tipurile de articole sunt:
+          <ul>
+            <li><code>Articol cu imagini</code></li>
+            <li><code>Articol cu videoclipuri</code></li>
+            <li><code>Articol cu secţiuni de cod</code></li>
+          </ul>
+          De asemenea pe langă conţinutul articolului este o secţiune de alte articole recomandate pe baza articolului curent.
+        </p>
+        <img src=".\IMGS\3-article-image.png" alt="Article Page"/>
+        <p class="imagetext">Fig. 4 - Pagina de articol</p>
+
+        <h4>Pagina de setări</h4>
+        <p>
+          În pagina de setări utilizatorul va putea modifica toate detaliile legate de contul lui. Aceasta este împarţită în 2 secţiuni:
+          <ul>
+            <li><code>Detaliile utilizatorului</code></li>
+            <li><code>Conturile ataşate</code></li>
+          </ul>
+          În secţiunea legată de detaliile utilizatorului se pot modifica setări ca email ataşat sau parola. Conturile ataşate reprezintă serviciile ataşate la contul curent (e.g GitHub, Feedly).
+        </p>
+        <img src=".\IMGS\6-settings.png" alt="Settings Page"/>
+        <p class="imagetext">Fig. 5 - Pagina de setări</p>
+
+
+        <h3>Back-end</h3>
+        <p>
+          Primul contact al back-endului cu fluxul aplicației are loc în momentul înregistrării/autentificării userilor.
+          Back-end-ul se ocupă cu dirijarea tuturor elementelor ce urmează a fi utilizate de către următoarele module: înregistrare, autentificare, setarea preferințelor, colectare, recomandare, căutare și afișare de informații.
+        </p>
+        <p>
+          Modulul de autentificare poate fi realizat foarte ușor datorită mecanismului de filtrare a cererilor <code>HTTP</code> printr-un middleware. Acest mecanism oferit de <code>Laravel</code> permite folosirea aplicației de către un user fără neccesitatea autentificării, cu condiția existenței unei logări anterioare. În cazul în care nu există, middleware-ul trimite user-ul la pagina de autentificare.
+          Există două etape în colectarea datelor: <code>colectarea inițială</code> (default) pentru fiecare tag în parte și <code>colectarea agregată</code> pe baza informațiilor introduse de user.
+          De asemenea sistemul de rute oferă suport pentru realizarea unui <code>API REST</code>.
+        </p>
+        <p>
+          Comunicarea cu API-urile diferitelor servicii se va realiza prin trimiterea/primirea de obiecte de tip <code>JSON/XML</code>. Conţinutul primit va fi prelucrat şi afişat utilizatorului. De asemenea există funcţii legate de parsarea conţinutului
+          ce vor găsi <code>tag-uri</code> reprezentative pentru un anumit conţinut şi vor recomanda conţinut similar utilizatorului.
+        </p>
+        <p>
+
+        </p>
+
+        <!-- Feedly -->
+        <h4>Feedly</h4>
+        <p>
+          Feedly este o aplicație ce permite vizualizarea fluxurilor RSS în format text sau sub forma unei reviste digitale. Prin intermediul unui wrapper PHP pentru API-ul Feedly avem acces la profilul, istoricul precum și favoritele unui anumit user, cererile fiind rezolvate printr-un document în format JSON.
+          Pentru conectare este necesar un <code>access token</code> dat la cerere, contul și prola utilizatorului, stocate în baza de date. Informațiile necesare apliației RIX sunt obținute cu ajutorul următoarele metode:
+          <ul>
+            <li><code>GET tags</code> pentru tag-urile create de utilizator</li>
+            <li><code>GET preferences</code> pentru link-urile preferințelor utilizatorului</li>
+            <li><code>GET subscriptions</code> pentru a obține metadatele despre channel-urile pe care le urmărește utilizatorul</li>
+          </ul>
+          Fiecare accesare va fi stocată în baza de date ca un link, iar tag-urile obținute vor fi utilizate pentru oferirea de recomandări ulterioare. Fiecare channel urmărit are asociate anumite tag-uri ce vor fi folosite pentru a oferi recomandări, utilizând metoda <code>GET search/feeds</code> prin care pot fi accesate noi articole pe baza titlului, url-ului sau a tag-ului, articole ale căror link-uri vor fi de asemenea stocate în baza de date.S
+        </p>
+
+        <!-- GitHub -->
+        <h4>GitHub</h4>
+        <p>
+          Conexiunea la <a href="https://developer.GitHub.com/v3/">API-ul GitHub</a> se va realiza pe baza trimiterii de request-uri la adresa <a href="https://api.GitHub.com">https://api.GitHub.com</a>. Toate datele transmise sunt în format <code>JSON</code>, atât cererea iniţiala de conectare cât şi cererile ulterioare
+          de retragere a conţinutului. Conţinutul necesar aplicaţiei noastre este localizat în fişierele din <code>repository-urile</code> utilizatorului. Comunicand cu API-ul GitHub prin request-uri de tip <code>GET</code> în format <code>JSON</code>
+          şi vom salva urmatoarele atribute:
+          <ul>
+            <li><code>titlul</code></li>
+            <li><code>short description</code></li>
+            <li><code>content</code></li>
+          </ul>
+        </p>
+        <p>La construcţia unei pagini se va parsa doar link-ul salvat în baza de date şi va fi preluat conţinutul lui şi afisat în pagina pentru a evita salvarea volumelor
+          mari de date în baza de date. Integrarea API-ului GitHub v3 cu <code>Laravel 5</code> va avea loc prin intermediul unui <code>wrapper PHP</code>. Astfel iniţial se va realiza conexiunea cu API-ul pentru a avea datele de conectare în caz
+          că cererile au nevoie de date private specifice unui user ce nu sunt publice.</p>
+
+          <!-- Slideshare -->
+          <h4>Slideshare</h4>
+          <p>
+            Slideshare este un serviciu oferit de LinkedIn ce oferă accesul la prezentări din toate domeniile, incluzând informatica. Astfel, prin intermediul API-ului se pot face cereri de prezentări.
+            <br/>
+            Fiecare cerere făcută la SlideShare API trebuie validată, astfel că fiecarei cereri îi corespund urmatorii parametrii:
+            <ul>
+              <li><code>api_key</code> SlideShare ofera câte un <code>api_key</code>fiecarui user din motive de securitate.</li>
+              <li><code>ts</code>Timpul curent al cererii în format UNIX TimeStamp</li>
+              <li><code>hash</code><code>SHA1(api_key.ts)</code></li>
+            </ul>
+            După, cu ajutorul contului salvat în baza de date, API-ul poate face autentificarea pe baza usernameului si parolei de la LinkedIn. Metodele API-ului pe care urmează să le folosim:
+            <ul>
+              <li><code>Get Slideshow Information</code> pentru informații suplimentare despre prezentare</li>
+              <li><code>Get Slideshows By Tag</code> pentru colectarea inițială</li>
+              <li><code>Get Slideshows By User</code> pentru colectarea prezentărilor unui respectiv user</li>
+              <li><code> Get Users Favorites</code> pentru revizualizarea prezentărilor considerate favorite </li>
+            </ul>
+            Aceste metode returnează fişiere în format <code>XML</code>, cu informaţiile corespunzătoare.
+          </p>
+
+          <!-- Vimeo -->
+          <h4> Vimeo </h4>
+          <p>
+            Pentru că orice informație poate fi redată și sub formă de video, am ales să lucrăm și cu API-ul oferit de Vimeo pentru a colecta tot ce este necesar pentru crearea profilului user-ului.
+            <ol>
+              <li>Colectarea Inițială</li>
+              <p>
+                În baza de date sunt predefinite anumite tag-uri. Pe baza acestora se va face căutarea de video-uri. API-ul oferă această posibilitate prin comanda <code>GET https://api.vimeo.com/tags/{word}/videos</code>. De asemenea, Vimeo facilitează de o încadrare a video-urilor în categorii și deoarece tag-urile noastre pot fi asociate și cu nume de categorii, vom putea căuta și video-uri care se găsesc într-o anumită categorie, prin <code>GET https://api.vimeo.com/categories/{category}/videos</code>. Ambele comenzi vor returna o listă de video-uri legate de tema specificată. Pentru a integra video-ul într-o pagină se ve folosi <code>oEmbed</code>. oEmbed este un format ce permite reprezentarea integrată pe un site extern, a unui video/a unei imagini pe baza unui URL, fără a fi necesară parsarea directă, acest API oferind astfel posibilitatea integrării unui video preluat de pe <a href="http://Vimeo.com">Vimeo</a>.
+              </p>
+              <li>Colectarea pe baza contului unui user</li>
+              <p>
+                Pentru conținutul public al acestuia se va folosi <code>GET https://api.vimeo.com/users/{user_id}/videos</code>. Pentru a putea intra în posesia video-urilor private ale unui anumit utilizator, va trebui inițial să se facă autentificarea acestuia. Vimeo API folosește <code>OAuth 2.0</code> pentru logarea în contul user-ului. Fiind o aplicație Multi-user va fi necesară generarea de access token-uri. Pentru a putea accesa pagina privată a utilizatorului acesta ar trebui să fie redirecționat pe site-ul<a href="http://Vimeo.com">Vimeo</a> unde ar trebuie să opteze pentru accesarea paginii sau nu. În momentul în care un utilizator ar dori să-și introducă contul de Vimeo, acesta va trebui să opteze dacă dorește doar video-urile publice sau le dorește și pe cele private. Dacă va opta să i se preia și conținutul private, acesta va fi avertizat că de fiecare dată când va dori să își vizualizeze propriul conținut va fi redirecționat pe site unde va fi nevoit să introducă id-ul și parola.
+              </p>
+            </ol>
+          </p>
+
+
+          <h3>Stocarea datelor</h3>
+          <p class="parent">
+            Framework-ul realizează armonios legătura dintre baza de date și backend.
+            Am optat să lucrăm cu baza de date Oracle 11g. În figura de jos este prezentată schema bazei de date.
+          </p>
+          <img class="kid" src="./BD.jpg" alt ="The database schema"/>
+          <p class ="imagetext">Fig. 6 - Schema bazei de date </p>
+          <p>
+            În momentul înregistrării unui utilizator, în baza de date se stochează <code>username-ul</code> (doar dacă nu există deja), precum și <code>password-ul</code> introdus de acesta. În baza de date parola unui user se va stoca sub formă de text criptat folosind bineînțeles clasa <code>Hash</code> oferită de frameworkul specificat. După cum se observă și în schema bazei de date, facilitatea opțiunii <code>REMEMBER ME</code> este oferită prin reținerea  acestei informațiiîn tabelele aferente aplicației. Dacă utilizatorul bifează căsuța, atunci în coloana <code>REMEMBER ME</code> va fi setată ca având valoarea <code>true</code>.
+            <p>
+              Tabela <code>ACCOUNTS</code> reține toate conturile specifice unui user, doar dacă acesta le-a introdus. Bineînțeles același cont poate aparține mai multor utilizatori. Prin atributul <code>Type</code> se va reține tipul aplicației pentru care este specificat contul respectiv, spre exemplu contul "mynamegit" reprezintă contul de GitHub al utilizatorului, iar contul "mynamefeedly", pe cel de pe Feedly. Un user poate să nu introducă niciun cont asta însemnând că atributele <code>Account</code>, <code>Password</code> și <code>Type</code> putând accepta valori de NULL.
+            </p>
+            <p>
+              În tabelul <code>ARTICLES</code> se rețin articole, atât provenite de la anumiți useri cât și colectate inițial. Pentru colectarea inițială atributul <code>Id_account</code> va rămâne NULL. Pentru articolele colectate de la useri, valoarea coloanei <code>Source</code> va coincide cu atributul <code>Type</code> din <code>ACCOUNTS</code> pentru utilizatorul respectiv, deși pare redundant, pentru a nu crea încă un tabel cu articolele colectate inițial, am preferat introducerea acestui câmp <code>Source</code>.
+            </p>
+            <p>
+              Pentru a fi mult mai ușor să construim o interogare ce ne va returna toate articolele cu un anumit <code>tag</code>, tabelul <code>TAGS</code> reține exact id-urile articolelor de care avem nevoie. Am ales să creăm un tabel special pentru asta deoarece un articol poate avea asociat mai multe tag-uri și ar fi un cost de memorie mult prea mare dacă am introduce mai multe tuple cu aceleași informații doar cu tag-ul diferit. După cum se observă aceasta este o relație de tip <code>many to many</code>.
+            </p>
+            <p>
+              Pentru a lucra cu baza de date cât mai ușor se vor scrie funcții în PLSQL pentru a returna exact ce este necesar unei cereri. Laravel - OCI8 este un pachet Oracle Database Driver special pentru Laravel. Bineînțeles, framework-ul dispune și de un ORM, <code>Eloquent</code>. Fiecare tabel din baza de date are ca și corespondent un <code>"Model"</code> care va interacționa cu tabelul. Aceste modele permit interogări ale tabelelor, precum și inserări de noi date. După cum se știe ORM-urile sunt folosite pentru securitate, astfel oferind siguranță în lucrul cu datele prin ascunderea felului în care acestea sunt stocate. Legat de securitate, prevenind <code>SQL Injection</code>, Eloquent ORM folosește parametri dinamici, <code>PDO</code>, astfel fiind sigur din acest punct de vedere, userii nu pot introduce în interogare informații ce ar putea modifica scopul inițial al acesteia.
+            </p>
+            <p>
+              Pentru a eficientiza căutarea, în baza de date vor fi creați inițial 4 indecși: pe USERS(username) - pentru ușurința în procesul de autentificare , TAGS(tagname) - pentru a se găsi repede toate articolele de la un anumit tag, ARTICLES(name) - facilitează opearția de <code>Search</code> și ARTICLES(Id_account) pentru găsirea rapidă a conținutului unui anumit utilizator.
+            </p>
+          </p>
+
+          <h2>Etapele intermediare ale dezvoltării proiectului</h2>
+          <ul>
+            <li><b>Saptamana 0:</b> Prezentarea documentației</li>
+            <li><b>Saptamana 1:</b> Partea de gestionare a fluxului aplicației (register,login,setting,account settings) și conceperea bazei de date</li>
+            <li><b>Saptamana 2:</b> Integrarea de API-uri, crearea sistemului de recomandări și crearea de de view-uri</li>
+            <li><b>Saptamana 3:</b> Finisarea integrarii și prezentarea proiectului.</li>
+          </ul>
+
+          <h2>Distribuirea Sarcinilor</h2>
+          <ul>
+            <li> Anca Adăscăliței  <ul>
+              <li>Gestionarea fluxului aplicației, partea de server</li>
+              <li>Integrarea Feedly</li>
+            </ul> </li>
+            <li> Giosanu Eveline  <ul>
+              <li>Lucrul cu baza de date și crearea conexiunii cu partea de server</li>
+              <li>Integrarea Vimeo</li>
+            </ul> </li>
+            <li> Gordîn Ștefan  <ul>
+              <li>Gestionarea fluxului aplicației, partea de server</li>
+              <li>Integrarea SlideShare</li>
+            </ul> </li>
+            <li> Ionuț Iacob  <ul>
+              <li>Crearea view-urilor și integrarea acestora în fluxul aplicației</li>
+              <li>Integrarea GitHub</li>
+            </ul> </li>
+          </ul>
+
+          <h2>Bibliografie</h2>
+          <ul>
+            <li><a href="http://getbootstrap.com/">http://getbootstrap.com/</a></li>
+            <li><a href="https://fortawesome.github.io/Font-Awesome/">https://fortawesome.github.io/Font-Awesome/</a></li>
+            <li><a href="https://gitextensions.github.io/">https://gitextensions.github.io/</a></li>
+            <li><a href="https://laravel.com/docs/5.2">https://laravel.com/docs/5.2</a></li>
+            <li><a href="https://laracasts.com/">https://laracasts.com/</a></li>
+            <li><a href="https://developer.github.com/v3/">https://developer.github.com/v3/</a></li>
+            <li><a href="https://developer.feedly.com/">https://developer.feedly.com/</a></li>
+            <li><a href="http://www.sitepoint.com/use-githubs-api-php/">http://www.sitepoint.com/use-githubs-api-php/</a></li>
+            <li><a href="https://github.com/tan-tan-kanarek/github-php-client">https://github.com/tan-tan-kanarek/github-php-client</a></li>
+            <li><a href="http://www.slideshare.net/developers/documentation">http://www.slideshare.net/developers/documentation</a></li>
+            <li><a href="https://developer.vimeo.com/">https://developer.vimeo.com/</a></li>
+          </ul>
+
+        </section>
+
+
+      </body>
+      </html>

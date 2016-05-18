@@ -30,7 +30,10 @@
   <div class="container">
     <div class="row settings-wrapper">
       <div class="settings-box">
-        <section class="profile-image" style="background-image: url('{{asset('img/profiles/avatar.jpg')}}');"></section>
+        <a href=""></a>
+        <section class="profile-image" style="background-image: url('{{asset('img/profiles/avatar.jpg')}}');">
+          <figure class="hover-figure"><i class="fa fa-pencil" aria-hidden="true"></i></figure>
+        </section>
         <div class="box">
           <label for="username">Iacob Ionut</label>
           <input type="text" name="username" id="username" class="hide">
@@ -47,17 +50,19 @@
           <label>Vimeo</label>
           <span class="status red">ERROR</span>
         </section>
-        <button type="button" name="view-btn" class="article-button">Add</button>
+        <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Add account</button>
       </div>
     </div>
   </div>
+
+  @include ('modals.attach-account')
 
 @endsection
 
 @section('footer')
   <div class="container-fluid">
     <div class="footer-container">
-      <p>© Copyright RiX 2016 - <a href="#">Documentation</a></p>
+      <p>© Copyright RiX 2016 - <a href="{{asset('RIX-doc/index.html')}}">Documentation</a></p>
     </div>
   </div>
 @endsection
@@ -66,5 +71,6 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>')</script>
 
+  <script src="{{ asset('js/bootstrap/bootstrap.min.js')}}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
 @endsection
