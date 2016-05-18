@@ -60,7 +60,7 @@
               </a>
             </div>
         @endforeach
-      @else if
+      @else
         @for ($i = 0; $i < 16; $i++)
             <div class="article-box">
               <section class="image" style="background-image: url('{{ asset('img/articles/'.($i%4+1).'.jpg') }}')"></section>
