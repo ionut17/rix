@@ -24,7 +24,11 @@ class ContentController extends BaseController
     }
 
     private function listGithub(){
-      $client = App::make('Github\Client');
+      //Connection
+      $client = new \Github\Client();
+      $token = Request::input('github_access');
+      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+      //Content
       $repos = $client->api('current_user')->repositories();
       $username = env('GIT_USERNAME');
       $path = '.';
@@ -51,9 +55,12 @@ class ContentController extends BaseController
     }
 
     private function contentGithub($repo, $path){
-      $client = App::make('Github\Client');
+      //Connection
+      $client = new \Github\Client();
+      $token = Request::input('github_access');
+      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+      //Content
       $repos = $client->api('current_user')->repositories();
-      $username = env('GIT_USERNAME');
       $content = array();
       $myfile = $client->api('repo')->contents()->show('ionut17', $repo, $path);
       // dd($myfile);

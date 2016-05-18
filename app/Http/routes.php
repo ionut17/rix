@@ -34,6 +34,11 @@ Route::post('/mycontent','ContentController@show');
 //Activate APIs
 Route::get('/register/pocket','ContentController@firstConnectPocket');
 Route::get('/activate/pocket','ContentController@listPocket');
+//APIs
+
+Route::get('/register/github','GithubController@authorize');
+Route::get('/activate/github','GithubController@activate');
+
 
 /*
 |--------------------------------------------------------------------------

@@ -100,7 +100,7 @@
       @endif
     </div>
     <div class="footer-container">
-      <ul class="pagination">
+      <ul class="pagination hide">
         @for ($i=1;$i<=$page_count;$i++)
           <li><a href="{{ URL::to('/mycontent/'.$i) }}" @if ($i==$page_number) class="selected" @endif>{{$i}}</a></li>
         @endfor
@@ -114,7 +114,7 @@
 @section('footer')
   <div class="container-fluid" style="margin-top:20px;">
     <div class="footer-container">
-      <p>© Copyright RiX 2016 - <a href="#">Documentation</a></p>
+      <p>© Copyright RiX 2016 - <a href="{{asset('RIX-doc/index.html')}}">Documentation</a></p>
     </div>
   </div>
 @endsection
