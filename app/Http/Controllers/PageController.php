@@ -12,10 +12,13 @@ class PageController extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function login(){
+    $this->middleware('auth');
       return view('auth.login');
     }
 
     public function register(){
+    $this->middleware('registerauth');
       return view('auth.register');
+      // $this->middleware('registerauth');
     }
 }

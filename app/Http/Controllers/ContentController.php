@@ -10,11 +10,18 @@ use App;
 use View;
 use Illuminate\Support\Facades\Input;
 use Request;
+use Duellsy\Pockpack\Pockpack;
+use Duellsy\Pockpack\PockpackAuth;
+use Duellsy\Pockpack\PockpackQueue;
 
 
 class ContentController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function __construct(){
+      // $this->middleware('auth');
+    }
 
     private function listGithub(){
       //Connection
@@ -68,7 +75,8 @@ class ContentController extends BaseController
 
     public function show($page_number=1){
       //content (se adauga un array pentru fiecare api)
-      $contentGithub = $this->listGithub();
+      $contentGithub = [''];
+      // $contentGithub = $this->listGithub();
       //pentru celelalte api-uri se adauga vectorii in array_merge
       $content = array_merge($contentGithub);
       //settings
@@ -80,6 +88,7 @@ class ContentController extends BaseController
       $index_start = ($page_number-1)*$per_page;
       $display_content = array_slice($content,$index_start,$per_page);
       //view
+      $display_content = null;
       return View::make('content', ['content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number]);
     }
 
@@ -101,4 +110,63 @@ class ContentController extends BaseController
       }
       return view('layouts.article');
     }
+
+    //APIs
+
+    //Pocket
+    public function firstConnectPocket(){
+      $consumer_key="54303-44cfeebb44dcc915b80532df";
+      $pockpath_auth = new PockpackAuth();
+      // echo "Created authentication<br>";
+      $request_token = $pockpath_auth->connect($consumer_key);
+      // echo "Created request token<br>";
+      echo $request_token;
+      header("Location: https://getpocket.com/auth/authorize?request_token=".$request_token."&redirect_uri=http://localhost:3000/activate/pocket?request_token=".$request_token);
+      exit();
+    }
+//IMPORTANT: for DB: access token and consumer key
+    public function listPocket(){
+      $consumer_key="54303-44cfeebb44dcc915b80532df";
+      $pockpath_auth = new PockpackAuth();
+      $local_request_token=Request::input('request_token');
+      // dd($this->consumer_key,$local_request_token);
+      // echo "Consumer key: ".$consumer_key."<br>";
+      // echo "Request key: ".$local_request_token."<br>";
+      //Access token
+      $access_token = $pockpath_auth->receiveTokenAndUsername($consumer_key, $local_request_token);
+      // dd($access_token['access_token']);
+      // echo "Created acces token<br>";
+      // echo "Access token: ".$access_token['access_token']."<br>";
+      //Interogating
+      $options = array(
+          'state'         => 'all',
+          'contentType'   => 'article',
+          'detailType'    => 'complete'
+      );
+      // echo "Interogating list<br>";
+      $pockpack = new Pockpack($consumer_key, $access_token['access_token']);
+    // echo "Retrieving list<br>";
+    $array = $pockpack->retrieve($options,1);
+    $articles_list = $array['list'];
+
+      // dd($list);
+      $content = null;
+      $content = array();
+      foreach($articles_list as $value){
+        $file_content['title']=$value['resolved_title'];
+        $file_content['path']=$value['resolved_url'];
+        $file_content['excerpt']=$value['excerpt'];
+        if(in_array('images', $value)){
+          $file_content['images']=$value['images'];
+        }
+        // if(in_array('videos', $value)){
+        //   $file_content['videos']=$value['videos'];
+        // }
+
+        array_push($content,$file_content);
+      }
+      echo 'Content: ';
+      dd($content);
+    }
+
 }

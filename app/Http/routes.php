@@ -18,6 +18,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+
 Route::get('/mycontent/{page_number?}','ContentController@show');
 // Route::get('/article', ['as'=>'article', 'uses'=>'ContentController@article']);
 // Route::get('/article/{type}','ContentController@article');
@@ -50,4 +51,9 @@ Route::get('/activate/github','GithubController@activate');
 
 Route::group(['middleware' => ['web']], function () {
     //
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+    Route::get('/home', 'HomeController@index');
 });
