@@ -22,7 +22,7 @@ class Authenticate
       $username = Request::get('username');
       $password = Request::get('password');
 
-      $user = DB:: table('users')->where('username',$username)->first();
+      $user = DB::table('users')->where('username',$username)->first();
 
       if(isset($user))
       {

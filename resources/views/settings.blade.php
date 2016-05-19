@@ -42,6 +42,7 @@
         </div>
       </div>
       <div class="settings-box accounts">
+        <!-- Added dinamicaly -->
         <section class="account-row">
           <label>Github</label>
           <span class="status green">CONNECTED</span>

@@ -8,7 +8,7 @@
         </button>
         <h4 class="modal-title" id="addModalLabel">Attach API account</h4>
       </div>
-      <form action="{{ URL::to('/mycontent') }}" method="post">
+      <form action="{{ URL::to('/authorize') }}" method="post">
         <div class="modal-body">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -18,13 +18,13 @@
             <select name="api" id="api">
               <option value="github">Github</option>
               <option value="pocket">Pocket</option>
-              <option value="slideshare">Slideshare</option>
-              <option value="vimeo">Vimeo</option>
+              <option value="slideshare" disabled>Slideshare</option>
+              <option value="vimeo" disabled>Vimeo</option>
             </select>
-            <label for="username">Username</label>
+            <!-- <label for="username">Username</label>
             <input type="text" name="username" id="username">
             <label for="password">Password</label>
-            <input type="password" name="password" id="password">
+            <input type="password" name="password" id="password"> -->
           </div>
         </div>
         <div class="modal-footer" style="padding: 0;">

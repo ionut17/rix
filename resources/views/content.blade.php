@@ -46,22 +46,43 @@
       @if (isset($content))
         @foreach ($content as $entry)
             <div class="article-box">
-              <section class="image" style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"></section>
-              <section class="tag"> {{$entry['type']}} </section>
+              <section class="image"
+                @if (isset($entry['image']))
+                  style="background-image: url('{{ $entry['image'] }}')"
+                @else
+                  style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"
+                @endif
+              ></section>
+              <section class="tag">
+                @if (isset($entry['type'])) {{$entry['type']}} @endif
+              </section>
               <section class="content">
-                <h2>{{$entry['name']}}</h2>
-                <label>Repository: {{$entry['repo']}}</label>
+                <h2>{{$entry['title']}}</h2>
+                <label>@if (isset($entry['repo'])) {{$entry['repo']}} @endif</label>
                 <p class="description">
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                  @if (isset($entry['description']))
+                    {{$entry['description']}}
+                  @else
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                  @endif
                 </p>
               </section>
-              <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
+                @if ($entry['type']=='github')
+                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
+                @else
+                  <a href="">
+                @endif
                 <button type="button" name="view-btn" class="article-button">Read</button>
               </a>
             </div>
         @endforeach
       @else
-        @for ($i = 0; $i < 16; $i++)
+        <div class="article-warning">
+          <p>Warning: You don't have any accounts attached!</p>
+          <button type="button" name="view-btn" class="article-button fixed-size" data-toggle="modal" data-target="#addModal">Add account</button>
+        </div>
+        @include ('modals.attach-account')
+        @for ($i = 4; $i < 4; $i++)
             <div class="article-box">
               <section class="image" style="background-image: url('{{ asset('img/articles/'.($i%4+1).'.jpg') }}')"></section>
               <section class="tag">
@@ -123,5 +144,6 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>')</script>
 
+  <script src="{{ asset('js/bootstrap/bootstrap.min.js')}}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
 @endsection

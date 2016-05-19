@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Github\Client as GithubClient;
 use Request;
+use DB;
 
 class GithubController extends BaseController
 {
@@ -49,9 +50,10 @@ class GithubController extends BaseController
     $pieces2 = explode('=',$pieces[0]);
     $access_token = $pieces2[1];
     //HERE STORE IT IN DATABSE FOR THE CURRENT USER
-    // dd($access_token);
+    $username = 'admin';
+    DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(1, $username, $access_token, 'github'));
     //Redirect to content
-    header('Location: http://localhost:2000/mycontent?github_access='.$access_token);
+    header('Location: http://localhost:2000/mycontent');
     exit();
   }
 

@@ -32,12 +32,13 @@ Route::post('/register','PageController@register');
 Route::post('/mycontent','ContentController@show');
 
 //Activate APIs
-Route::get('/register/pocket','ContentController@firstConnectPocket');
-Route::get('/activate/pocket','ContentController@listPocket');
-//APIs
+Route::post('/authorize','PageController@authorizeAPI');
 
-Route::get('/register/github','GithubController@authorize');
+Route::get('/authorize/github','GithubController@authorize');
 Route::get('/activate/github','GithubController@activate');
+
+Route::get('/authorize/pocket','PocketController@authorize');
+Route::get('/activate/pocket','PocketController@activate');
 
 
 /*

@@ -171,6 +171,8 @@ button.button, button.article-button {
   transition: all 200ms ease-in-out; }
   button.button:hover, button.article-button:hover {
     background-color: #53d98b; }
+  button.button.fixed-size, button.fixed-size.article-button {
+    max-width: 300px; }
 
 .box-label {
   font-family: 'Montserrat', Monaco, sans-serif;
@@ -203,8 +205,28 @@ button.button, button.article-button {
   .content-container.side {
     width: 325px; }
 
+.article-warning {
+  width: 100%;
+  margin: 10px;
+  padding: 20px;
+  background-color: #34485e;
+  border: 1px solid #46617f;
+  border-radius: 2px;
+  color: white;
+  font-family: Montserrat;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center; }
+  .article-warning p {
+    margin: 0; }
+
 .article-box {
-  width: 285px;
+  width: 286px;
   min-height: 350px;
   border: 1px solid #dadada;
   box-sizing: border-box;
@@ -231,7 +253,11 @@ button.button, button.article-button {
     text-transform: capitalize;
     background-color: #34485e; }
   .article-box section.content {
-    padding: 20px 20px; }
+    padding: 20px 20px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; }
     .article-box section.content h2 {
       margin-top: 0;
       margin-bottom: 0;
@@ -240,13 +266,15 @@ button.button, button.article-button {
       font-size: 20px;
       font-weight: bold;
       line-height: 1.3;
-      color: #34485e; }
+      color: #34485e;
+      max-height: 55px;
+      overflow: hidden; }
     .article-box section.content label {
       font-family: Source Sans Pro;
       font-size: 12px;
       font-weight: normal;
       color: #9aa4a5;
-      margin-bottom: 20px; }
+      margin-bottom: 10px; }
     .article-box section.content p {
       font-family: Source Sans Pro;
       font-size: 14px;
@@ -673,7 +701,11 @@ figure.small.logo {
   .settings-wrapper {
     flex-direction: column; }
   .settings-box {
-    width: 100%; } }
+    width: 100%; }
+  .article-warning {
+    flex-direction: column; }
+    .article-warning p {
+      margin-bottom: 10px; } }
 
 @media screen and (max-width: 480px) {
   .article-container {

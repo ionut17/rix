@@ -14,6 +14,7 @@ use Duellsy\Pockpack\Pockpack;
 use Duellsy\Pockpack\PockpackAuth;
 use Duellsy\Pockpack\PockpackQueue;
 use Exception;
+use DB;
 
 
 class ContentController extends BaseController
@@ -25,11 +26,32 @@ class ContentController extends BaseController
     }
 
     public function show($page_number=1){
+      $contentGithub = null;
+      $contentPocket = null;
+      $contentSlideshare = null;
+      $contentVimeo = null;
       //Content (se adauga un array pentru fiecare API)
       $contentGithub = $this->listGithub();
       $contentPocket = $this->listPocket();
       //Pentru celelalte api-uri se adauga vectorii in array_merge
-      $content = array_merge($contentGithub, $contentPocket);
+      $content = null;
+      //Adding API's contents
+      if ($contentPocket!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentPocket);
+        }
+        else {
+          $content = array_merge($contentPocket);
+        }
+      }
+      if ($contentGithub!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentGithub);
+        }
+        else {
+          $content = array_merge($contentGithub);
+        }
+      }
       //Settings
       $page_number = intval($page_number);
       $per_page = 8;
@@ -37,9 +59,13 @@ class ContentController extends BaseController
       $article_count = count($content);
       $page_count = intval(ceil($article_count/$per_page));
       $index_start = ($page_number-1)*$per_page;
-      $display_content = array_slice($content,$index_start,$per_page);
-      //View
+      //Display content
       $display_content = null;
+      if ($content!=null){
+        // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
+        $display_content = array_slice($content,$index_start,$per_page);
+      }
+      //View
       return View::make('content', ['content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number]);
     }
 
@@ -69,8 +95,10 @@ class ContentController extends BaseController
     private function listGithub(){
       //Connection
       $client = new \Github\Client();
-      $token = Request::input('github_access');
       try {
+        $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+        $token = $result[0]->access_token;
+        // $token = Request::input('github_access');
         $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
         $repos = $client->api('current_user')->repositories();
         //Content
@@ -86,7 +114,7 @@ class ContentController extends BaseController
               // dd($file);
               // $myfile = $client->api('repo')->contents()->show('ionut17', $repo['name'], $file['path']);
               $file_content['type'] = 'github';
-              $file_content['name'] = $file['name'];
+              $file_content['title'] = $file['name'];
               $file_content['repo'] = $repo['name'];
               $file_content['path'] = $file['path'];
               // $file_content['content'] = base64_decode($myfile['content']);
@@ -95,8 +123,9 @@ class ContentController extends BaseController
             }
           }
         }
-      } catch (\RuntimeException $e) {
-        $content = [""];
+      } catch (\Exception $e) {
+        // dd("I have errors");
+        $content = null;
       } finally {
         return $content;
       }
@@ -106,7 +135,8 @@ class ContentController extends BaseController
     private function contentGithub($repo, $path){
       //Connection
       $client = new \Github\Client();
-      $token = Request::input('github_access');
+      $result = DB::select('select access_token from accounts where username = ?', array("admin"));
+      $token = $result[0]->access_token;
       $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
       //Content
       $repos = $client->api('current_user')->repositories();
@@ -128,8 +158,9 @@ class ContentController extends BaseController
     public function listPocket(){
       //Getting the consumer key and user key
       $consumer_key=env('POCKET_CONSUMER_KEY');
-      $access_token=Request::input('pocket_access');
       try{
+        $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","pocket"));
+        $access_token = $result[0]->access_token;
         //Making connection
         $pockpack = new Pockpack($consumer_key, $access_token);
         //Setting the options
@@ -143,21 +174,21 @@ class ContentController extends BaseController
         $content = null;
         $content = array();
         foreach($articles_list as $value){
+          $file_content['type']= "pocket";
           $file_content['title']=$value['resolved_title'];
           $file_content['path']=$value['resolved_url'];
-          $file_content['excerpt']=$value['excerpt'];
-          if(in_array('images', $value)){
-            $file_content['images']=$value['images'];
-          }
+          $file_content['description']=$value['excerpt'];
+          $file_content['image']=$value['images'][1]['src'];
+          // if(in_array('images', $value)){
+          //   $file_content['images']=$value['images'];
+          // }
           // if(in_array('videos', $value)){
           //   $file_content['videos']=$value['videos'];
           // }
-
           array_push($content,$file_content);
         }
-        dd($content);
-      } catch (\RuntimeException $e) {
-        $content = [""];
+      } catch (\Exception $e) {
+        $content = null;
       } finally {
         return $content;
       }
