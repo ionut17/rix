@@ -18,8 +18,8 @@
             <select name="api" id="api">
               <option value="github">Github</option>
               <option value="pocket">Pocket</option>
-              <option value="slideshare" disabled>Slideshare</option>
-              <option value="vimeo" disabled>Vimeo</option>
+              <option value="slideshare">Slideshare</option>
+              <option value="vimeo">Vimeo</option>
             </select>
             <!-- <label for="account">Account username</label>
             <input type="text" name="account" id="Account"> -->
