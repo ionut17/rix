@@ -22,7 +22,7 @@ return [
     |
     */
 
-    'default' => 'main',
+    'default' => 'alternative',
 
     /*
     |--------------------------------------------------------------------------
@@ -38,14 +38,14 @@ return [
     'connections' => [
 
         'main' => [
-            'client_id' => '9d9c308f07fe242b0d8e5f6c28c9aa5e21f4a269',
-            'client_secret' => '8yoFl8zPuGh2r1GpJFIaXhVYAUGVoMDeDGDGRNix4f9f7By2gexx1KdhQrgOYHb5rSN9ebFmjhkbZOOd6iRg3ngGeFV7eyN9v5Ej O9TN5Ui2kiWdHelLM9X8se5LsPLp',
-            'access_token' => '61e8bb868b00fabc8020b67f7269dd0a',
+            'client_id' => '729b69135189f994922a2823f43e445ad030d53d',
+            'client_secret' => 'eonRxEcCPRCaQFFPNQRrijN5no+Da1qQKke2Kz8km57EuVhOIXuR6JuKEmwMNVA4tvBOd1uYOgsm7QmeIDHsFI+uPh6KkZBBpI2ZyczTRzr+2M4uWd6U8K1+5I25EXLj',
+            'access_token' => '4227da5b7b0a5338b08000cc32e5796f',
         ],
 
         'alternative' => [
-            'client_id' => 'your-client-id',
-            'client_secret' => 'your-client-secret',
+            'client_id' => '9d9c308f07fe242b0d8e5f6c28c9aa5e21f4a269',
+            'client_secret' => '8yoFl8zPuGh2r1GpJFIaXhVYAUGVoMDeDGDGRNix4f9f7By2gexx1KdhQrgOYHb5rSN9ebFmjhkbZOOd6iRg3ngGeFV7eyN9v5EjO9TN5Ui2kiWdHelLM9X8se5LsPLp',
             'access_token' => null,
         ],
 

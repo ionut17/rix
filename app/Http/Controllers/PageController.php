@@ -36,6 +36,10 @@ class PageController extends BaseController
             header('Location: http://localhost:2000/authorize/pocket');
             exit();
             break;
+        case 'vimeo':
+            header('Location: http://localhost:2000/authorize/vimeo');
+            exit();
+            break;
         default:
             dd('Invalid account type');
     }

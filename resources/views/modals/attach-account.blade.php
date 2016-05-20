@@ -19,7 +19,7 @@
               <option value="github">Github</option>
               <option value="pocket">Pocket</option>
               <option value="slideshare" disabled>Slideshare</option>
-              <option value="vimeo" disabled>Vimeo</option>
+              <option value="vimeo">Vimeo</option>
             </select>
             <!-- <label for="username">Username</label>
             <input type="text" name="username" id="username">

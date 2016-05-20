@@ -12,7 +12,6 @@
         "vinkla/vimeo": "^3.3",
         "knplabs/github-api": "~1.4",
         "illuminate/html": "5.*",
-        "yajra/laravel-oci8": "5.2.*",
         "duellsy/pockpack": "2.*",
         "guzzle/guzzle":"~3.9"
     },

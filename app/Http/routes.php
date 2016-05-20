@@ -47,6 +47,9 @@ Route::get('/activate/github','GithubController@activate');
 Route::get('/authorize/pocket','PocketController@authorize');
 Route::get('/activate/pocket','PocketController@activate');
 
+Route::get('/authorize/vimeo','VimeoController@authorize');
+Route::get('/activate/vimeo','VimeoController@activate');
+
 
 /*
 |--------------------------------------------------------------------------
