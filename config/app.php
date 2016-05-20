@@ -156,6 +156,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+        * API's providers
+        */
+        Vinkla\Vimeo\VimeoServiceProvider::class,
+
     ],
 
     /*
@@ -201,6 +206,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Vimeo' => Vinkla\Vimeo\Facades\Vimeo::class,
 
     ],
 

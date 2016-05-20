@@ -11,6 +11,12 @@
 |
 */
 
+/*
+* Just to verify the db connection
+*/
+Route::get('/example', 'DBController@');
+//Delete this ^
+
 Route::get('/login','PageController@login');
 Route::get('/register','PageController@register');
 
@@ -19,6 +25,7 @@ Route::get('/', function () {
 });
 
 Route::get('/mycontent','ContentController@display');
+
 
 //Temporary
 Route::post('/login','PageController@login');
