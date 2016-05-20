@@ -21,7 +21,7 @@
       </p>
     </section>
     <section class="code">
-      <code>{{$content['content']}}</code>
+      {!!$content['content']!!}
     </section>
   @endif
 @endsection

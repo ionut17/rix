@@ -129,11 +129,13 @@ class ContentController extends BaseController
         foreach( $files as $file){
           if ($file['type']=='file' && $file['size']<1000000){
               // dd($file);
+              $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
               // $myfile = $client->api('repo')->contents()->show('ionut17', $repo['name'], $file['path']);
             $file_content['type'] = 'github';
             $file_content['title'] = $file['name'];
             $file_content['repo'] = $repo['name'];
             $file_content['path'] = $file['path'];
+              $file_content['tag'] = $extension;
               // $file_content['content'] = base64_decode($myfile['content']);
               // dd($myfile);
             array_push($content,$file_content);
@@ -159,12 +161,34 @@ class ContentController extends BaseController
     $repos = $client->api('current_user')->repositories();
     $content = array();
     $myfile = $client->api('repo')->contents()->show('ionut17', $repo, $path);
-      // dd($myfile);
+      $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
     $file_content['type'] = 'github';
     $file_content['name'] = $myfile['name'];
     $file_content['repo'] = $repo;
-    $file_content['content'] = base64_decode($myfile['content']);
     $file_content['path'] = $myfile['path'];
+      $file_content['tag'] = $extension;
+      //Get beautiful code and colors (Hilite API)
+      try{
+        $beautify_url = 'http://hilite.me/api';
+        $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
+        $beautify_type = 'default';
+        $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
+        $beautify_options = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($beautify_data)
+            )
+        );
+        $beautify_context  = stream_context_create($beautify_options);
+        $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
+        $file_content['content'] = $beautify_result;
+      }
+      catch (\Exception $e){
+        $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
+      }
+      // dd($beautify_result);
+
       // dd($file_content);
     return $file_content;
   }

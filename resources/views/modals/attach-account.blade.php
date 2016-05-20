@@ -18,12 +18,12 @@
             <select name="api" id="api">
               <option value="github">Github</option>
               <option value="pocket">Pocket</option>
-              <option value="slideshare" disabled>Slideshare</option>
+              <option value="slideshare">Slideshare</option>
               <option value="vimeo">Vimeo</option>
             </select>
-            <!-- <label for="username">Username</label>
-            <input type="text" name="username" id="username">
-            <label for="password">Password</label>
+            <!-- <label for="account">Account username</label>
+            <input type="text" name="account" id="Account"> -->
+            <!-- <label for="password">Password</label>
             <input type="password" name="password" id="password"> -->
           </div>
         </div>
