@@ -96,19 +96,22 @@ class ContentController extends BaseController
       //Connection
       $client = new \Github\Client();
       try {
-        $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+        $result = DB::select('select account, access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+        // dd($result);
+        $account = $result[0]->account;
         $token = $result[0]->access_token;
         // $token = Request::input('github_access');
         $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
         $repos = $client->api('current_user')->repositories();
+        $account = $repos[0]['owner']['login'];
         //Content
         $username = env('GIT_USERNAME');
         $path = '.';
         $content = null;
         $content = array();
         foreach ($repos as $repo){
-          $files = $client->api('repo')->contents()->show('ionut17', $repo['name'], '.');
-          // dd($files);
+          $files = $client->api('repo')->contents()->show($account, $repo['name'], '.');            // dd($repo);
+          // $tags = $client->api('repo')->tags($account, $repo['name']);
           foreach( $files as $file){
             if ($file['type']=='file' && $file['size']<1000000){
               // dd($file);
@@ -124,7 +127,7 @@ class ContentController extends BaseController
           }
         }
       } catch (\Exception $e) {
-        // dd("I have errors");
+        // dd($e->getMessage());
         $content = null;
       } finally {
         return $content;
