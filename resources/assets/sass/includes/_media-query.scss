@@ -1,0 +1,143 @@
+@media screen and (max-width: 991px) {
+  .article-box{
+    width: 330px;
+  }
+  .article-wrapper{
+    flex-direction: column;
+  }
+  .article-container{
+    // margin: 20px;
+    margin-right: 20px;
+    width:auto;
+  }
+  .content-container.side{
+    width: 100%;
+  }
+  .side-content{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .article-box{
+      // width: 285px;
+      display: flex;
+      flex-grow: 1;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .article-box{
+    width: 100%;
+  }
+  .navigation-container{
+    flex-direction: column;
+  }
+  .status-container{
+    height: auto;
+    padding: 40px 20px;
+    ul.status-list{
+      margin-bottom: 20px;
+    }
+  }
+  ul.nav-items{
+    margin-top: 20px;
+  }
+  .settings-wrapper{
+    flex-direction: column;
+  }
+  .settings-box{
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 600px){
+  // .article-container{
+  //   margin-left: 0;
+  //   margin-right: 0;
+  // }
+  // .container.article-wrapper{
+  //   padding-left: 0;
+  //   padding-right: 0;
+  // }
+}
+
+@media screen and (max-width: 480px){
+  .article-container{
+    margin-left: 0;
+    margin-right: 0;
+
+    section.title{
+      flex-direction: column;
+      section.tag{
+        margin-left: 0;
+        margin-bottom: 10px;
+        align-self: flex-start;
+        order: 0;
+      }
+    }
+  }
+  .side-title{
+    margin-left: 0;
+  }
+
+  .status-container{
+    ul.status-list{
+      flex-direction: column;
+      align-items: flex-start;
+
+      li{
+        padding-right: 0;
+        margin-right: 0;
+        border-right: 0;
+        padding: 10px 0;
+      }
+    }
+  }
+  .navigation-container{
+    align-items: flex-start;
+  }
+  .content-container{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .article-box{
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .filter-container{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  ul.nav-items{
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    li{
+      padding-right: 0;
+      margin-right: 0;
+      border-right: 0;
+      padding: 10px 0;
+    }
+  }
+  .search{
+    width: 100%;
+  }
+  .search-box{
+    width: 100%;
+  }
+  .article-box{
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 370px){
+  // .search-box{
+  //   width: 100%;
+  // }
+  .container{
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

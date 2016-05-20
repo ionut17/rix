@@ -41,6 +41,17 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// $app->singleton('Github\Client', function(){
+//   $client = new Github\Client();
+//   $token = env('GITHUB_TOKEN');
+//   // if (!isset($token)) {
+//   //   dd("Github token is not set.");
+//   // }
+//   //$client->authenticate(env('GITHUB_EMAIL'), env('GITHUB_PASSWORD'), Github\Client::AUTH_HTTP_PASSWORD);
+//   $client->authenticate($token, null, Github\Client::AUTH_HTTP_TOKEN);
+//   return $client;
+// });
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

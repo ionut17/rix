@@ -24,14 +24,28 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Route::get('/mycontent','ContentController@display');
+
+Route::get('/mycontent/{page_number?}','ContentController@show');
+// Route::get('/article', ['as'=>'article', 'uses'=>'ContentController@article']);
+// Route::get('/article/{type}','ContentController@article');
+Route::get('/article/{type}/{api}','ContentController@article');
+// Route::get('/article/github/{type}','ContentController@article');
+Route::get('/settings','SettingsController@show');
 
 
 //Temporary
 Route::post('/login','PageController@login');
 Route::post('/register','PageController@register');
-Route::post('/mycontent','ContentController@display');
+Route::post('/mycontent','ContentController@show');
 
+//Activate APIs
+Route::post('/authorize','PageController@authorizeAPI');
+
+Route::get('/authorize/github','GithubController@authorize');
+Route::get('/activate/github','GithubController@activate');
+
+Route::get('/authorize/pocket','PocketController@authorize');
+Route::get('/activate/pocket','PocketController@activate');
 
 
 /*
@@ -47,4 +61,9 @@ Route::post('/mycontent','ContentController@display');
 
 Route::group(['middleware' => ['web']], function () {
     //
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+    Route::get('/home', 'HomeController@index');
 });
