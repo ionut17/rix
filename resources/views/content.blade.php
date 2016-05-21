@@ -15,7 +15,7 @@
       <div class="status-container">
         <ul class="status-list">
           <li><a href="{{ URL::to('/mycontent') }}">My Content</a></li>
-          <li><a href="">Recommended Content</a></li>
+          <li><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
           <li><a href="">More</a></li>
         </ul>
         <section class="search">
@@ -38,7 +38,11 @@
       </div>
       <ul class="pagination">
         @for ($i=1;$i<=$page_count;$i++)
-          <li><a href="{{ URL::to('/mycontent/'.$i) }}" @if ($i==$page_number) class="selected" @endif>{{$i}}</a></li>
+          @if (isset($target))
+            <li><a href="{{ URL::to('/'.$target.'/'.$i) }}" @if ($i==$page_number) class="selected" @endif>{{$i}}</a></li>
+          @else
+            <li><a href="{{ URL::to('/mycontent/'.$i) }}" @if ($i==$page_number) class="selected" @endif>{{$i}}</a></li>
+          @endif
         @endfor
       </ul>
     </div>
@@ -58,17 +62,18 @@
               </section>
               <section class="content">
                 <h2>{{$entry['title']}}</h2>
-                <label>@if (isset($entry['repo'])) {{$entry['repo']}} @endif</label>
+                <!-- <label>@if (isset($entry['repo'])) {{$entry['repo']}} @endif</label> -->
+                <label>@if (isset($entry['details'])) {{$entry['details']}} @endif</label>
                 <p class="description">
                   @if (isset($entry['description']))
                     {{$entry['description']}}
                   @else
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                    <!-- Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. -->
                   @endif
                 </p>
               </section>
                 @if ($entry['type']=='github')
-                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
+                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path']).'&username='.$entry['username']) }}">
                 @else
                   <a href="">
                 @endif

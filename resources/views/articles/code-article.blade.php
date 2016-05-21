@@ -8,11 +8,19 @@
   @if (isset($content))
 
     <section class="title">
-      <h2>{{$content['name']}}</h2>
+      @if (isset($content['title']))
+        <h2>{{$content['title']}}</h2>
+      @endif
+      @if (isset($content['tag']))
       <section class="tag">{{$content['type']}}</section>
+      @endif
     </section>
     <section class="details">
-      <label><span>{{$content['repo']}}</span> / {{$content['path']}}</label>
+      @if (isset($content['details']) && isset($content['details']))
+        <label><span><a href="{{$content['url']}}" target="_blank">{{$content['details']}}</a></span></label>
+      @elseif (isset($content['details']))
+        <label><span>{{$content['details']}}</span></label>
+      @endif
     </section>
     <section class="content">
       <p class="bold">
@@ -21,7 +29,9 @@
       </p>
     </section>
     <section class="code">
-      {!!$content['content']!!}
+      @if (isset($content['content']))
+        {!!$content['content']!!}
+      @endif
     </section>
   @endif
 @endsection

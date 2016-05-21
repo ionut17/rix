@@ -203,7 +203,9 @@ button.button, button.article-button {
   display: flex;
   flex-wrap: wrap; }
   .content-container.side {
-    width: 325px; }
+    width: 325px;
+    display: flex;
+    flex-direction: column; }
 
 .article-warning {
   width: 100%;
@@ -280,7 +282,7 @@ button.button, button.article-button {
       font-size: 14px;
       font-weight: normal;
       color: #7f8c8d;
-      max-height: 81px;
+      height: 81px;
       overflow-y: hidden;
       margin-bottom: 0;
       text-align: justify; }

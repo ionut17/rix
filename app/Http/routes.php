@@ -26,10 +26,10 @@ Route::get('/', function () {
 
 
 Route::get('/mycontent/{page_number?}','ContentController@show');
-// Route::get('/article', ['as'=>'article', 'uses'=>'ContentController@article']);
-// Route::get('/article/{type}','ContentController@article');
 Route::get('/article/{type}/{api}','ContentController@article');
-// Route::get('/article/github/{type}','ContentController@article');
+
+Route::get('/recommended/{page_number?}','RecommendedController@show');
+
 Route::get('/settings','SettingsController@show');
 
 

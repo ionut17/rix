@@ -32,7 +32,7 @@
       <div class="settings-box">
         <a href=""></a>
         <section class="profile-image" style="background-image: url('{{asset('img/profiles/avatar.jpg')}}');">
-          <figure class="hover-figure"><i class="fa fa-pencil" aria-hidden="true"></i></figure>
+          <figure class="hover-figure" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil" aria-hidden="true"></i></figure>
         </section>
         <div class="box">
           <label for="username">Iacob Ionut</label>
@@ -57,6 +57,7 @@
   </div>
 
   @include ('modals.attach-account')
+  @include ('modals.edit-account')
 
 @endsection
 

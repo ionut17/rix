@@ -15,6 +15,7 @@ use Duellsy\Pockpack\PockpackAuth;
 use Duellsy\Pockpack\PockpackQueue;
 use Vinkla\Vimeo\Facades\Vimeo;
 use Exception;
+use Session;
 use DB;
 
 
@@ -31,7 +32,6 @@ class ContentController extends BaseController
     $contentPocket = null;
     $contentSlideshare = null;
     $contentVimeo = null;
-
       //Content (se adauga un array pentru fiecare API)
     $contentGithub = $this->listGithub();
     $contentPocket = $this->listPocket();
@@ -84,8 +84,6 @@ class ContentController extends BaseController
   }
 
   public function article($type,$api){
-    $repo = Request::input('repo');
-    $path = Request::input('path');
     if ($type=='image'){
       return view('articles.image-article');
     }
@@ -94,7 +92,10 @@ class ContentController extends BaseController
     }
     if ($type=='code'){
       if ($api == 'github'){
-        $article = $this->contentGithub($repo,$path);
+        $repo = Request::input('repo');
+        $path = Request::input('path');
+        $username = Request::input('username');
+        $article = $this->contentGithub($repo,$path,$username);
       }
         // dd($article);
       return View::make('articles.code-article',['content'=>$article]);
@@ -110,63 +111,56 @@ class ContentController extends BaseController
       //Connection
     $client = new \Github\Client();
     try {
-        $result = DB::select('select account, access_token from accounts where username = ? and source_name = ?', array("admin","github"));
-        // dd($result);
-        $account = $result[0]->account;
-      $token = $result[0]->access_token;
-        // $token = Request::input('github_access');
-      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-      $repos = $client->api('current_user')->repositories();
-        $account = $repos[0]['owner']['login'];
-        //Content
-      $username = env('GIT_USERNAME');
-      $path = '.';
-      $content = null;
+      //Content
+      $results = DB::select('SELECT id_article FROM github_articles WHERE username=?',array('admin'));
+      // dd($results);
       $content = array();
-      foreach ($repos as $repo){
-          $files = $client->api('repo')->contents()->show($account, $repo['name'], '.');            // dd($repo);
-          // $tags = $client->api('repo')->tags($account, $repo['name']);
-        foreach( $files as $file){
-          if ($file['type']=='file' && $file['size']<1000000){
-              // dd($file);
-              $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-              // $myfile = $client->api('repo')->contents()->show('ionut17', $repo['name'], $file['path']);
-            $file_content['type'] = 'github';
-            $file_content['title'] = $file['name'];
-            $file_content['repo'] = $repo['name'];
-            $file_content['path'] = $file['path'];
-              $file_content['tag'] = $extension;
-              // $file_content['content'] = base64_decode($myfile['content']);
-              // dd($myfile);
-            array_push($content,$file_content);
-          }
-        }
+      foreach ($results as $result){
+        //Selecting values from db
+        $values=DB::select('SELECT title, repo, path, extension FROM github_articles WHERE id_article = ?', array($result->id_article));
+        //Saving values to object
+        $file_content['type']='github';
+        $file_content['title'] = $values[0]->title;
+        $file_content['repo'] = $values[0]->repo;
+        $file_content['path'] = $values[0]->path;
+        $file_content['tag'] = $values[0]->extension;
+        $file_content['username'] = '';
+        //Pushing object to array
+        array_push($content,$file_content);
       }
     } catch (\Exception $e) {
         // dd($e->getMessage());
-      $content = null;
+        $content = null;
     } finally {
       return $content;
     }
   }
 
     //Get content of github article
-  private function contentGithub($repo, $path){
+  private function contentGithub($repo, $path, $username){
       //Connection
-    $client = new \Github\Client();
-    $result = DB::select('select access_token from accounts where username = ?', array("admin"));
-    $token = $result[0]->access_token;
-    $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-      //Content
-    $repos = $client->api('current_user')->repositories();
-    $content = array();
-    $myfile = $client->api('repo')->contents()->show('ionut17', $repo, $path);
+      $client = new \Github\Client();
+      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+      $token = $result[0]->access_token;
+      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+        // Content
+      if ($username!=''){
+        $repos = $client->api('user')->repositories($username);
+      }
+      else {
+        $repos = $client->api('current_user')->repositories();
+      }
+      $account = $repos[0]['owner']['login'];
+      $content = array();
+      $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
+      // dd($myfile);
       $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
-    $file_content['type'] = 'github';
-    $file_content['name'] = $myfile['name'];
-    $file_content['repo'] = $repo;
-    $file_content['path'] = $myfile['path'];
+      $file_content['type'] = 'github';
+      $file_content['title'] = $myfile['name'];
+      $file_content['details'] = $repo.'/'.$myfile['path'];
+      // $file_content['path'] = $myfile['path'];
       $file_content['tag'] = $extension;
+      $file_content['url'] = $myfile['html_url'];
       //Get beautiful code and colors (Hilite API)
       try{
         $beautify_url = 'http://hilite.me/api';
@@ -219,7 +213,9 @@ class ContentController extends BaseController
         $file_content['title']=$value['resolved_title'];
         $file_content['path']=$value['resolved_url'];
         $file_content['description']=$value['excerpt'];
-        $file_content['image']=$value['images'][1]['src'];
+        if ($value['has_image']==1){
+          $file_content['image']=$value['images'][1]['src'];
+        }
           // if(in_array('images', $value)){
           //   $file_content['images']=$value['images'];
           // }
@@ -270,4 +266,3 @@ class ContentController extends BaseController
   }
 
 }
-
