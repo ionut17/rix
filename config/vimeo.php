@@ -22,7 +22,7 @@ return [
     |
     */
 
-    'default' => 'alternative',
+    'default' => 'main',
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ return [
         'main' => [
             'client_id' => '9d9c308f07fe242b0d8e5f6c28c9aa5e21f4a269',
             'client_secret' => '8yoFl8zPuGh2r1GpJFIaXhVYAUGVoMDeDGDGRNix4f9f7By2gexx1KdhQrgOYHb5rSN9ebFmjhkbZOOd6iRg3ngGeFV7eyN9v5EjO9TN5Ui2kiWdHelLM9X8se5LsPLp',
-            'access_token' => '4227da5b7b0a5338b08000cc32e5796f',
+            'access_token' => 'a79afc8c1055e34f4d54b362744b5a33',
         ],
 
         'alternative' => [
