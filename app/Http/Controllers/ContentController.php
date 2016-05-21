@@ -219,7 +219,10 @@ class ContentController extends BaseController
         $file_content['title']=$value['resolved_title'];
         $file_content['path']=$value['resolved_url'];
         $file_content['description']=$value['excerpt'];
-        $file_content['image']=$value['images'][1]['src'];
+        if($value['has_image']==1){
+          $file_content['image']=$value['images'][1]['src'];
+        }
+        // $file_content['image']=$value['images'][1]['src'];
           // if(in_array('images', $value)){
           //   $file_content['images']=$value['images'];
           // }
@@ -229,6 +232,7 @@ class ContentController extends BaseController
         array_push($content,$file_content);
       }
     } catch (\Exception $e) {
+      // dd($e->getMessage());
       $content = null;
     } finally {
       return $content;
@@ -241,27 +245,23 @@ class ContentController extends BaseController
   }
 
   //Make Vimeo articles
-
   public function listVimeo(){
     try{
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","vimeo"));
-      $access_token = $result[0]->access_token;
-
-      $vimeo_connection = Vimeo::connection('alternative');
-      $vimeo_connection -> setToken($access_token);
-      $response = $vimeo_connection -> request('/me/videos', [], 'GET');
-
-      $content = null;
+      $username ='admin';
+      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
       $content = array();
-      $videos = $response['body']['data'];
-    // dd($videos);
-      foreach($videos as $video){
+
+      foreach($results as $result){
+        $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
         $file_content['type'] = "vimeo";
-        $file_content['title'] = $video['name'];
-        $file_content['description'] = $video['description'];
+        $file_content['title'] = $video[0] ->title;
+        $file_content['details'] = $video[0] ->authors;
+        $file_content['description'] = $video[0]->description;
         array_push($content, $file_content);
       }
+ 
     }catch (\Exception $e){
+      echo $e;
       $content = null;
     }finally{
       return $content;
@@ -270,4 +270,6 @@ class ContentController extends BaseController
   }
 
 }
+
+
 
