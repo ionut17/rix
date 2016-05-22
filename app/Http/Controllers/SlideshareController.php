@@ -43,14 +43,14 @@ class SlideshareController extends BaseController
 			return Redirect::to('settings')->with('slideshare_error','Invalid slideshare username.');
 		}
 		else
-		{	
+		{
 			$min = min($response->Count,20);
 			for($i = 0; $i < $min; $i++)
-			{	
+			{
 				dd($response->Slideshow[$i]);
 			}
-			
-			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));		
+
+			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
 			Redirect::to('settings');
 		}
 	}
