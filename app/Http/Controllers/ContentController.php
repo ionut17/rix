@@ -93,10 +93,8 @@ class ContentController extends BaseController
     }
     if ($type=='code'){
       if ($api == 'github'){
-        $repo = Request::input('repo');
-        $path = Request::input('path');
-        $username = Request::input('username');
-        $article = $this->contentGithub($repo,$path,$username);
+        $id = Request::input('id');
+        $article = $this->contentGithub($id);
       }
         // dd($article);
       return View::make('articles.code-article',['content'=>$article]);
@@ -118,12 +116,11 @@ class ContentController extends BaseController
       $content = array();
       foreach ($results as $result){
         //Selecting values from db
-        $values=DB::select('SELECT title, repo, path, extension FROM github_articles WHERE id_article = ?', array($result->id_article));
+        $values=DB::select('SELECT id_article, title, repo, path, extension FROM github_articles WHERE id_article = ?', array($result->id_article));
         //Saving values to object
         $file_content['type']='github';
+        $file_content['id'] = $values[0]->id_article;
         $file_content['title'] = $values[0]->title;
-        $file_content['repo'] = $values[0]->repo;
-        $file_content['path'] = $values[0]->path;
         $file_content['details'] = $values[0]->repo.'\\'.$values[0]->path;
         $file_content['tag'] = $values[0]->extension;
         $file_content['username'] = '';
@@ -139,14 +136,19 @@ class ContentController extends BaseController
   }
 
     //Get content of github article
-  private function contentGithub($repo, $path, $username){
+  private function contentGithub($id){
+      //Getting values
+      $result = DB::select('SELECT repo, path, username FROM github_articles WHERE id_article = ?', array($id));
+      $repo = $result[0]->repo;
+      $path = $result[0]->path;
+      $username = $result[0]->username;
       //Connection
       $client = new \Github\Client();
       $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
       $token = $result[0]->access_token;
       $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-        // Content
-      if ($username!=''){
+      // Content
+      if ($username!=Session::get('username')){
         $repos = $client->api('user')->repositories($username);
       }
       else {

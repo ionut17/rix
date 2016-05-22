@@ -73,7 +73,7 @@
                 </p>
               </section>
                 @if ($entry['type']=='github')
-                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path']).'&username='.$entry['username']) }}">
+                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
                 @else
                   <a href="">
                 @endif
