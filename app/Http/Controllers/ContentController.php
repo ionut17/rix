@@ -28,10 +28,13 @@ class ContentController extends BaseController
 
   public function show($page_number=1){
     //Verify if user has any accounts
-    $username = 'admin';
+    $username = Session::get('username');
     $result = DB::table('accounts')->where('username', '=', $username)->count();
 
-    if ($result[0] != 0){
+    //Pentru celelalte api-uri se adauga vectorii in array_merge
+    $content = null;
+
+    if ($result != 0){
       $has_accounts = true;
       
     //Get content
@@ -44,9 +47,6 @@ class ContentController extends BaseController
       $contentGithub = $this->listGithub();
       $contentPocket = $this->listPocket();
       $contentVimeo = $this->listVimeo();
-
-    //Pentru celelalte api-uri se adauga vectorii in array_merge
-      $content = null;
 
     //Adding API's contents
       if ($contentPocket!=null) {
@@ -75,7 +75,7 @@ class ContentController extends BaseController
       }
     }
     else $has_accounts = false;
-    dd($has_accounts);
+    // dd($has_accounts);
     //Settings
     $page_number = intval($page_number);
     $per_page = 8;
@@ -98,7 +98,12 @@ class ContentController extends BaseController
       return view('articles.image-article');
     }
     if ($type=='video'){
-      return view('articles.video-article');
+      if ($api =='vimeo'){
+        dd('ye');
+        $id = Request::input('id');
+        $article = $this ->contentVimeo($id);
+        return View::make('articles.video-article',['content'=>$article]);
+      }
     }
     if ($type=='code'){
       if ($api == 'github'){
@@ -225,7 +230,7 @@ class ContentController extends BaseController
         $file_content['path']=$value['resolved_url'];
         $file_content['description']=$value['excerpt'];
         if ($value['has_image']==1){
-        $file_content['image']=$value['images'][1]['src'];
+          $file_content['image']=$value['images'][1]['src'];
         }
         // $file_content['image']=$value['images'][1]['src'];
           // if(in_array('images', $value)){
@@ -250,28 +255,48 @@ class ContentController extends BaseController
   }
 
   //Make Vimeo articles
-  // public function listVimeo(){
-  //   try{
-  //     $username ='admin';
-  //     $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
-  //     $content = array();
+  public function listVimeo(){
+    $content = array();
+    try{
+      $username = Session::get('username');
+      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
 
-  //     foreach($results as $result){
-  //       $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
-  //       $file_content['type'] = "vimeo";
-  //       $file_content['title'] = $video[0] ->title;
-  //       $file_content['details'] = $video[0] ->authors;
-  //       $file_content['description'] = $video[0]->description;
-  //       array_push($content, $file_content);
-  //     }
+      foreach($results as $result){
+        $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
+        $file_content['type'] = "vimeo";
+        $file_content['title'] = $video[0] ->title;
+        $file_content['details'] = $video[0] ->authors;
+        $file_content['description'] = $video[0]->description;
+        array_push($content, $file_content);
+      }
 
-  //   }catch (\Exception $e){
-  //     echo $e;
-  //     $content = null;
-  //   }finally{
-  //     return $content;
-  //   }
+    }catch (\Exception $e){
+      $content = null;
+    }finally{
+      return $content;
+    }
+  }
 
-  // }
+  public function contentVimeo($id){
+    try{
+      $username = Session::get($username);
+      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->get();
+
+      $access_token = $result[0]->access_token;
+      $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
+      if ($result_video->url_content != null){
+        $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+      }else{
+        $article = $vimeo_connection->request($id,[],'GET');
+      }
+      $file_comtent['type'] = 'vimeo';
+      $file_content['title'] = $article['name'];
+      $file_content['details'] = $article['user']['name'];
+      $file_content['content'] = $article['embed']['html'];
+      // $file_content['tag'] = 
+    }catch(\Exception $e){
+      $content = null;
+    }
+  }
 
 }

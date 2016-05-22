@@ -116,7 +116,7 @@
               @elseif ($i%4==2)
                 {{ URL::to('/article/image')}}
               @else
-                {{ URL::to('/article/video')}}
+                {{ URL::to('/article/video?id='.$id)}}
               @endif
               ">
                 <button type="button" name="view-btn" class="article-button">Read</button>
