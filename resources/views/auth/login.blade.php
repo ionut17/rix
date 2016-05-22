@@ -10,6 +10,9 @@
   </figure>
   <form action="{{ URL::to('/login_authorize') }}" method="post">
     {{ csrf_field() }}
+    @if (isset($error))
+      <label>{{$error}}</label>
+    @endif
     <div class="box">
       <label for="username">Username</label>
       <input type="text" name="username" id="username">

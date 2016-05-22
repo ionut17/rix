@@ -31,9 +31,10 @@ class ContentController extends BaseController
     $username = 'admin';
     $result = DB::table('accounts')->where('username', '=', $username)->count();
 
+    $content = null;
     if ($result[0] != 0){
       $has_accounts = true;
-      
+
     //Get content
       $contentGithub = null;
       $contentPocket = null;
@@ -46,7 +47,6 @@ class ContentController extends BaseController
       $contentVimeo = $this->listVimeo();
 
     //Pentru celelalte api-uri se adauga vectorii in array_merge
-      $content = null;
 
     //Adding API's contents
       if ($contentPocket!=null) {
@@ -75,7 +75,7 @@ class ContentController extends BaseController
       }
     }
     else $has_accounts = false;
-    dd($has_accounts);
+    // dd($has_accounts);
     //Settings
     $page_number = intval($page_number);
     $per_page = 8;
@@ -252,28 +252,28 @@ class ContentController extends BaseController
   }
 
   //Make Vimeo articles
-  // public function listVimeo(){
-  //   try{
-  //     $username ='admin';
-  //     $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
-  //     $content = array();
+  public function listVimeo(){
+    try{
+      $username ='admin';
+      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
+      $content = array();
 
-  //     foreach($results as $result){
-  //       $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
-  //       $file_content['type'] = "vimeo";
-  //       $file_content['title'] = $video[0] ->title;
-  //       $file_content['details'] = $video[0] ->authors;
-  //       $file_content['description'] = $video[0]->description;
-  //       array_push($content, $file_content);
-  //     }
+      foreach($results as $result){
+        $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
+        $file_content['type'] = "vimeo";
+        $file_content['title'] = $video[0] ->title;
+        $file_content['details'] = $video[0] ->authors;
+        $file_content['description'] = $video[0]->description;
+        array_push($content, $file_content);
+      }
 
-  //   }catch (\Exception $e){
-  //     echo $e;
-  //     $content = null;
-  //   }finally{
-  //     return $content;
-  //   }
+    }catch (\Exception $e){
+      echo $e;
+      $content = null;
+    }finally{
+      return $content;
+    }
 
-  // }
+  }
 
 }
