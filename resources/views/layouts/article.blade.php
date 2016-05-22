@@ -15,7 +15,7 @@
       <div class="status-container">
         <ul class="status-list">
           <li><a href="{{ URL::to('/mycontent') }}">My Content</a></li>
-          <li><a href="">Recommended Content</a></li>
+          <li><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
           <li><a href="">More</a></li>
         </ul>
         <section class="search">

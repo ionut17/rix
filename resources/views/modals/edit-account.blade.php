@@ -6,7 +6,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="editModalLabel">Attach API account</h4>
+        <h4 class="modal-title" id="editModalLabel">Edit user <details></details></h4>
       </div>
       <form action="{{ URL::to('/mycontent') }}" method="post">
         <div class="modal-body">
@@ -14,22 +14,17 @@
             <span aria-hidden="true">&times;</span>
           </button>
           <div class="box" style="margin-top:0;">
-            <label for="Api">Select API</label>
-            <select name="api" id="api">
-              <option value="github">Github</option>
-              <option value="pocket">Pocket</option>
-              <option value="slideshare">Slideshare</option>
-              <option value="vimeo">Vimeo</option>
-            </select>
             <label for="username">Username</label>
-            <input type="text" name="username" id="username">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password">
+            <input type="text" name="username" id="username" value="Iacob Ionut">
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="ionut.iacob17@gmail.com">
+            <label for="avatar">Profile picture</label>
+            <input type="file" name="avatar" id="avatar">
           </div>
         </div>
         <div class="modal-footer" style="padding: 0;">
           <button type="submit" class="button">
-            Connect
+            Save changes
           </button>
         </div>
       </form>

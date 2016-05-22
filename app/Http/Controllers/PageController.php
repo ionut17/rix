@@ -7,19 +7,29 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Request;
+use Redirect;
+use DB;
+use Session;
 
 class PageController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function logout()
+    {
+        Session::flush();
+        return Redirect::to('login');
+    }
+
     public function login(){
-    $this->middleware('auth');
-      return view('auth.login');
+        if(Session::has('username'))
+            return Redirect::to('mycontent');
+        return view('auth.login');
     }
 
     public function register(){
-    $this->middleware('registerauth');
-      return view('auth.register');
+        $this->middleware('registerauth');
+        return view('auth.register');
       // $this->middleware('registerauth');
     }
 
@@ -28,16 +38,30 @@ class PageController extends BaseController
       switch ($type) {
         case 'github':
             //Requesting authorization
-            header('Location: http://localhost:2000/authorize/github');
-            exit();
-            break;
+        header('Location: http://localhost:2000/authorize/github');
+        exit();
+        break;
         case 'pocket':
             //Requesting authorization
-            header('Location: http://localhost:2000/authorize/pocket');
+        header('Location: http://localhost:2000/authorize/pocket');
+        exit();
+        break;
+        case 'slideshare':
+        header('Location: http://localhost:2000/authorize/slideshare');
+        exit();
+        break;
+        case 'vimeo':
+            header('Location: http://localhost:2000/authorize/vimeo');
             exit();
             break;
         default:
-            dd('Invalid account type');
+        dd('Invalid account type');
+      }
     }
-    }
+
+    public function removeAPI($api){
+      $user = 'admin';
+      $result = DB::statement('delete from accounts where username = ? and source_name = ?', array($user,$api));
+      return redirect('settings');
+}
 }

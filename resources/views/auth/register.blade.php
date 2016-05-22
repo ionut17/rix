@@ -8,8 +8,12 @@
     <img src="{{asset('img/rix_logo.svg')}}" draggable="false"/>
     <label for="">Resource Interactive Explorer</label>
   </figure>
-  <form action="{{ URL::to('/login') }}" method="post">
+  <form action="{{ URL::to('/register_authorize') }}" method="post">
+    {{ csrf_field() }}
     <div class="box">
+        @if (session('error')!=null)
+          <label class="error">Error: {{session('error')}}</label>
+        @endif
         <label for="username">Username</label>
         <input type="text" name="username" id="username">
         <label for="username">Email Address</label>
