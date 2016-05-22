@@ -72,10 +72,10 @@
                   @endif
                 </p>
               </section>
-                @if ($entry['type']=='github')
-                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path']).'&username='.$entry['username']) }}">
+                @if ($entry['type'] == 'github')
+                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
                 @else
-                  <a href="">
+                  <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
                 @endif
                 <button type="button" name="view-btn" class="article-button">Read</button>
               </a>

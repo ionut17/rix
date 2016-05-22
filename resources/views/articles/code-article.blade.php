@@ -16,7 +16,7 @@
       @endif
     </section>
     <section class="details">
-      @if (isset($content['details']) && isset($content['details']))
+      @if (isset($content['details']) && isset($content['url']))
         <label><span><a href="{{$content['url']}}" target="_blank">{{$content['details']}}</a></span></label>
       @elseif (isset($content['details']))
         <label><span>{{$content['details']}}</span></label>

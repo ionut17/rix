@@ -7,7 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use venor\SSUtil\SSUtil;
-
+use Session;
 use Request;
 use DB;
 
@@ -15,9 +15,9 @@ class SlideshareController extends BaseController
 {
 	private $api_key;
 	private $shared_secret;
-	
+
 	public function __construct()
-	{	
+	{
 		$this->api_key = 'jQDB5EEq';
 		$this->shared_secret = 'jnrS8csn';
 	}

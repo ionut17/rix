@@ -73,7 +73,8 @@ class VimeoController extends BaseController
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}catch(\Exception $e){
-			echo $e;
+			header('Location: http://localhost:2000/mycontent');
+			exit();
 		}
 	}
 

@@ -28,15 +28,13 @@ class ContentController extends BaseController
 
   public function show($page_number=1){
     //Verify if user has any accounts
-    $username = Session::get('username');
-    $result = DB::table('accounts')->where('username', '=', $username)->count();
+    $rix_username = Session::get('username');
+    $result = DB::table('accounts')->where('username', '=', $rix_username)->count();
 
     //Pentru celelalte api-uri se adauga vectorii in array_merge
     $content = null;
-
     if ($result != 0){
       $has_accounts = true;
-      
     //Get content
       $contentGithub = null;
       $contentPocket = null;
@@ -99,18 +97,15 @@ class ContentController extends BaseController
     }
     if ($type=='video'){
       if ($api =='vimeo'){
-        dd('ye');
         $id = Request::input('id');
-        $article = $this ->contentVimeo($id);
+        $article = $this->contentVimeo($id);
         return View::make('articles.video-article',['content'=>$article]);
       }
     }
     if ($type=='code'){
       if ($api == 'github'){
-        $repo = Request::input('repo');
-        $path = Request::input('path');
-        $username = Request::input('username');
-        $article = $this->contentGithub($repo,$path,$username);
+        $id = Request::input('id');
+        $article = $this->contentGithub($id);
       }
         // dd($article);
       return View::make('articles.code-article',['content'=>$article]);
@@ -127,17 +122,17 @@ class ContentController extends BaseController
     $client = new \Github\Client();
     try {
       //Content
-      $results = DB::select('SELECT id_article FROM github_articles WHERE username=?',array('admin'));
+      $rix_username = Session::get("username");
+      $results = DB::select('SELECT id_article FROM github_articles WHERE username=?',array($rix_username));
       // dd($results);
       $content = array();
       foreach ($results as $result){
         //Selecting values from db
-        $values=DB::select('SELECT title, repo, path, extension FROM github_articles WHERE id_article = ?', array($result->id_article));
+        $values=DB::select('SELECT id_article, title, repo, path, extension FROM github_articles WHERE id_article = ?', array($result->id_article));
         //Saving values to object
         $file_content['type']='github';
+        $file_content['id'] = $values[0]->id_article;
         $file_content['title'] = $values[0]->title;
-        $file_content['repo'] = $values[0]->repo;
-        $file_content['path'] = $values[0]->path;
         $file_content['details'] = $values[0]->repo.'\\'.$values[0]->path;
         $file_content['tag'] = $values[0]->extension;
         $file_content['username'] = '';
@@ -153,13 +148,19 @@ class ContentController extends BaseController
   }
 
     //Get content of github article
-  private function contentGithub($repo, $path, $username){
-      //Connection
+  private function contentGithub($id){
+    $rix_username = Session::get("username");
+    //Getting values
+    $result = DB::select('SELECT repo, path, username FROM github_articles WHERE id_article = ?', array($id));
+    $repo = $result[0]->repo;
+    $path = $result[0]->path;
+    $username = $result[0]->username;
+    //Connection
     $client = new \Github\Client();
-    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
     $token = $result[0]->access_token;
     $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-        // Content
+    // Content
     if ($username!=''){
       $repos = $client->api('user')->repositories($username);
     }
@@ -210,7 +211,8 @@ class ContentController extends BaseController
       //Getting the consumer key and user key
     $consumer_key=env('POCKET_CONSUMER_KEY');
     try{
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","pocket"));
+      $rix_username = Session::get('username');
+      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"pocket"));
       $access_token = $result[0]->access_token;
         //Making connection
       $pockpack = new Pockpack($consumer_key, $access_token);
@@ -260,16 +262,15 @@ class ContentController extends BaseController
     try{
       $username = Session::get('username');
       $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
-
       foreach($results as $result){
-        $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
-        $file_content['type'] = "vimeo";
+        $video = DB::select('SELECT id_article, title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
+        $file_content['type'] = 'vimeo';
         $file_content['title'] = $video[0] ->title;
         $file_content['details'] = $video[0] ->authors;
         $file_content['description'] = $video[0]->description;
+        $file_content['id'] = $video[0]->id_article;
         array_push($content, $file_content);
       }
-
     }catch (\Exception $e){
       $content = null;
     }finally{
@@ -279,23 +280,30 @@ class ContentController extends BaseController
 
   public function contentVimeo($id){
     try{
-      $username = Session::get($username);
-      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->get();
+      $username = Session::get('username');
+      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->first();
 
-      $access_token = $result[0]->access_token;
+      $access_token = $result->access_token;
       $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
       if ($result_video->url_content != null){
+        $vimeo_connection= Vimeo::connection('alternative');
+        $vimeo_connection->setToken($access_token);
         $article = $vimeo_connection->request($result_video->url_content,[],'GET');
       }else{
+        $vimeo_connection('main');
         $article = $vimeo_connection->request($id,[],'GET');
       }
-      $file_comtent['type'] = 'vimeo';
-      $file_content['title'] = $article['name'];
-      $file_content['details'] = $article['user']['name'];
-      $file_content['content'] = $article['embed']['html'];
-      // $file_content['tag'] = 
+      $file_content['type'] = 'vimeo';
+      $file_content['title'] = $article['body']['name'];
+      $file_content['description'] = $article['body']['description'];
+      $file_content['details'] = $article['body']['user']['name'];
+      $file_content['content'] = $article['body']['embed']['html'];
+      $file_content['url'] = $article['body']['link'];
+      return $file_content;
     }catch(\Exception $e){
-      $content = null;
+      $file_content = null;
+    }finally{
+      return $file_content;
     }
   }
 

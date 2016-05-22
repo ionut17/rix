@@ -11,6 +11,7 @@ use Duellsy\Pockpack\Pockpack;
 use Duellsy\Pockpack\PockpackAuth;
 use Duellsy\Pockpack\PockpackQueue;
 use Request;
+use Session;
 use DB;
 
 class PocketController extends BaseController
