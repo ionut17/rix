@@ -13,6 +13,12 @@
 Route::group(['middleware'=>['web']],function(){
 
 
+/*
+* Just to verify the db connection
+*/
+Route::get('/example', 'DBController@');
+//Delete this ^
+
 	Route::get('/login','PageController@login');
 	Route::post('/login','PageController@login');
 	Route::post('/login_authorize','Auth\AuthController@validate_login');
@@ -34,11 +40,12 @@ Route::group(['middleware'=>['web']],function(){
 	Route::get('/mycontent/{page_number?}','ContentController@show')->middleware('auth');
 
 
-// Route::get('/article', ['as'=>'article', 'uses'=>'ContentController@article']);
-// Route::get('/article/{type}','ContentController@article');
 	Route::get('/article/{type}/{api}','ContentController@article')->middleware('auth');
-// Route::get('/article/github/{type}','ContentController@article');
+
 	Route::get('/settings','SettingsController@show')->middleware('auth');
+Route::get('/recommended/{page_number?}','RecommendedController@show');
+
+
 
 //Temporary
 
@@ -53,6 +60,12 @@ Route::group(['middleware'=>['web']],function(){
 
 	Route::get('/authorize/pocket','PocketController@authorize');
 	Route::get('/activate/pocket','PocketController@activate');
+
+Route::get('/authorize/vimeo','VimeoController@authorize');
+Route::get('/activate/vimeo','VimeoController@activate');
+
+//Remove Routes
+Route::post('/remove/{api}', 'PageController@removeAPI');
 
 	Route::get('/authorize/slideshare','SlideshareController@authorize');
 	Route::get('/activate/slideshare','SlideshareController@activate');

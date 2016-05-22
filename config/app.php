@@ -157,6 +157,11 @@ return [
         App\Providers\RouteServiceProvider::class,
         Yajra\Oci8\Oci8ServiceProvider::class,
 
+        /*
+        * API's providers
+        */
+        Vinkla\Vimeo\VimeoServiceProvider::class,
+
     ],
 
     /*
@@ -202,6 +207,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Vimeo' => Vinkla\Vimeo\Facades\Vimeo::class,
 
     ],
 

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Request;
 use Redirect;
+use DB;
 use Session;
 
 class PageController extends BaseController
@@ -49,8 +50,18 @@ class PageController extends BaseController
         header('Location: http://localhost:2000/authorize/slideshare');
         exit();
         break;
+        case 'vimeo':
+            header('Location: http://localhost:2000/authorize/vimeo');
+            exit();
+            break;
         default:
         dd('Invalid account type');
+      }
     }
+
+    public function removeAPI($api){
+      $user = 'admin';
+      $result = DB::statement('delete from accounts where username = ? and source_name = ?', array($user,$api));
+      return redirect('settings');
 }
 }
