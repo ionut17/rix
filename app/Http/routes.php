@@ -16,16 +16,16 @@ Route::group(['middleware'=>['web']],function(){
 	Route::get('/example', 'DBController@');
 	//Delete this ^
 
-	Route::get('/login','PageController@login');
-	Route::post('/login','PageController@login');
-	Route::post('/login_authorize','Auth\AuthController@validate_login');
+Route::get('/login','PageController@login');
+Route::post('/login','PageController@login');
+Route::post('/login_authorize','Auth\AuthController@validate_login');
 
 
-	Route::get('/register','PageController@register');
-	Route::post('/register','PageController@register');
-	Route::post('/register_authorize','Auth\AuthController@validate_register');
+Route::get('/register','PageController@register');
+Route::post('/register','PageController@register');
+Route::post('/register_authorize','Auth\AuthController@validate_register');
 
-	Route::get('/logout','PageController@logout');
+Route::get('/logout','PageController@logout');
 
 
 	Route::group(['middleware'=>['authgroup']],function(){
@@ -43,6 +43,8 @@ Route::group(['middleware'=>['web']],function(){
 
 		Route::get('/settings','SettingsController@show');
 		Route::get('/recommended/{page_number?}','RecommendedController@show');
+
+
 
 	//Activate APIs
 		Route::post('/authorize','PageController@authorizeAPI');
