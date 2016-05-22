@@ -7,8 +7,7 @@
   }
   .article-container{
     // margin: 20px;
-    margin-right: 20px;
-    width:auto;
+    width: calc(100% - 40px);
   }
   .content-container.side{
     width: 100%;
@@ -31,6 +30,12 @@
   .article-box{
     width: 100%;
   }
+  .article-container{
+    section.code, section.title, section.details, section.content{
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
   .navigation-container{
     flex-direction: column;
   }
@@ -49,6 +54,12 @@
   }
   .settings-box{
     width: 100%;
+  }
+  .article-warning{
+    flex-direction: column;
+    p{
+      margin-bottom: 10px;
+    }
   }
 }
 

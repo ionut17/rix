@@ -5,27 +5,35 @@
 @endsection
 
 @section('article-content')
-  <section class="image">
-  </section>
-  <section class="title">
-    <h2>Title goes here and here itle goes here and here itle goes here and here</h2>
-    <section class="tag">Github</section>
-  </section>
-  <section class="details">
-    <label>Posted on 8 March 2016, 20 comments</label>
-  </section>
-  <section class="content">
-    <p class="bold">
-      Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-      Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-    </p>
-    <p>
-      Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et
-      accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
-    </p>
-    <p>
-      Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam;
-      est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.
-    </p>
-  </section>
+  @if(isset($content))
+    @if (isset($content['image']))
+      <section class="image" style="background-image: url('{{$content['image']}}');">
+      </section>
+    @endif
+    <section class="title">
+      @if (isset($content['title']))
+        <h2>{{$content['title']}}</h2>
+      @endif
+      @if (isset($content['type']))
+      <section class="tag">{{$content['type']}}</section>
+      @endif
+    </section>
+    <section class="details">
+      @if (isset($content['url_content']))
+        <label><a href={{$content['url_content']}} target="_blank">Article link</a></label>
+      @endif
+      @if (isset($content['authors']))
+        @foreach ($content['authors'] as $author)
+          <label><a href={{$author[1]}} target="_blank">{{$author[0]}}</a></label>
+        @endforeach
+      @endif
+    </section>
+    <section class="content">
+      @if (isset($content['description']))
+        <p>
+          {{$content['description']}}
+        </p>
+      @endif
+    </section>
+  @endif
 @endsection

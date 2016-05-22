@@ -49,8 +49,8 @@ class SlideshareController extends BaseController
 			{	
 				dd($response->Slideshow[$i]);
 			}
-			
-			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));		
+
+			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
 			Redirect::to('settings');
 		}
 	}
