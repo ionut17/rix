@@ -28,60 +28,70 @@ class ContentController extends BaseController
   }
 
   public function show($page_number=1){
+    //Verify if user has any accounts
+    $username = 'admin';
+    $result = DB::table('accounts')->where('username', '=', $username)->count();
+
+    if ($result[0] != 0){
+      $has_accounts = true;
+      
     //Get content
-    $contentGithub = null;
-    $contentPocket = null;
-    $contentSlideshare = null;
-    $contentVimeo = null;
+      $contentGithub = null;
+      $contentPocket = null;
+      $contentSlideshare = null;
+      $contentVimeo = null;
+
     //Content (se adauga un array pentru fiecare API)
-    $contentGithub = $this->listGithub();
-    $contentPocket = $this->listPocket();
-    $contentVimeo = $this->listVimeo();
+      $contentGithub = $this->listGithub();
+      $contentPocket = $this->listPocket();
+      $contentVimeo = $this->listVimeo();
 
     //Pentru celelalte api-uri se adauga vectorii in array_merge
-    $content = null;
+      $content = null;
 
-      //Adding API's contents
-    if ($contentPocket!=null) {
-      if ($content != null){
-        $content = array_merge($content, $contentPocket);
+    //Adding API's contents
+      if ($contentPocket!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentPocket);
+        }
+        else {
+          $content = array_merge($contentPocket);
+        }
       }
-      else {
-        $content = array_merge($contentPocket);
+      if ($contentGithub!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentGithub);
+        }
+        else {
+          $content = array_merge($contentGithub);
+        }
+      }
+      if ($contentVimeo != null) {
+        if ($content != null){
+          $content = array_merge($content, $contentVimeo);
+        }
+        else {
+          $content = array_merge($contentVimeo);
+        }
       }
     }
-    if ($contentGithub!=null) {
-      if ($content != null){
-        $content = array_merge($content, $contentGithub);
-      }
-      else {
-        $content = array_merge($contentGithub);
-      }
-    }
-    if ($contentVimeo != null) {
-      if ($content != null){
-        $content = array_merge($content, $contentVimeo);
-      }
-      else {
-        $content = array_merge($contentVimeo);
-      }
-
-    }
-      //Settings
+    else $has_accounts = false;
+    dd($has_accounts);
+    //Settings
     $page_number = intval($page_number);
     $per_page = 8;
-      //Pagination
+    //Pagination
     $article_count = count($content);
     $page_count = intval(ceil($article_count/$per_page));
     $index_start = ($page_number-1)*$per_page;
-      //Display content
+    //Display content
     $display_content = null;
     if ($content!=null){
-        // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
+      // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
       $display_content = array_slice($content,$index_start,$per_page);
     }
-      //View
-    return View::make('content', ['content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number]);
+    //View
+    return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number]);
   }
 
   public function article($type,$api){
@@ -132,7 +142,7 @@ class ContentController extends BaseController
       }
     } catch (\Exception $e) {
         // dd($e->getMessage());
-        $content = null;
+      $content = null;
     } finally {
       return $content;
     }
@@ -141,48 +151,48 @@ class ContentController extends BaseController
     //Get content of github article
   private function contentGithub($repo, $path, $username){
       //Connection
-      $client = new \Github\Client();
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
-      $token = $result[0]->access_token;
-      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+    $client = new \Github\Client();
+    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+    $token = $result[0]->access_token;
+    $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
         // Content
-      if ($username!=''){
-        $repos = $client->api('user')->repositories($username);
-      }
-      else {
-        $repos = $client->api('current_user')->repositories();
-      }
-      $account = $repos[0]['owner']['login'];
-      $content = array();
-      $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
+    if ($username!=''){
+      $repos = $client->api('user')->repositories($username);
+    }
+    else {
+      $repos = $client->api('current_user')->repositories();
+    }
+    $account = $repos[0]['owner']['login'];
+    $content = array();
+    $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
       // dd($myfile);
-      $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
-      $file_content['type'] = 'github';
-      $file_content['title'] = $myfile['name'];
-      $file_content['details'] = $repo.'/'.$myfile['path'];
+    $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
+    $file_content['type'] = 'github';
+    $file_content['title'] = $myfile['name'];
+    $file_content['details'] = $repo.'/'.$myfile['path'];
       // $file_content['path'] = $myfile['path'];
-      $file_content['tag'] = $extension;
-      $file_content['url'] = $myfile['html_url'];
+    $file_content['tag'] = $extension;
+    $file_content['url'] = $myfile['html_url'];
       //Get beautiful code and colors (Hilite API)
-      try{
-        $beautify_url = 'http://hilite.me/api';
-        $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
-        $beautify_type = 'default';
-        $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
-        $beautify_options = array(
-            'http' => array(
-                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method'  => 'POST',
-                'content' => http_build_query($beautify_data)
-            )
+    try{
+      $beautify_url = 'http://hilite.me/api';
+      $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
+      $beautify_type = 'default';
+      $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
+      $beautify_options = array(
+        'http' => array(
+          'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+          'method'  => 'POST',
+          'content' => http_build_query($beautify_data)
+          )
         );
-        $beautify_context  = stream_context_create($beautify_options);
-        $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
-        $file_content['content'] = $beautify_result;
-      }
-      catch (\Exception $e){
-        $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
-      }
+      $beautify_context  = stream_context_create($beautify_options);
+      $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
+      $file_content['content'] = $beautify_result;
+    }
+    catch (\Exception $e){
+      $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
+    }
       // dd($beautify_result);
 
       // dd($file_content);
@@ -241,28 +251,28 @@ class ContentController extends BaseController
   }
 
   //Make Vimeo articles
-  public function listVimeo(){
-    try{
-      $username ='admin';
-      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
-      $content = array();
+  // public function listVimeo(){
+  //   try{
+  //     $username ='admin';
+  //     $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
+  //     $content = array();
 
-      foreach($results as $result){
-        $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
-        $file_content['type'] = "vimeo";
-        $file_content['title'] = $video[0] ->title;
-        $file_content['details'] = $video[0] ->authors;
-        $file_content['description'] = $video[0]->description;
-        array_push($content, $file_content);
-      }
+  //     foreach($results as $result){
+  //       $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
+  //       $file_content['type'] = "vimeo";
+  //       $file_content['title'] = $video[0] ->title;
+  //       $file_content['details'] = $video[0] ->authors;
+  //       $file_content['description'] = $video[0]->description;
+  //       array_push($content, $file_content);
+  //     }
 
-    }catch (\Exception $e){
-      echo $e;
-      $content = null;
-    }finally{
-      return $content;
-    }
+  //   }catch (\Exception $e){
+  //     echo $e;
+  //     $content = null;
+  //   }finally{
+  //     return $content;
+  //   }
 
-  }
+  // }
 
 }

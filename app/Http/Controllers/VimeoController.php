@@ -26,9 +26,9 @@ class VimeoController extends BaseController
 
 	public function activate(){
 
-		// if (session('state') != Request::input('state')) {
-		// 	echo 'Something is wrong. Vimeo sent back a different state than this script was expecting. Please let vimeo know that this has happened';
-		// }
+		if (session('state') != Request::input('state')) {
+			echo 'Something is wrong. Vimeo sent back a different state than this script was expecting. Please let vimeo know that this has happened';
+		}
 		$code = Request::input('code');
 		$tokens = Vimeo::connection('alternative')->accessToken($code, REDIRECT_URI);
 		if ($tokens['status'] == 200) {
