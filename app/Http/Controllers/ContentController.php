@@ -17,8 +17,6 @@ use Vinkla\Vimeo\Facades\Vimeo;
 use Exception;
 use Session;
 use DB;
-use Session;
-
 
 class ContentController extends BaseController
 {
