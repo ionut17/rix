@@ -77,9 +77,10 @@
                     @if ($entry['id']!='')
                       <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
                     @else
-                  <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                      <a href="{{ URL::to('/article/code/'.$entry['type'].'?username='.urlencode($entry['username']).'&repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
                     @endif
-                  @else
+                  @elseif ($entry['type']=='vimeo')
+                    <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
                   @endif
                   <button type="button" name="view-btn" class="article-button">Read</button>
                 </a>

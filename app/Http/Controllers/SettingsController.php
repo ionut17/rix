@@ -9,11 +9,13 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use View;
 use DB;
 use Session;
+use Request;
 
 class SettingsController extends BaseController
 {
 
     public function show(){
+      $slideshare_error = Session::get('slideshare_error');
       $username = Session::get('username');
       $results = DB::select('SELECT source_name FROM accounts WHERE username=?',array($username));
       $sources = array();
@@ -22,7 +24,7 @@ class SettingsController extends BaseController
       }
       $user = Session::get('username');
       // dd($sources);
-      return View::make('settings', ['sources' => $sources, 'user' => $user]);
+      return View::make('settings', ['sources' => $sources, 'user' => $user, 'slideshare_error' => $slideshare_error]);
     }
 
 }
