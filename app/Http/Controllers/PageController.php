@@ -47,7 +47,7 @@ class PageController extends BaseController
         exit();
         break;
         case 'slideshare':
-        header('Location: http://localhost:2000/authorize/slideshare');
+        header('Location: http://localhost:2000/authorize/slideshare/?slideshare_username='.Request::get('slideshare_username'));
         exit();
         break;
         case 'vimeo':

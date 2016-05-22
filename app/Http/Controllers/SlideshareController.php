@@ -44,7 +44,7 @@ class SlideshareController extends BaseController
 		}
 		else
 		{	
-			$min = min($response->Count,20);
+			$min = min($response->Count,50);
 			for($i = 0; $i < $min; $i++)
 			{	
 				dd($response->Slideshow[$i]);
