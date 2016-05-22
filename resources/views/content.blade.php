@@ -85,6 +85,8 @@
                     @elseif(isset($entry['image']))
                       <a href="{{ URL::to('/article/image/'.$entry['type'].'?id='.$entry['id']) }}">
                     @endif
+                  @elseif ($entry['type']=='vimeo')
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
                   @endif
                   <button type="button" name="view-btn" class="article-button">Read</button>
                 </a>

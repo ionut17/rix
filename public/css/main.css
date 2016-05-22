@@ -32,7 +32,7 @@ ul.nav-items {
   flex-direction: row;
   list-style-type: none;
   height: auto;
-  font-family: 'Montserrat', Monaco, sans-serif;
+  font-family: 'Montserrat', Arial, sans-serif, Monaco, sans-serif;
   font-size: 14px;
   font-weight: bold;
   text-transform: uppercase;
@@ -80,7 +80,7 @@ ul.nav-items {
 ul.status-list {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', Arial, sans-serif;
   font-size: 16px;
   font-weight: 600;
   text-transform: capitalize;
@@ -150,7 +150,7 @@ ul.status-list {
       .box input[type='checkbox'] + label:last-child {
         margin-bottom: 0; }
   .box label {
-    font-family: "" Montserrat "", Monaco, sans-serif;
+    font-family: "" Montserrat ", Arial, sans-serif", Monaco, sans-serif;
     color: #7f8c8d;
     font-size: 14px;
     font-weight: bold;
@@ -168,7 +168,7 @@ button.button, button.article-button {
   background-color: #2dcc70;
   border: 0;
   color: white;
-  font-family: "" Montserrat "", Monaco, sans-serif;
+  font-family: "" Montserrat ", Arial, sans-serif", Monaco, sans-serif;
   font-size: 14px;
   font-weight: bold;
   transition: all 200ms ease-in-out; }
@@ -182,7 +182,7 @@ button.button, button.article-button {
       background-color: #ea6153; }
 
 .box-label {
-  font-family: "" Montserrat "", Monaco, sans-serif;
+  font-family: "" Montserrat ", Arial, sans-serif", Monaco, sans-serif;
   color: #b8b8b8;
   font-size: 14px;
   font-weight: bold;
@@ -218,11 +218,11 @@ button.button, button.article-button {
   width: 100%;
   margin: 10px;
   padding: 30px 20px;
-  background-color: #34485e;
-  border: 1px solid #46617f;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid white;
   border-radius: 2px;
   color: white;
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', Arial, sans-serif;
   font-size: 13px;
   text-transform: uppercase;
   text-align: center;
@@ -233,7 +233,9 @@ button.button, button.article-button {
   align-items: center; }
   .article-warning p {
     margin: 0;
-    margin-bottom: 20px; }
+    color: #7f8c8d; }
+    .article-warning p:not(:last-child) {
+      margin-bottom: 20px; }
 
 .article-box {
   width: 286px;
@@ -280,13 +282,13 @@ button.button, button.article-button {
       max-height: 55px;
       overflow: hidden; }
     .article-box section.content label {
-      font-family: Source Sans Pro;
+      font-family: 'Source Sans Pro', Myriad Pro, Arial, serif;
       font-size: 12px;
       font-weight: normal;
       color: #9aa4a5;
       margin-bottom: 10px; }
     .article-box section.content p {
-      font-family: Source Sans Pro;
+      font-family: 'Source Sans Pro', Myriad Pro, Arial, serif;
       font-size: 14px;
       font-weight: normal;
       color: #7f8c8d;
@@ -348,7 +350,7 @@ button.article-button {
   justify-content: center; }
   .footer-container button {
     background: transparent;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
     text-transform: uppercase;
@@ -357,7 +359,7 @@ button.article-button {
     .footer-container button:hover {
       color: #34485e; }
   .footer-container p {
-    font-family: Source Sans Pro, serif;
+    font-family: 'Source Sans Pro', Myriad Pro, Arial, serif;
     font-size: 14px;
     color: #7f8c8d; }
     .footer-container p a {
@@ -422,7 +424,7 @@ button.article-button {
   .article-container section.details {
     padding: 0 40px; }
     .article-container section.details label {
-      font-family: Source Sans Pro;
+      font-family: 'Source Sans Pro', Myriad Pro, Arial, serif;
       font-size: 16px;
       font-weight: normal;
       color: #9aa4a5;
@@ -433,7 +435,7 @@ button.article-button {
   .article-container section.content {
     padding: 20px 40px; }
     .article-container section.content p {
-      font-family: Source Sans Pro;
+      font-family: 'Source Sans Pro', Myriad Pro, Arial, serif;
       font-size: 16px;
       font-weight: normal;
       color: #7f8c8d;
@@ -503,7 +505,7 @@ button.article-button {
   border-radius: 0; }
 
 .pagination li a {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', Arial, sans-serif;
   font-size: 18px;
   font-weight: bold;
   text-transform: uppercase;
@@ -539,7 +541,7 @@ button.article-button {
       width: 100%;
       text-align: center;
       text-transform: none;
-      font-family: Source Sans Pro;
+      font-family: 'Source Sans Pro', Myriad Pro, Arial, serif;
       font-size: 16px; }
   .settings-box.accounts {
     height: auto;
@@ -603,13 +605,13 @@ button.article-button {
     .settings-box section.account-row:hover {
       background-color: #f2f2f2; }
     .settings-box section.account-row label {
-      font-family: Source Sans Pro, Arial, sans-serif;
+      font-family: 'Source Sans Pro', Myriad Pro, Arial, serif, Arial, sans-serif;
       font-size: 16px;
       color: #7f8c8d;
       margin: 0;
       text-transform: capitalize; }
     .settings-box section.account-row span.status {
-      font-family: 'Montserrat', sans-serif;
+      font-family: 'Montserrat', Arial, sans-serif;
       font-weight: bold;
       font-size: 14px; }
       .settings-box section.account-row span.status.green {
@@ -623,6 +625,29 @@ button.article-button {
       .settings-box section.account-row i:hover {
         cursor: pointer;
         color: black; }
+
+.notification {
+  width: 400px;
+  height: auto;
+  position: absolute;
+  top: 300px;
+  left: calc(50vw - 150px);
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid white;
+  border: 1px solid #dadada;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; }
+  .notification p.error {
+    text-align: center;
+    font-family: 'Montserrat', Arial, sans-serif;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: bold;
+    color: #e74c3c; }
+    .notification p.error:last-child {
+      margin-bottom: 0; }
 
 figure.logo, figure.logo.small {
   margin: 0;

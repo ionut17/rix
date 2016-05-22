@@ -56,6 +56,11 @@
         <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Connect account</button>
       </div>
     </div>
+    @if (isset($slideshare_error))
+      <div class="notification">
+          <p class="error">Slideshare: {{$slideshare_error}}</p>
+      </div>
+    @endif
   </div>
 
   @include ('modals.attach-account')
