@@ -15,14 +15,16 @@
           </button>
           <div class="box" style="margin-top:0;">
             <label for="Api">Select API</label>
-            <select name="api" id="api">
+            <select name="api" id="api_select">
               <option value="github">Github</option>
               <option value="pocket">Pocket</option>
               <option value="slideshare">Slideshare</option>
               <option value="vimeo">Vimeo</option>
             </select>
-            <!-- <label for="account">Account username</label>
-            <input type="text" name="account" id="Account"> -->
+            <div id="slideshare_account_wrapper">
+              <label for="slideshare_username">Slideshare username</label>
+              <input type="text" name="slideshare_username" id="slideshare_username">
+            </div>
             <!-- <label for="password">Password</label>
             <input type="password" name="password" id="password"> -->
           </div>

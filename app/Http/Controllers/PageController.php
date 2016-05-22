@@ -60,7 +60,7 @@ class PageController extends BaseController
     }
 
     public function removeAPI($api){
-      $username = Session::get('username');
+      $user = Session::get('username');
       $result = DB::statement('delete from accounts where username = ? and source_name = ?', array($username,$api));
       return redirect('settings');
 }

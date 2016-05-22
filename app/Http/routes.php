@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Routes File
@@ -11,13 +10,11 @@
 |
 */
 Route::group(['middleware'=>['web']],function(){
-
-
-/*
-* Just to verify the db connection
-*/
-Route::get('/example', 'DBController@');
-//Delete this ^
+	/*
+	* Just to verify the db connection
+	*/
+	Route::get('/example', 'DBController@');
+	//Delete this ^
 
 Route::get('/login','PageController@login');
 Route::post('/login','PageController@login');
@@ -30,44 +27,41 @@ Route::post('/register_authorize','Auth\AuthController@validate_register');
 
 Route::get('/logout','PageController@logout');
 
-Route::get('/', function () {
-	return redirect('/login');
-})->middleware('auth');
 
-Route::post('/mycontent','ContentController@show')->middleware('auth');
+	Route::group(['middleware'=>['authgroup']],function(){
+		Route::get('/', function () {
+			return redirect('/login');
+		});
 
-
-Route::get('/mycontent/{page_number?}','ContentController@show')->middleware('auth');
-
-
-Route::get('/article/{type}/{api}','ContentController@article')->middleware('auth');
-
-Route::get('/settings','SettingsController@show')->middleware('auth');
-Route::get('/recommended/{page_number?}','RecommendedController@show');
+		Route::post('/mycontent','ContentController@show');
 
 
+		Route::get('/mycontent/{page_number?}','ContentController@show');
 
-//Temporary
+
+		Route::get('/article/{type}/{api}','ContentController@article');
+
+		Route::get('/settings','SettingsController@show');
+		Route::get('/recommended/{page_number?}','RecommendedController@show');
 
 
 
+	//Activate APIs
+		Route::post('/authorize','PageController@authorizeAPI');
 
-//Activate APIs
-Route::post('/authorize','PageController@authorizeAPI');
+		Route::get('/authorize/github','GithubController@authorize');
+		Route::get('/activate/github','GithubController@activate');
 
-Route::get('/authorize/github','GithubController@authorize');
-Route::get('/activate/github','GithubController@activate');
+		Route::get('/authorize/pocket','PocketController@authorize');
+		Route::get('/activate/pocket','PocketController@activate');
 
-Route::get('/authorize/pocket','PocketController@authorize');
-Route::get('/activate/pocket','PocketController@activate');
+		Route::get('/authorize/vimeo','VimeoController@authorize');
+		Route::get('/activate/vimeo','VimeoController@activate');
 
-Route::get('/authorize/vimeo','VimeoController@authorize');
-Route::get('/activate/vimeo','VimeoController@activate');
+		Route::get('/authorize/slideshare','SlideshareController@authorize');
 
-//Remove Routes
-Route::post('/remove/{api}', 'PageController@removeAPI');
+	//Remove Routes
+		Route::post('/remove/{api}', 'PageController@removeAPI');
 
-Route::get('/authorize/slideshare','SlideshareController@authorize');
-Route::get('/activate/slideshare','SlideshareController@activate');
-
+	});	
 });

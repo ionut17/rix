@@ -10,6 +10,7 @@ use venor\SSUtil\SSUtil;
 use Session;
 use Request;
 use DB;
+use DOMDocument;
 
 class SlideshareController extends BaseController
 {
@@ -24,27 +25,26 @@ class SlideshareController extends BaseController
 
 	private function generate_validation()
 	{
-
 		$time = time();
 		$validation = 'api_key='.$this->api_key.'&ts='.$time.'&hash='.sha1($this->shared_secret.$time);
 		return $validation;
 	}
 	public function authorize()
 	{
-		$response=file_get_contents('https://www.slideshare.net/api/2/get_slideshow/?'.$this->generate_validation().'&slideshow_id=62158286');
+		$slideshare_username=Request::get('slideshare_username');
+		$username = Session::get('username');
 
-		 dd($response);
-
-
-		// header('Location: http://localhost:2000/activate/slideshare');
-		// exit();
+		//Get the XML with presentations
+		$response = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshows_by_user/?'.$this->generate_validation().'&username_for='.$slideshare_username));
+		if(array_key_exists('Message', $response))
+		{
+			Session::put('slideshare_error','Slideshare user not found');
+		}
+		else
+		{
+			Session::forget('slideshare_username');
+			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
+			dd('all good');
+		}
 	}
-
-	public function activate()
-	{
-		echo $this->api_key.' activate '.$this->shared_secret;
-		header('Location: http://localhost:2000/mycontent');
-		exit();
-	}
-
 }
