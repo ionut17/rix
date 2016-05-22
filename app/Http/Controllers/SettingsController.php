@@ -15,7 +15,8 @@ class SettingsController extends BaseController
 
     public function show(){
       $slideshare_error = Request::input('slideshare_error');
-      $results = DB::select('SELECT source_name FROM accounts WHERE username=?',array('admin'));
+      $username = Session::get('username');
+      $results = DB::select('SELECT source_name FROM accounts WHERE username=?',array($username));
       $sources = array();
       foreach ($results as $result){
         array_push($sources, $result->source_name);

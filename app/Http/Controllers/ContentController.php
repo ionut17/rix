@@ -28,12 +28,12 @@ class ContentController extends BaseController
 
   public function show($page_number=1){
     //Verify if user has any accounts
-    $rix_username = Session::get("username");
+    $rix_username = Session::get('username');
     $result = DB::table('accounts')->where('username', '=', $rix_username)->count();
+    //Pentru celelalte api-uri se adauga vectorii in array_merge
     $content = null;
     if ($result != 0){
       $has_accounts = true;
-
     //Get content
       $contentGithub = null;
       $contentPocket = null;
@@ -44,8 +44,6 @@ class ContentController extends BaseController
       $contentGithub = $this->listGithub();
       $contentPocket = $this->listPocket();
       $contentVimeo = $this->listVimeo();
-
-    //Pentru celelalte api-uri se adauga vectorii in array_merge
 
     //Adding API's contents
       if ($contentPocket!=null) {
@@ -97,7 +95,11 @@ class ContentController extends BaseController
       return view('articles.image-article');
     }
     if ($type=='video'){
-      return view('articles.video-article');
+      if ($api =='vimeo'){
+        $id = Request::input('id');
+        $article = $this->contentVimeo($id);
+        return View::make('articles.video-article',['content'=>$article]);
+      }
     }
     if ($type=='code'){
       if ($api == 'github'){
@@ -242,7 +244,7 @@ class ContentController extends BaseController
         $file_content['path']=$value['resolved_url'];
         $file_content['description']=$value['excerpt'];
         if ($value['has_image']==1){
-        $file_content['image']=$value['images'][1]['src'];
+          $file_content['image']=$value['images'][1]['src'];
         }
         // $file_content['image']=$value['images'][1]['src'];
           // if(in_array('images', $value)){
@@ -268,27 +270,53 @@ class ContentController extends BaseController
 
   //Make Vimeo articles
   public function listVimeo(){
+    $content = array();
     try{
-      $rix_username = Session::get("username");
-      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($rix_username));
-      $content = array();
-
+      $username = Session::get('username');
+      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
       foreach($results as $result){
-        $video = DB::select('SELECT title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
-        $file_content['type'] = "vimeo";
+        $video = DB::select('SELECT id_article, title, description, authors FROM vimeo_articles WHERE id_article =?', array($result->id_article));
+        $file_content['type'] = 'vimeo';
         $file_content['title'] = $video[0] ->title;
         $file_content['details'] = $video[0] ->authors;
         $file_content['description'] = $video[0]->description;
+        $file_content['id'] = $video[0]->id_article;
         array_push($content, $file_content);
       }
-
     }catch (\Exception $e){
-      echo $e;
       $content = null;
     }finally{
       return $content;
     }
+  }
 
+  public function contentVimeo($id){
+    try{
+      $username = Session::get('username');
+      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
+
+      $access_token = $result->access_token;
+      $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
+      if ($result_video->url_content != null){
+        $vimeo_connection= Vimeo::connection('alternative');
+        $vimeo_connection->setToken($access_token);
+        $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+      }else{
+        $vimeo_connection('main');
+        $article = $vimeo_connection->request($id,[],'GET');
+      }
+      $file_content['type'] = 'vimeo';
+      $file_content['title'] = $article['body']['name'];
+      $file_content['description'] = $article['body']['description'];
+      $file_content['details'] = $article['body']['user']['name'];
+      $file_content['content'] = $article['body']['embed']['html'];
+      $file_content['url'] = $article['body']['link'];
+      return $file_content;
+    }catch(\Exception $e){
+      $file_content = null;
+    }finally{
+      return $file_content;
+    }
   }
 
 }

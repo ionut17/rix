@@ -18,7 +18,6 @@ use Exception;
 use DB;
 use Session;
 
-
 class RecommendedController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

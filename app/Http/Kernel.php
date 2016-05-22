@@ -19,6 +19,11 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
         ],
+
+        'authgroup' => [
+            \App\Http\Middleware\Authenticate::class,
+        ],
+
     ];
     protected $routeMiddleware = [
     'auth' => \App\Http\Middleware\Authenticate::class,
