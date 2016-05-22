@@ -42,9 +42,10 @@ class PocketController extends BaseController
     $access_token = $access_array['access_token'];
     //HERE STORE THE ACCESS TOKEN
     $username = 'admin';
-    DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(3, $username, $access_token, 'pocket'));
-    header('Location: http://localhost:2000/mycontent');
-    exit();
+    //DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(3, $username, $access_token, 'pocket'));
+
+  // header('Location: http://localhost:2000/mycontent');
+    //exit();
   }
 
 }

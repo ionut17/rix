@@ -16,7 +16,6 @@ use Duellsy\Pockpack\PockpackQueue;
 use Exception;
 use DB;
 
-
 class ContentController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -36,6 +35,7 @@ class ContentController extends BaseController
       //Pentru celelalte api-uri se adauga vectorii in array_merge
       $content = null;
       //Adding API's contents
+      // echo 'before if';
       if ($contentPocket!=null) {
         if ($content != null){
           $content = array_merge($content, $contentPocket);
@@ -161,30 +161,44 @@ class ContentController extends BaseController
       try{
         $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","pocket"));
         $access_token = $result[0]->access_token;
+        // dd($access_token);
         //Making connection
         $pockpack = new Pockpack($consumer_key, $access_token);
         //Setting the options
         $options = array(
             'state'         => 'all',
-            'contentType'   => 'article',
             'detailType'    => 'complete'
         );
         $array = $pockpack->retrieve($options,1);
         $articles_list = $array['list'];
+        // dd($articles_list);
         $content = null;
         $content = array();
         foreach($articles_list as $value){
           $file_content['type']= "pocket";
           $file_content['title']=$value['resolved_title'];
-          $file_content['path']=$value['resolved_url'];
+          $file_content['url']=$value['resolved_url'];
           $file_content['description']=$value['excerpt'];
-          $file_content['image']=$value['images'][1]['src'];
-          // if(in_array('images', $value)){
-          //   $file_content['images']=$value['images'];
-          // }
-          // if(in_array('videos', $value)){
-          //   $file_content['videos']=$value['videos'];
-          // }
+          if(isset($value['authors'])){
+            echo('haaas auth');
+            foreach ($value['authors'] as $author_prop) {
+              $authors_string=null;
+              $authors_string.=$author_prop['name'].' - '.$author_prop['url'].' | ';
+            }
+            $file_content['authors']=$authors_string;
+        }
+          if($value['has_image']==1){
+            $file_content['image']=$value['images'][1]['src'];
+        }
+        else{
+          $file_content['image']=null;
+        }
+          if(in_array('tags', $value)){
+            $file_content['tags']=$value['tags'];
+        }
+          if($value['has_video']!=0){
+            $file_content['video']=$value['videos'][1]['src'];
+          }
           array_push($content,$file_content);
         }
       } catch (\Exception $e) {
