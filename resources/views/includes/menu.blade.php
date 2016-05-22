@@ -16,7 +16,7 @@
           </a>
         </li>
         <li>
-          <a href="{{ URL::to('/login') }}">
+          <a href="{{ URL::to('/logout') }}">
           <i class="fa fa-sign-out" aria-hidden="true"></i>
             Log out
           </a>

@@ -18,13 +18,12 @@ use Exception;
 use Session;
 use DB;
 
-
 class ContentController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
   public function __construct(){
-      // $this->middleware('auth');
+    $this->middleware('auth');
   }
 
   public function show($page_number=1){
@@ -226,7 +225,7 @@ class ContentController extends BaseController
         $file_content['path']=$value['resolved_url'];
         $file_content['description']=$value['excerpt'];
         if ($value['has_image']==1){
-          $file_content['image']=$value['images'][1]['src'];
+        $file_content['image']=$value['images'][1]['src'];
         }
         // $file_content['image']=$value['images'][1]['src'];
           // if(in_array('images', $value)){
