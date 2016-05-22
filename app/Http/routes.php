@@ -10,6 +10,8 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::group(['middleware'=>['web']],function(){
+
 
 /*
 * Just to verify the db connection
@@ -17,35 +19,47 @@
 Route::get('/example', 'DBController@');
 //Delete this ^
 
-Route::get('/login','PageController@login');
-Route::get('/register','PageController@register');
-
-Route::get('/', function () {
-    return redirect('/login');
-});
+	Route::get('/login','PageController@login');
+	Route::post('/login','PageController@login');
+	Route::post('/login_authorize','Auth\AuthController@validate_login');
 
 
-Route::get('/mycontent/{page_number?}','ContentController@show');
-Route::get('/article/{type}/{api}','ContentController@article');
+	Route::get('/register','PageController@register');
+	Route::post('/register','PageController@register');
+	Route::post('/register_authorize','Auth\AuthController@validate_register');
 
+	Route::get('/logout','PageController@logout');
+
+	Route::get('/', function () {
+		return redirect('/login');
+	})->middleware('auth');
+
+	Route::post('/mycontent','ContentController@show')->middleware('auth');
+	
+
+	Route::get('/mycontent/{page_number?}','ContentController@show')->middleware('auth');
+
+
+	Route::get('/article/{type}/{api}','ContentController@article')->middleware('auth');
+
+	Route::get('/settings','SettingsController@show')->middleware('auth');
 Route::get('/recommended/{page_number?}','RecommendedController@show');
 
-Route::get('/settings','SettingsController@show');
 
 
 //Temporary
-Route::post('/login','PageController@login');
-Route::post('/register','PageController@register');
-Route::post('/mycontent','ContentController@show');
+
+	
+	
 
 //Activate APIs
-Route::post('/authorize','PageController@authorizeAPI');
+	Route::post('/authorize','PageController@authorizeAPI');
 
-Route::get('/authorize/github','GithubController@authorize');
-Route::get('/activate/github','GithubController@activate');
+	Route::get('/authorize/github','GithubController@authorize');
+	Route::get('/activate/github','GithubController@activate');
 
-Route::get('/authorize/pocket','PocketController@authorize');
-Route::get('/activate/pocket','PocketController@activate');
+	Route::get('/authorize/pocket','PocketController@authorize');
+	Route::get('/activate/pocket','PocketController@activate');
 
 Route::get('/authorize/vimeo','VimeoController@authorize');
 Route::get('/activate/vimeo','VimeoController@activate');
@@ -53,23 +67,7 @@ Route::get('/activate/vimeo','VimeoController@activate');
 //Remove Routes
 Route::post('/remove/{api}', 'PageController@removeAPI');
 
+	Route::get('/authorize/slideshare','SlideshareController@authorize');
+	Route::get('/activate/slideshare','SlideshareController@activate');
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| This route group applies the "web" middleware group to every route
-| it contains. The "web" middleware group is defined in your HTTP
-| kernel and includes session state, CSRF protection, and more.
-|
-*/
-
-Route::group(['middleware' => ['web']], function () {
-    //
-});
-
-Route::group(['middleware' => 'web'], function () {
-    Route::auth();
-    Route::get('/home', 'HomeController@index');
 });

@@ -46,5 +46,4 @@ class PocketController extends BaseController
     //Redirect to content
     return redirect('mycontent');
   }
-
 }
