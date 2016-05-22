@@ -79,8 +79,12 @@
                     @else
                       <a href="{{ URL::to('/article/code/'.$entry['type'].'?username='.urlencode($entry['username']).'&repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
                     @endif
-                  @else
-                    <a href="">
+                  @elseif ($entry['type']=='pocket')
+                    @if (isset($entry['video']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @elseif(isset($entry['image']))
+                      <a href="{{ URL::to('/article/image/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @endif
                   @endif
                   <button type="button" name="view-btn" class="article-button">Read</button>
                 </a>

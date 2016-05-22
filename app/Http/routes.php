@@ -35,7 +35,7 @@ Route::get('/example', 'DBController@');
 	})->middleware('auth');
 
 	Route::post('/mycontent','ContentController@show')->middleware('auth');
-	
+
 
 	Route::get('/mycontent/{page_number?}','ContentController@show')->middleware('auth');
 
@@ -49,8 +49,8 @@ Route::get('/recommended/{page_number?}','RecommendedController@show');
 
 //Temporary
 
-	
-	
+
+
 
 //Activate APIs
 	Route::post('/authorize','PageController@authorizeAPI');
