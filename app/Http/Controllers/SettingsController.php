@@ -24,7 +24,7 @@ class SettingsController extends BaseController
       }
       $user = Session::get('username');
       // dd($sources);
-      return View::make('settings', ['sources' => $sources, 'user' => $user, 'slideshare_error' =>$slideshare_error]);
+      return View::make('settings', ['sources' => $sources, 'user' => $user, 'slideshare_error' => $slideshare_error]);
     }
 
 }

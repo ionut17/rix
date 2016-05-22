@@ -1,13 +1,11 @@
 $( document ).ready(function() {
+    //Loader gear
     $('.loader').fadeOut(500, function() {
       console.log("fading in");
       $('.main-wrapper').fadeIn(500);
     });
 
-    $( "#api" ).select(function() {
-      console.log("called");
-    });
-
+    //API Dropdown listener
     var apiSelect = $('#api_select');
     var slideshareWrapper = $('#slideshare_account_wrapper');
     apiSelect.bind('change', function (e) {
@@ -18,4 +16,10 @@ $( document ).ready(function() {
         slideshareWrapper.slideUp('medium');
       }
     }).trigger('change');
+
+    //Notification removal
+    setTimeout(function(){
+      console.log("Removed notifications");
+      $('.notification').slideUp('medium');
+    }, 4000);
 });
