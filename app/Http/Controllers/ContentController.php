@@ -28,16 +28,17 @@ class ContentController extends BaseController
   }
 
   public function show($page_number=1){
+    //Get content
     $contentGithub = null;
     $contentPocket = null;
     $contentSlideshare = null;
     $contentVimeo = null;
-      //Content (se adauga un array pentru fiecare API)
+    //Content (se adauga un array pentru fiecare API)
     $contentGithub = $this->listGithub();
     $contentPocket = $this->listPocket();
-    $contentVimeo = $this -> listVimeo();
+    $contentVimeo = $this->listVimeo();
 
-      //Pentru celelalte api-uri se adauga vectorii in array_merge
+    //Pentru celelalte api-uri se adauga vectorii in array_merge
     $content = null;
 
       //Adding API's contents
@@ -123,6 +124,7 @@ class ContentController extends BaseController
         $file_content['title'] = $values[0]->title;
         $file_content['repo'] = $values[0]->repo;
         $file_content['path'] = $values[0]->path;
+        $file_content['details'] = $values[0]->repo.'\\'.$values[0]->path;
         $file_content['tag'] = $values[0]->extension;
         $file_content['username'] = '';
         //Pushing object to array
@@ -253,7 +255,7 @@ class ContentController extends BaseController
         $file_content['description'] = $video[0]->description;
         array_push($content, $file_content);
       }
- 
+
     }catch (\Exception $e){
       echo $e;
       $content = null;
@@ -264,5 +266,3 @@ class ContentController extends BaseController
   }
 
 }
-
-

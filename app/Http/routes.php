@@ -50,6 +50,9 @@ Route::get('/activate/pocket','PocketController@activate');
 Route::get('/authorize/vimeo','VimeoController@authorize');
 Route::get('/activate/vimeo','VimeoController@activate');
 
+//Remove Routes
+Route::post('/remove/{api}', 'PageController@removeAPI');
+
 
 /*
 |--------------------------------------------------------------------------

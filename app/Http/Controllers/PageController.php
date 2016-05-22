@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Request;
+use DB;
 
 class PageController extends BaseController
 {
@@ -42,6 +43,12 @@ class PageController extends BaseController
             break;
         default:
             dd('Invalid account type');
+      }
     }
+
+    public function removeAPI($api){
+      $user = 'admin';
+      $result = DB::statement('delete from accounts where username = ? and source_name = ?', array($user,$api));
+      return redirect('settings');
     }
 }

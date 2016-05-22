@@ -43,15 +43,17 @@
       </div>
       <div class="settings-box accounts">
         <!-- Added dinamicaly -->
-        <section class="account-row">
-          <label>Github</label>
-          <span class="status green">CONNECTED</span>
-        </section>
-        <section class="account-row">
-          <label>Vimeo</label>
-          <span class="status red">ERROR</span>
-        </section>
-        <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Add account</button>
+        @if (isset($sources))
+          @foreach($sources as $source)
+            <section class="account-row">
+              <label>{{$source}}</label>
+              <span class="status green">CONNECTED</span>
+              <i class="fa fa-times-circle-o" aria-hidden="true" data-toggle="modal" data-target="#{{$source}}RemoveConfirm"></i>
+            </section>
+            @include ('modals.remove-account')
+          @endforeach
+        @endif
+        <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Connect account</button>
       </div>
     </div>
   </div>

@@ -12,13 +12,13 @@
         <li>
           <a href="{{ URL::to('/settings') }}">
           <i class="fa fa-cog" aria-hidden="true"></i>
-          Settings
+            Settings
           </a>
         </li>
         <li>
           <a href="{{ URL::to('/login') }}">
           <i class="fa fa-sign-out" aria-hidden="true"></i>
-          Log out
+            Log out
           </a>
         </li>
       </ul>

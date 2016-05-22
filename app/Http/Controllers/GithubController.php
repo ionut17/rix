@@ -55,8 +55,7 @@ class GithubController extends BaseController
     // DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(1, $username, $access_token, 'github'));
     $this->store();
     //Redirect to content
-    header('Location: http://localhost:2000/mycontent');
-    exit();
+    return redirect('mycontent');
   }
 
   public function store(){
@@ -74,7 +73,7 @@ class GithubController extends BaseController
       // $content = null;
       // $content = array();
       foreach ($repos as $repo){
-          $files = $client->api('repo')->contents()->show($account, $repo['name'], '.');            // dd($repo);
+          $files = $client->api('repo')->contents()->show($account, $repo['name'], '.'); // dd($repo);
           // $tags = $client->api('repo')->tags($account, $repo['name']);
         foreach( $files as $file){
           if ($file['type']=='file' && $file['size']<1000000){

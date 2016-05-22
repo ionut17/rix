@@ -83,8 +83,8 @@
         @endforeach
       @else
         <div class="article-warning">
-          <p>Warning: You don't have any accounts attached!</p>
-          <button type="button" name="view-btn" class="article-button fixed-size" data-toggle="modal" data-target="#addModal">Add account</button>
+          <p>Warning: You don't have any content available!</p>
+          <button type="button" name="view-btn" class="article-button fixed-size" data-toggle="modal" data-target="#addModal"><Add></Add>Add account</button>
         </div>
         @include ('modals.attach-account')
         @for ($i = 4; $i < 4; $i++)
