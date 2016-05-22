@@ -30,9 +30,8 @@ class ContentController extends BaseController
     //Verify if user has any accounts
     $rix_username = Session::get("username");
     $result = DB::table('accounts')->where('username', '=', $rix_username)->count();
-
     $content = null;
-    if ($result[0] != 0){
+    if ($result != 0){
       $has_accounts = true;
 
     //Get content
@@ -104,7 +103,15 @@ class ContentController extends BaseController
     if ($type=='code'){
       if ($api == 'github'){
         $id = Request::input('id');
-        $article = $this->contentGithub($id);
+        $username = Request::input('username');
+        $repo = Request::input('repo');
+        $path = Request::input('path');
+        if ($repo && $path){
+          $article = $this->contentGithub($id, $username, $repo, $path);
+        }
+        else{
+          $article = $this->contentGithub($id);
+        }
       }
         // dd($article);
       return View::make('articles.code-article',['content'=>$article]);
@@ -118,6 +125,7 @@ class ContentController extends BaseController
     //List github articles
   private function listGithub(){
       //Connection
+      // dd('entered');
     $client = new \Github\Client();
     try {
       //Content
@@ -147,59 +155,63 @@ class ContentController extends BaseController
   }
 
     //Get content of github article
-  private function contentGithub($id){
+  private function contentGithub($id, $username='', $g_repo='', $g_path=''){
     $rix_username = Session::get("username");
     //Getting values
-    $result = DB::select('SELECT repo, path, username FROM github_articles WHERE id_article = ?', array($id));
-    $repo = $result[0]->repo;
-    $path = $result[0]->path;
-    $username = $result[0]->username;
-    //Connection
-    $client = new \Github\Client();
-    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
-    $token = $result[0]->access_token;
-    $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-    // Content
-    if ($username!=''){
-      $repos = $client->api('user')->repositories($username);
-    }
-    else {
-      $repos = $client->api('current_user')->repositories();
-    }
-    $account = $repos[0]['owner']['login'];
-    $content = array();
-    $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
-      // dd($myfile);
-    $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
-    $file_content['type'] = 'github';
-    $file_content['title'] = $myfile['name'];
-    $file_content['details'] = $repo.'/'.$myfile['path'];
-      // $file_content['path'] = $myfile['path'];
-    $file_content['tag'] = $extension;
-    $file_content['url'] = $myfile['html_url'];
-      //Get beautiful code and colors (Hilite API)
     try{
-      $beautify_url = 'http://hilite.me/api';
-      $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
-      $beautify_type = 'default';
-      $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
-      $beautify_options = array(
-        'http' => array(
-          'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-          'method'  => 'POST',
-          'content' => http_build_query($beautify_data)
-          )
-        );
-      $beautify_context  = stream_context_create($beautify_options);
-      $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
-      $file_content['content'] = $beautify_result;
+      //Connection
+      $client = new \Github\Client();
+      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
+      $token = $result[0]->access_token;
+      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+      // Content
+      if ($username!=''){
+        $repos = $client->api('user')->repositories($username);
+        $repo = $g_repo;
+        $path = $g_path;
+        $account = $username;
+      }
+      else {
+        $result = DB::select('SELECT repo, path FROM github_articles WHERE id_article = ?', array($id));
+        $repo = $result[0]->repo;
+        $path = $result[0]->path;
+        $repos = $client->api('current_user')->repositories();
+        $account = $repos[0]['owner']['login'];
+      }
+      $content = array();
+      $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
+        // dd($myfile);
+      $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
+      $file_content['type'] = 'github';
+      $file_content['title'] = $myfile['name'];
+      $file_content['details'] = $repo.'/'.$myfile['path'];
+        // $file_content['path'] = $myfile['path'];
+      $file_content['tag'] = $extension;
+      $file_content['url'] = $myfile['html_url'];
+        //Get beautiful code and colors (Hilite API)
+      try{
+        $beautify_url = 'http://hilite.me/api';
+        $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
+        $beautify_type = 'default';
+        $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
+        $beautify_options = array(
+          'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($beautify_data)
+            )
+          );
+        $beautify_context  = stream_context_create($beautify_options);
+        $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
+        $file_content['content'] = $beautify_result;
+      }
+      catch (\Exception $e){
+        $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
+      }
     }
     catch (\Exception $e){
-      $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
+        $file_content = null;
     }
-      // dd($beautify_result);
-
-      // dd($file_content);
     return $file_content;
   }
 
