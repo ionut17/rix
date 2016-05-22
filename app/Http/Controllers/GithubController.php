@@ -32,29 +32,34 @@ class GithubController extends BaseController
   }
 
   public function activate(){
-    $code = Request::input('code');
-    //Making post requests
-    $url = 'https://github.com/login/oauth/access_token';
-    $data = array('client_id' => $this->client, 'client_secret' => $this->client_secret, 'code' => $code);
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($data)
-        )
-    );
-    $context  = stream_context_create($options);
-    //Sending post requests
-    $result = file_get_contents($url, false, $context);
-    //Get access token
-    $pieces = explode('&',$result);
-    $pieces2 = explode('=',$pieces[0]);
-    $access_token = $pieces2[1];
-    //HERE STORE IT IN DATABSE FOR THE CURRENT USER
-    $rix_username = Session::get("username");
-    DB::statement('insert into accounts (username,access_token,source_name) values (?,?,?)', array($rix_username, $access_token, 'github'));
-    // DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(1, $username, $access_token, 'github'));
-    $this->store();
+    try{
+      $code = Request::input('code');
+      //Making post requests
+      $url = 'https://github.com/login/oauth/access_token';
+      $data = array('client_id' => $this->client, 'client_secret' => $this->client_secret, 'code' => $code);
+      $options = array(
+          'http' => array(
+              'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+              'method'  => 'POST',
+              'content' => http_build_query($data)
+          )
+      );
+      $context  = stream_context_create($options);
+      //Sending post requests
+      $result = file_get_contents($url, false, $context);
+      //Get access token
+      $pieces = explode('&',$result);
+      $pieces2 = explode('=',$pieces[0]);
+      $access_token = $pieces2[1];
+      //HERE STORE IT IN DATABSE FOR THE CURRENT USER
+      $rix_username = Session::get("username");
+      DB::statement('insert into accounts (username,access_token,source_name) values (?,?,?)', array($rix_username, $access_token, 'github'));
+      // DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(1, $username, $access_token, 'github'));
+      $this->store();
+    }
+    catch (/Exception $e){
+      return redirect('mycontent');
+    }
     //Redirect to content
     return redirect('mycontent');
   }

@@ -42,7 +42,7 @@ class PocketController extends BaseController
     $access_array = $pockpath_auth->receiveTokenAndUsername($this->consumer_key, $local_request_token);
     $access_token = $access_array['access_token'];
     //HERE STORE THE ACCESS TOKEN
-    $username = 'admin';
+    $username = Session::get('username');
     DB::statement('insert into accounts (username,access_token,source_name) values (?,?,?)', array($username, $access_token, 'pocket'));
     //Redirect to content
     return redirect('mycontent');
