@@ -88,7 +88,8 @@ class RecommendedController extends BaseController
   public function recommendGithub($search_input,$languages){
     try{
       $client = new \Github\Client();
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+      $rix_username = Session::get('username');
+      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
       $token = $result[0]->access_token;
       $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
       //Get repos

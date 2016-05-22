@@ -28,8 +28,8 @@ class ContentController extends BaseController
 
   public function show($page_number=1){
     //Verify if user has any accounts
-    $username = 'admin';
-    $result = DB::table('accounts')->where('username', '=', $username)->count();
+    $rix_username = Session::get("username");
+    $result = DB::table('accounts')->where('username', '=', $rix_username)->count();
 
     $content = null;
     if ($result[0] != 0){
@@ -120,7 +120,8 @@ class ContentController extends BaseController
     $client = new \Github\Client();
     try {
       //Content
-      $results = DB::select('SELECT id_article FROM github_articles WHERE username=?',array('admin'));
+      $rix_username = Session::get("username");
+      $results = DB::select('SELECT id_article FROM github_articles WHERE username=?',array($rix_username));
       // dd($results);
       $content = array();
       foreach ($results as $result){
@@ -146,18 +147,19 @@ class ContentController extends BaseController
 
     //Get content of github article
   private function contentGithub($id){
-      //Getting values
-      $result = DB::select('SELECT repo, path, username FROM github_articles WHERE id_article = ?', array($id));
-      $repo = $result[0]->repo;
-      $path = $result[0]->path;
-      $username = $result[0]->username;
-      //Connection
+    $rix_username = Session::get("username");
+    //Getting values
+    $result = DB::select('SELECT repo, path, username FROM github_articles WHERE id_article = ?', array($id));
+    $repo = $result[0]->repo;
+    $path = $result[0]->path;
+    $username = $result[0]->username;
+    //Connection
     $client = new \Github\Client();
-    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","github"));
+    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
     $token = $result[0]->access_token;
     $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-      // Content
-      if ($username!=Session::get('username')){
+    // Content
+    if ($username!=''){
       $repos = $client->api('user')->repositories($username);
     }
     else {
@@ -207,7 +209,8 @@ class ContentController extends BaseController
       //Getting the consumer key and user key
     $consumer_key=env('POCKET_CONSUMER_KEY');
     try{
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array("admin","pocket"));
+      $rix_username = Session::get('username');
+      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"pocket"));
       $access_token = $result[0]->access_token;
         //Making connection
       $pockpack = new Pockpack($consumer_key, $access_token);
@@ -254,8 +257,8 @@ class ContentController extends BaseController
   //Make Vimeo articles
   public function listVimeo(){
     try{
-      $username ='admin';
-      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($username));
+      $rix_username = Session::get("username");
+      $results = DB::select('select id_article from vimeo_articles where username = ? ', array($rix_username));
       $content = array();
 
       foreach($results as $result){

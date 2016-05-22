@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use View;
 use DB;
+use Session;
 
 class SettingsController extends BaseController
 {
@@ -18,8 +19,9 @@ class SettingsController extends BaseController
       foreach ($results as $result){
         array_push($sources, $result->source_name);
       }
+      $user = Session::get('username');
       // dd($sources);
-      return View::make('settings', ['sources' => $sources]);
+      return View::make('settings', ['sources' => $sources, 'user' => $user]);
     }
 
 }

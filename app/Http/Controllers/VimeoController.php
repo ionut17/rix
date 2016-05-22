@@ -38,7 +38,7 @@ class VimeoController extends BaseController
 		}
 		$vimeo_connection = Vimeo::connection('alternative');
 		$vimeo_connection->setToken($tokens['body']['access_token']);
-		$username = 'admin';
+		$username = Session::get('username');
 
 		//added the access token for the current user in the DB
 		DB::table('accounts') -> insert(['username' => $username, 'access_token' => $tokens['body']['access_token'], 'source_name' => 'vimeo']);

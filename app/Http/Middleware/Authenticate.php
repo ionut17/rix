@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use Request;
 use DB;
-use Session;  
+use Session;
 
 
 class Authenticate
@@ -16,13 +16,13 @@ class Authenticate
         if(Session::has('username'))
         {
             return $next($request);
-        } 
+        }
         else
         {
             if ($request->ajax() || $request->wantsJson())
             {
                 return response('Unauthorized.', 401);
-            }     
+            }
             else
             {
                 if(Session::get('error_page')=='register')

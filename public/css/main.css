@@ -156,6 +156,9 @@ ul.status-list {
     font-weight: bold;
     text-transform: uppercase;
     margin-bottom: 10px; }
+    .box label.error {
+      color: #e74c3c;
+      width: 100%; }
   .box + button.button, .box + button.article-button {
     margin-top: -10px; }
 

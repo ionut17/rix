@@ -35,7 +35,7 @@
           <figure class="hover-figure" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil" aria-hidden="true"></i></figure>
         </section>
         <div class="box">
-          <label for="username">Iacob Ionut</label>
+          <label for="username">@if (isset($user)) {{$user}} @endif</label>
           <input type="text" name="username" id="username" class="hide">
           <label for="email">ionut.iacob17@gmail.com</label>
           <input type="text" name="email" id="email" class="hide">
