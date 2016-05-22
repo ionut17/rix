@@ -29,58 +29,67 @@ class RecommendedController extends BaseController
   }
 
   public function show($page_number=1){
-    $contentGithub = null;
-    $contentPocket = null;
-    $contentSlideshare = null;
-    $contentVimeo = null;
-      //Content (se adauga un array pentru fiecare API)
-    $contentGithub = $this->recommendGithub('website',array('language' => 'html'));
-    // $contentPocket = $this->listPocket();
-    // $contentVimeo = $this -> listVimeo();
+    try{
+      $contentGithub = null;
+      $contentPocket = null;
+      $contentSlideshare = null;
+      $contentVimeo = null;
+        //Content (se adauga un array pentru fiecare API)
+      $contentGithub = $this->recommendGithub('website',array('language' => 'html'));
+      // $contentPocket = $this->listPocket();
+      // $contentVimeo = $this -> listVimeo();
 
-      //Pentru celelalte api-uri se adauga vectorii in array_merge
-    $content = null;
-      //Adding API's contents
-    if ($contentPocket!=null) {
-      if ($content != null){
-        $content = array_merge($content, $contentPocket);
+        //Pentru celelalte api-uri se adauga vectorii in array_merge
+      $content = null;
+        //Adding API's contents
+      if ($contentPocket!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentPocket);
+        }
+        else {
+          $content = array_merge($contentPocket);
+        }
       }
-      else {
-        $content = array_merge($contentPocket);
+      if ($contentGithub!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentGithub);
+        }
+        else {
+          $content = array_merge($contentGithub);
+        }
       }
+      if ($contentVimeo != null) {
+        if ($content != null){
+          $content = array_merge($content, $contentVimeo);
+        }
+        else {
+          $content = array_merge($contentVimeo);
+        }
+      }
+      // dd($recommended_files);
+      //Get files
+      //Settings
+      $page_number = intval($page_number);
+      $per_page = 8;
+      //Pagination
+      $article_count = count($content);
+      $page_count = intval(ceil($article_count/$per_page));
+      $index_start = ($page_number-1)*$per_page;
+      //Display content
+      $display_content = null;
+      if ($content!=null){
+          // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
+        $display_content = array_slice($content,$index_start,$per_page);
+      }
+      $has_accounts = true;
     }
-    if ($contentGithub!=null) {
-      if ($content != null){
-        $content = array_merge($content, $contentGithub);
-      }
-      else {
-        $content = array_merge($contentGithub);
-      }
+    catch(\Exception $e){
+      $has_accounts = false;
+      $display_content = null;
+      $page_count = 1;
+      $page_numer = 1;
     }
-    if ($contentVimeo != null) {
-      if ($content != null){
-        $content = array_merge($content, $contentVimeo);
-      }
-      else {
-        $content = array_merge($contentVimeo);
-      }
-    }
-    // dd($recommended_files);
-    //Get files
-    //Settings
-    $page_number = intval($page_number);
-    $per_page = 8;
-    //Pagination
-    $article_count = count($content);
-    $page_count = intval(ceil($article_count/$per_page));
-    $index_start = ($page_number-1)*$per_page;
-    //Display content
-    $display_content = null;
-    if ($content!=null){
-        // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
-      $display_content = array_slice($content,$index_start,$per_page);
-    }
-    return View::make('content', ['content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number, 'target'=>'recommended']);
+    return View::make('content', ['has_accounts' => $has_accounts, 'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number, 'target'=>'recommended']);
   }
 
   //API's recommendations
@@ -112,6 +121,7 @@ class RecommendedController extends BaseController
               $file_content['path'] = $file['path'];
               $file_content['details'] = $repos['repositories'][$count]['username'].'\\'.$repos['repositories'][$count]['name'].'\\'.$file['path'];
               $file_content['username'] = $repos['repositories'][$count]['username'];
+              $file_content['id'] = '';
               // $file_content['path'] = $file['path'];
               $file_content['tag'] = pathinfo($file['name'], PATHINFO_EXTENSION);
               // $file_content['username'] = $repos['repositories'][$count]['username'];
