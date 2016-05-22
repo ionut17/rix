@@ -47,82 +47,57 @@
       </ul>
     </div>
     <div class="content-container">
-      @if (isset($content))
-        @foreach ($content as $entry)
-            <div class="article-box">
-              <section class="image"
-                @if (isset($entry['image']))
-                  style="background-image: url('{{ $entry['image'] }}')"
-                @else
-                  style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"
-                @endif
-              ></section>
-              <section class="tag">
-                @if (isset($entry['type'])) {{$entry['type']}} @endif
-              </section>
-              <section class="content">
-                <h2>{{$entry['title']}}</h2>
-                <!-- <label>@if (isset($entry['repo'])) {{$entry['repo']}} @endif</label> -->
-                <label>@if (isset($entry['details'])) {{$entry['details']}} @endif</label>
-                <p class="description">
-                  @if (isset($entry['description']))
-                    {{$entry['description']}}
+      @if ($has_accounts==true)
+        @if (isset($content))
+          @foreach ($content as $entry)
+              <div class="article-box">
+                <section class="image"
+                  @if (isset($entry['image']))
+                    style="background-image: url('{{ $entry['image'] }}')"
                   @else
-                    <!-- Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. -->
+                    style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"
                   @endif
-                </p>
-              </section>
-                @if ($entry['type']=='github')
-                  <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
-                @else
-                  <a href="">
-                @endif
-                <button type="button" name="view-btn" class="article-button">Read</button>
-              </a>
-            </div>
-        @endforeach
+                ></section>
+                <section class="tag">
+                  @if (isset($entry['type'])) {{$entry['type']}} @endif
+                </section>
+                <section class="content">
+                  <h2>{{$entry['title']}}</h2>
+                  <!-- <label>@if (isset($entry['repo'])) {{$entry['repo']}} @endif</label> -->
+                  <label>@if (isset($entry['details'])) {{$entry['details']}} @endif</label>
+                  <p class="description">
+                    @if (isset($entry['description']))
+                      {{$entry['description']}}
+                    @else
+                      <!-- Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. -->
+                    @endif
+                  </p>
+                </section>
+                  @if ($entry['type']=='github')
+                    @if ($entry['id']!='')
+                      <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @else
+                      <a href="{{ URL::to('/article/code/'.$entry['type'].'?username='.urlencode($entry['username']).'&repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
+                    @endif
+                  @else
+                    <a href="">
+                  @endif
+                  <button type="button" name="view-btn" class="article-button">Read</button>
+                </a>
+              </div>
+          @endforeach
+        @else
+          <div class="article-warning">
+            <p>Warning: You don't have any content available!</p>
+            <!-- <button type="button" name="view-btn" class="article-button fixed-size" data-toggle="modal" data-target="#addModal"><Add></Add>Add account</button> -->
+          </div>
+        @endif
       @else
         <div class="article-warning">
-          <p>Warning: You don't have any content available!</p>
+          <p>Warning: You don't have any account connected!</p>
           <button type="button" name="view-btn" class="article-button fixed-size" data-toggle="modal" data-target="#addModal"><Add></Add>Add account</button>
         </div>
         @include ('modals.attach-account')
-        @for ($i = 4; $i < 4; $i++)
-            <div class="article-box">
-              <section class="image" style="background-image: url('{{ asset('img/articles/'.($i%4+1).'.jpg') }}')"></section>
-              <section class="tag">
-                @if ($i%4==0)
-                  Github
-                @elseif ($i%4==1)
-                  Feedly
-                @elseif ($i%4==2)
-                  Slideshare
-                @else
-                  Vimeo
-                @endif
-              </section>
-              <section class="content">
-                <h2>Article {{$i+1}}</h2>
-                <label>posted 8 March 2016, 20 comments</label>
-                <p class="description">
-                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                </p>
-              </section>
-              <a href="
-              @if ($i%4==0)
-                {{ URL::to('/article/code')}}
-              @elseif ($i%4==1)
-                {{ URL::to('/article/image')}}
-              @elseif ($i%4==2)
-                {{ URL::to('/article/image')}}
-              @else
-                {{ URL::to('/article/video')}}
-              @endif
-              ">
-                <button type="button" name="view-btn" class="article-button">Read</button>
-              </a>
-            </div>
-        @endfor
       @endif
     </div>
     <div class="footer-container">
