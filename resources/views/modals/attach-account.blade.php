@@ -18,7 +18,7 @@
             <select name="api" id="api">
               <option value="github">Github</option>
               <option value="pocket">Pocket</option>
-              <option value="slideshare" disabled>Slideshare</option>
+              <option value="slideshare">Slideshare</option>
               <option value="vimeo" disabled>Vimeo</option>
             </select>
             <!-- <label for="username">Username</label>

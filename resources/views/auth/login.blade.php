@@ -8,7 +8,8 @@
     <img src="{{asset('img/rix_logo.svg')}}" draggable="false"/>
     <label for="">Resource Interactive Explorer</label>
   </figure>
-  <form action="{{ URL::to('/mycontent') }}" method="post">
+  <form action="{{ URL::to('/login_authorize') }}" method="post">
+    {{ csrf_field() }}
     <div class="box">
       <label for="username">Username</label>
       <input type="text" name="username" id="username">

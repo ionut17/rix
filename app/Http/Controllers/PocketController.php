@@ -46,5 +46,4 @@ class PocketController extends BaseController
     header('Location: http://localhost:2000/mycontent');
     exit();
   }
-
 }
