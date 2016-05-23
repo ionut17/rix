@@ -42,44 +42,7 @@ class VimeoController extends BaseController
 
 		//added the access token for the current user in the DB
 			DB::table('accounts') -> insert(['username' => $username, 'access_token' => $tokens['body']['access_token'], 'source_name' => 'vimeo']);
-
-			$pdo = DB::getPdo();
-		// request to get all the videos from the user vimeo account
-			$response = $vimeo_connection -> request('/me/videos', [], 'GET');
-			$videos = $response['body']['data'];
-			$stmt = $pdo -> prepare("BEGIN
-				:id := articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
-				END;");
-			$id = 100000;
-
-			foreach($videos as $video){
-				$title = $video['name'];
-				$description = $video['description'];
-				$url_content = $video['uri'];
-				$authors = $video['user']['name'];
-				if ($video['status'] == 'available')
-					$is_public = 't';
-				else $is_public = 'f';
-				$stmt->bindParam(':id', $id);
-				$stmt ->bindParam(':username', $username);
-				$stmt ->bindParam(':title', $title);
-				$stmt ->bindParam(':description', $description);
-				$stmt ->bindParam(':url_content', $url_content);
-				$stmt ->bindParam(':authors', $authors);
-				$stmt ->bindParam(':is_public', $is_public);
-				$stmt ->execute();
-
-				foreach($video['tags'] as $tag){
-					DB::table('tags') ->insert(['id_article' => $id, 'source_name' => 'vimeo', 'tagname' => $tag['name']]);
-					$statement = $pdo->prepare("BEGIN
-						articles_package.insert_user_tags(:username,:tagname);
-						END;");
-					$statement ->bindParam(':username', $username);
-					$statement ->bindParam(':tagname', $tag['tag']);
-					$statement->execute();
-				}
-			}
-
+			$this->store($vimeo_connection);
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}catch(\Exception $e){
@@ -89,4 +52,43 @@ class VimeoController extends BaseController
 		}
 	}
 
+	public function store($vimeo_connection){
+		$pdo = DB::getPdo();
+		// request to get all the videos from the user vimeo account
+		$response = $vimeo_connection -> request('/me/videos', [], 'GET');
+		$videos = $response['body']['data'];
+		$stmt = $pdo -> prepare("BEGIN
+			:id := articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
+			END;");
+		$id = 100000;
+
+		foreach($videos as $video){
+			$username = Session::get('username');
+			$title = $video['name'];
+			$description = $video['description'];
+			$url_content = $video['uri'];
+			$authors = $video['user']['name'];
+			if ($video['status'] == 'available')
+				$is_public = 't';
+			else $is_public = 'f';
+			$stmt->bindParam(':id', $id);
+			$stmt ->bindParam(':username', $username);
+			$stmt ->bindParam(':title', $title);
+			$stmt ->bindParam(':description', $description);
+			$stmt ->bindParam(':url_content', $url_content);
+			$stmt ->bindParam(':authors', $authors);
+			$stmt ->bindParam(':is_public', $is_public);
+			$stmt ->execute();
+
+			foreach($video['tags'] as $tag){
+				DB::table('tags') ->insert(['id_article' => $id, 'source_name' => 'vimeo', 'tagname' => $tag['name']]);
+				$statement = $pdo->prepare("BEGIN
+					articles_package.insert_user_tags(:username,:tagname);
+					END;");
+				$statement ->bindParam(':username', $username);
+				$statement ->bindParam(':tagname', $tag['tag']);
+				$statement->execute();
+			}
+		}
+	}
 }
