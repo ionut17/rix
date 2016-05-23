@@ -47,7 +47,7 @@ class SettingsController extends BaseController
       $pocket_controller->store();
 
       $vimeo_controller =  new VimeoController;
-      $vimeo_connection->store();
+      $vimeo_controller->store();
 
       return Redirect::to('mycontent');
     }
