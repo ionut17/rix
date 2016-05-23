@@ -19,7 +19,7 @@ class PocketController extends BaseController
 
   private $consumer_key;
 
-  public function __construct(GithubClient $client)
+  public function __construct()
   {
     $this->consumer_key = env('POCKET_CONSUMER_KEY');
   }
@@ -116,9 +116,9 @@ class PocketController extends BaseController
           if($file_content['tags']!=null){
             foreach($file_content['tags'] as $tag){
               //Inserting tags into table Tags
-              $stmt = $pdo->prepare("insert into tags values (:a,'pocket',:c)");
-              $stmt->bindParam(':a', $y);
-              $stmt->bindParam(':c', $tag['tag']);
+              $stmt = $pdo->prepare("BEGIN articles_package.insert_into_tags(:f, 'pocket', :h); END;");
+              $stmt->bindParam(':f', $y);
+              $stmt->bindParam(':h', $tag['tag']);
               $stmt->execute();
 
               //Inserting tags into table Preferences

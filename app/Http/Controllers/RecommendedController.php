@@ -22,10 +22,12 @@ class RecommendedController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-  private $max_files_per_api = 30;
+  private $max_files_per_api = 10;
+  protected $rix_username;
 
   public function __construct(){
       // $this->middleware('auth');
+    $this->rix_username = Session::get('username');
   }
 
   public function show($page_number=1){
@@ -33,7 +35,7 @@ class RecommendedController extends BaseController
       $contentGithub = null;
       $contentPocket = null;
       $contentSlideshare = null;
-      $contentVimeo = null;
+      $contentVimeo = $this->recommendedVimeo();
         //Content (se adauga un array pentru fiecare API)
       $contentGithub = $this->recommendGithub('website',array('language' => 'html'));
       // $contentPocket = $this->listPocket();
@@ -74,7 +76,6 @@ class RecommendedController extends BaseController
           $content = array_merge($contentSlideshare);
         }
       }
-      // dd($recommended_files);
       //Get files
       //Settings
       $page_number = intval($page_number);
@@ -104,9 +105,9 @@ class RecommendedController extends BaseController
 
   public function recommendGithub($search_input,$languages){
     try{
+      // $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
       $client = new \Github\Client();
-      $rix_username = Session::get('username');
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
+      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($this->rix_username,"github"));
       $token = $result[0]->access_token;
       $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
       //Get repos
@@ -123,22 +124,22 @@ class RecommendedController extends BaseController
           }
           if ($file['type']=='file' && $file['size']<1000000){
             // dd($file);
-              $file_content['type'] = 'github';
-              $file_content['title'] = $file['name'];
-              $file_content['repo'] = $repos['repositories'][$count]['name'];
-              $file_content['path'] = $file['path'];
-              $file_content['details'] = $repos['repositories'][$count]['username'].'\\'.$repos['repositories'][$count]['name'].'\\'.$file['path'];
-              $file_content['username'] = $repos['repositories'][$count]['username'];
-              $file_content['id'] = '';
+            $file_content['type'] = 'github';
+            $file_content['title'] = $file['name'];
+            $file_content['repo'] = $repos['repositories'][$count]['name'];
+            $file_content['path'] = $file['path'];
+            $file_content['details'] = $repos['repositories'][$count]['username'].'\\'.$repos['repositories'][$count]['name'].'\\'.$file['path'];
+            $file_content['username'] = $repos['repositories'][$count]['username'];
+            $file_content['id'] = '';
               // $file_content['path'] = $file['path'];
-              $file_content['tag'] = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $file_content['tag'] = pathinfo($file['name'], PATHINFO_EXTENSION);
               // $file_content['username'] = $repos['repositories'][$count]['username'];
-              if (isset($file['description'])){
-                $file_content['description'] = $file['description'];
-              }
-              $counted_files = $counted_files + 1;
+            if (isset($file['description'])){
+              $file_content['description'] = $file['description'];
+            }
+            $counted_files = $counted_files + 1;
               // $file_content['content'] = base64_decode($myfile['content']);
-              array_push($recommended_files, $file_content);
+            array_push($recommended_files, $file_content);
           }
         }
       }
@@ -148,6 +149,36 @@ class RecommendedController extends BaseController
       $recommended_files = null;
     }
     finally{
+      return $recommended_files;
+    }
+  }
+
+  public function recommendedVimeo(){
+    //Get all the favourites tags for user
+    $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
+    $recommended_files = array();
+
+    try{
+      //For each tag
+      foreach($tags as $tag){
+        $url = '/tags/'.strtolower($tag->tagname).'/videos';
+        $result = $vimeo_connection = Vimeo::connection()->request($url, [ 'page' => 1, 'per_page' => $this->max_files_per_api], 'GET');
+        $articles = $result['body']['data'];
+        foreach($articles as $article){
+          $file_content['type'] = 'vimeo';
+          $file_content['title'] = $article['name'];
+          $file_content['description'] = $article['description'];
+          $file_content['details'] = 'Author:  '. $article['user']['name'];
+          $file_content['content'] = $article['embed']['html'];
+          $file_content['url'] = $article['uri'];
+          $file_content['tag'] = $tag->tagname;
+          array_push($recommended_files, $file_content);
+        } 
+      }
+    }catch(\Exception $e){
+      dd($e);
+      $recommended_files = null;
+    }finally{
       return $recommended_files;
     }
   }
