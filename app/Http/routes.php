@@ -46,6 +46,7 @@ Route::get('/logout','PageController@logout');
 		Route::get('/recommended/{page_number?}','RecommendedController@show');
 
 		Route::get('/refresh','SettingsController@refresh');
+		Route::get('/search','ContentController@search');
 
 
 	//Activate APIs
