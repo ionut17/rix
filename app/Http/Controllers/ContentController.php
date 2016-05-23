@@ -96,8 +96,9 @@ class ContentController extends BaseController
       // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
       $display_content = array_slice($content,$index_start,$per_page);
     }
+    $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
-    return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number]);
+    return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
   }
 
   public function article($type,$api){
@@ -105,13 +106,18 @@ class ContentController extends BaseController
       if($api == 'pocket'){
         $article_id = Request::input('id');
         $article = $this->contentPocket($article_id);
+        return View::make('articles.image-article',['content'=>$article]);
       }
-      return View::make('articles.image-article',['content'=>$article]);
     }
     if ($type=='video'){
       if ($api =='vimeo'){
         $id = Request::input('id');
         $article = $this->contentVimeo($id);
+        return View::make('articles.video-article',['content'=>$article]);
+      }
+      if ($api == 'pocket'){
+        $article_id = Request::input('id');
+        $article = $this->contentPocket($article_id);
         return View::make('articles.video-article',['content'=>$article]);
       }
       // return view('articles.video-article');
@@ -128,9 +134,9 @@ class ContentController extends BaseController
         else{
           $article = $this->contentGithub($id);
         }
+        return View::make('articles.code-article',['content'=>$article]);
       }
         // dd($article);
-      return View::make('articles.code-article',['content'=>$article]);
     }
     return view('layouts.article');
   }
@@ -242,7 +248,7 @@ class ContentController extends BaseController
       $content = array();
       foreach ($results as $result){
         //Selecting values from db
-        $values=DB::select('SELECT title, url_content, description, image_url FROM pocket_articles WHERE id_article = ?', array($result->id_article));
+        $values=DB::select('SELECT title, url_content, description, image_url, video_url FROM pocket_articles WHERE id_article = ?', array($result->id_article));
         // dd($values);
         $file_content['type']='pocket';
         $file_content['id'] = $result->id_article;
@@ -250,6 +256,7 @@ class ContentController extends BaseController
         $file_content['url_content'] = $values[0]->url_content;
         $file_content['description'] = $values[0]->description;
         $file_content['image'] = $values[0]->image_url;
+        $file_content['video'] = $values[0]->video_url;
 
         array_push($content,$file_content);
       }
@@ -278,6 +285,7 @@ class ContentController extends BaseController
     $file_content['description'] = $values[0]->description;
     $file_content['image'] = $values[0]->image_url;
     $file_content['video'] = $values[0]->video_url;
+
         //Breaking authors string into array;
     $authors_string = $values[0]->authors;
     $author_details = array();
@@ -316,34 +324,56 @@ class ContentController extends BaseController
     }
   }
 
-  public function contentVimeo($id){
-    try{
-      $username = Session::get('username');
-      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
+  private function curl_get($url){
+   $curl = curl_init($url);
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+   curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+   $return = curl_exec($curl);
+   curl_close($curl);
+   return $return;
+ }
 
-      $access_token = $result->access_token;
-      $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
-      if ($result_video->url_content != null){
-        $vimeo_connection= Vimeo::connection('alternative');
-        $vimeo_connection->setToken($access_token);
-        $article = $vimeo_connection->request($result_video->url_content,[],'GET');
-      }else{
-        $vimeo_connection('main');
-        $article = $vimeo_connection->request($id,[],'GET');
-      }
-      $file_content['type'] = 'vimeo';
-      $file_content['title'] = $article['body']['name'];
-      $file_content['description'] = $article['body']['description'];
-      $file_content['details'] = $article['body']['user']['name'];
-      $file_content['content'] = $article['body']['embed']['html'];
-      $file_content['url'] = $article['body']['link'];
-      return $file_content;
-    }catch(\Exception $e){
-      $file_content = null;
-    }finally{
-      return $file_content;
-    }
+ public function contentVimeo($id){
+  try{
+    $username = Session::get('username');
+    $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
+    $access_token = $result->access_token;
+    $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
+    if ($result_video->url_content != null){
+      $vimeo_connection= Vimeo::connection('alternative');
+      $vimeo_connection->setToken($access_token);
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+    }else{
+      $vimeo_connection =Vimeo::connection('main');
+      $article = $vimeo_connection->request($id,[],'GET');
+    };
+    $file_content['type'] = 'vimeo';
+    $file_content['title'] = $article['body']['name'];
+    $file_content['description'] = $article['body']['description'];
+    $file_content['details'] = $article['body']['user']['name'];
+    $file_content['content'] = $article['body']['embed']['html'];
+    $file_content['url'] = $article['body']['link'];
+    return $file_content;
+  }catch(\Exception $e){
+    $file_content = null;
+  }finally{
+    return $file_content;
   }
+}
+
+// private function resizeVideo($video_url){
+//   $url = 'http://vimeo.com/'.substr($video_url,8);
+//   $oembed_endpoint = 'http://vimeo.com/api/oembed';
+//   echo $url;
+//   $video_url = 'http://vimeo.com/108650530';
+//   dd($video_url);
+
+//   $xml_url = $oembed_endpoint . '.xml?url=' . rawurlencode($video_url) . '&width=1000&height=700';
+//   // dd($this->curl_get($xml_url));
+//   $oembed = simplexml_load_string($this->curl_get($xml_url));
+//   return $oembed->html;
+// }
 
 
   //Slideshare
