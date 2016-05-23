@@ -87,8 +87,9 @@ class ContentController extends BaseController
       // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
       $display_content = array_slice($content,$index_start,$per_page);
     }
+    $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
-    return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number]);
+    return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
   }
 
   public function article($type,$api){

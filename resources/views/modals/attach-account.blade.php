@@ -16,10 +16,13 @@
           <div class="box" style="margin-top:0;">
             <label for="Api">Select API</label>
             <select name="api" id="api_select">
-              <option value="github">Github</option>
+              @foreach ($select_values as $select_value)
+                <option value="{{$select_value}}">{{$select_value}}</option>
+              @endforeach
+              <!-- <option value="github">Github</option>
               <option value="pocket">Pocket</option>
               <option value="slideshare">Slideshare</option>
-              <option value="vimeo">Vimeo</option>
+              <option value="vimeo">Vimeo</option> -->
             </select>
             <div id="slideshare_account_wrapper">
               <label for="slideshare_username">Slideshare username</label>
@@ -30,7 +33,7 @@
           </div>
         </div>
         <div class="modal-footer" style="padding: 0;">
-          <button type="submit" class="button">
+          <button type="submit" class="button" id="connect-api">
             Connect
           </button>
         </div>

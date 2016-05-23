@@ -22,4 +22,13 @@ $( document ).ready(function() {
       console.log("Removed notifications");
       $('.notification').slideUp('medium');
     }, 4000);
+
+    //Loader
+    $( "#connect-api" ).click(function() {
+      $('#importing-text').show();
+      $('.main-wrapper').fadeOut(100);
+      $('.modal-backdrop').hide();
+      $('.loader').fadeIn(100);
+      console.log( "Importing api..." );
+    });
 });
