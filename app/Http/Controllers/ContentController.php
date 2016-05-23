@@ -294,7 +294,6 @@ class ContentController extends BaseController
     try{
       $username = Session::get('username');
       $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
-
       $access_token = $result->access_token;
       $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
       if ($result_video->url_content != null){
@@ -302,9 +301,9 @@ class ContentController extends BaseController
         $vimeo_connection->setToken($access_token);
         $article = $vimeo_connection->request($result_video->url_content,[],'GET');
       }else{
-        $vimeo_connection('main');
+        $vimeo_connection =Vimeo::connection('main');
         $article = $vimeo_connection->request($id,[],'GET');
-      }
+      };
       $file_content['type'] = 'vimeo';
       $file_content['title'] = $article['body']['name'];
       $file_content['description'] = $article['body']['description'];
@@ -313,6 +312,7 @@ class ContentController extends BaseController
       $file_content['url'] = $article['body']['link'];
       return $file_content;
     }catch(\Exception $e){
+      dd($e);
       $file_content = null;
     }finally{
       return $file_content;
