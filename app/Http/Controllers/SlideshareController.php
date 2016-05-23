@@ -24,7 +24,7 @@ class SlideshareController extends BaseController
 		$this->shared_secret = 'jnrS8csn';
 	}
 
-	private function generate_validation()
+	public function generate_validation()
 	{
 		$time = time();
 		$validation = 'api_key='.$this->api_key.'&ts='.$time.'&hash='.sha1($this->shared_secret.$time);

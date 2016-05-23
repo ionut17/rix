@@ -18,7 +18,6 @@ use Exception;
 use Session;
 use DB;
 
-
 class ContentController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -27,14 +26,14 @@ class ContentController extends BaseController
     $this->middleware('auth');
   }
 
-  public function buildContent(){
+  public function show($page_number=1){
     //Verify if user has any accounts
     $rix_username = Session::get('username');
     $result = DB::table('accounts')->where('username', '=', $rix_username)->count();
     //Pentru celelalte api-uri se adauga vectorii in array_merge
     $content = null;
     if ($result != 0){
-      Session::put('has_accounts',true);
+      $has_accounts = true;
     //Get content
       $contentGithub = null;
       $contentPocket = null;
@@ -81,29 +80,8 @@ class ContentController extends BaseController
           $content = array_merge($contentSlideshare);
         }
       }
-      if ($content == null){
-        Session::put('content',$content);
-        Session::save();
-        return $this->show();
-      }
-      else{
-        shuffle($content);
-        Session::put('content',$content);
-        Session::save();
-        return $this->show();
-      }
     }
-    else{
-       Session::put('content', null);
-       Session::put('has_accounts', false);
-       Session::save();
-       return $this->show();
-    }
-  }
-
-  public function show($page_number=1){
-    $content = Session::get('content');
-    $has_accounts = Session::get('has_accounts');
+    else $has_accounts = false;
     // dd($has_accounts);
     //Settings
     $page_number = intval($page_number);
@@ -120,7 +98,6 @@ class ContentController extends BaseController
     }
     $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
-    // dd($has_accounts, $display_content, $page_count, $page_number, $select_values);
     return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
   }
 
@@ -141,11 +118,6 @@ class ContentController extends BaseController
       if ($api == 'pocket'){
         $article_id = Request::input('id');
         $article = $this->contentPocket($article_id);
-        return View::make('articles.video-article',['content'=>$article]);
-      }
-      if ($api == 'slideshare'){
-        $article_id = Request::input('id');
-        $article = $this->contentSlideshare($article_id);
         return View::make('articles.video-article',['content'=>$article]);
       }
       // return view('articles.video-article');
@@ -305,6 +277,16 @@ class ContentController extends BaseController
     $values=DB::select('SELECT title, url_content, description, image_url, video_url, authors FROM pocket_articles WHERE id_article = ?', array($id));
         // dd($values);
     $file_content = array();
+<<<<<<< HEAD
+
+    $file_content['type']='pocket';
+    $file_content['id'] = $id;
+    $file_content['title'] = $values[0]->title;
+    $file_content['url_content'] = $values[0]->url_content;
+    $file_content['description'] = $values[0]->description;
+    $file_content['image'] = $values[0]->image_url;
+    $file_content['video'] = $values[0]->video_url;
+=======
 
     $file_content['type']='pocket';
     $file_content['id'] = $id;
@@ -314,6 +296,7 @@ class ContentController extends BaseController
     $file_content['image'] = $values[0]->image_url;
     $file_content['video'] = $values[0]->video_url;
 
+>>>>>>> 500a315ea64c449352b6abd073a553848c2e9a99
         //Breaking authors string into array;
     $authors_string = $values[0]->authors;
     $author_details = array();
@@ -426,23 +409,15 @@ class ContentController extends BaseController
           }
         }catch (\Exception $e){
           $content = null;
-        } finally{
+        }finally{
           return $content;
         }
     }
 
 
+
     public function contentSlideshare($id)
     {
-        $SS = new SlideshareController();
-        $validation = $SS->generate_validation();
-        $response = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshow/?'.$validation.'&slideshow_id='.$id));
-        $file_content['type'] = 'slideshare';
-        $file_content['title'] = $response->Title;
-        $file_content['description'] = $response->Description;
-        $file_content['details'] = 'By '.$response->Username;
-        $file_content['content'] = $response->Embed;
-        $file_content['url'] = $response->URL;
-        return $file_content;   
+
     }
 }
