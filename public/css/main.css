@@ -788,6 +788,8 @@ figure.small.logo {
 ul.search-results {
   width: 400px;
   height: auto;
+  max-height: 324px;
+  overflow: scroll;
   max-height: 300px;
   background-color: white;
   border: 1px solid #dadada;
@@ -886,7 +888,8 @@ ul.search-results {
     width: 400px; }
   ul.search-results {
     width: 100%;
-    top: 58px; } }
+    top: 58px;
+    max-height: inherit; } }
 
 @media screen and (max-width: 480px) {
   .article-container {
