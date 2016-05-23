@@ -44,14 +44,22 @@ class SlideshareController extends BaseController
 		}
 		else
 		{	
+			//create the account
+			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
+
+			//store the data for showing
 			$min = min($response->Count,50);
 			for($i = 0; $i < $min; $i++)
 			{	
-				dd($response->Slideshow[$i]);
-			}
+				$DB_id_article = (string)$response->Slideshow[$i]->ID;
+				$DB_title = (string)$response->Slideshow[$i]->Title[0];
+				$DB_description = (string)$response->Slideshow[$i]->Description;
+				$DB_image_url = (string)$response->Slideshow[$i]->ThumbnailXLargeURL;
 
-			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
-			Redirect::to('settings');
+				DB::insert('insert into slideshare_articles(id_article,username,author,title,description,image_url) values (?,?,?,?,?,?)',array($DB_id_article,$username,$slideshare_username,$DB_title,$DB_description,$DB_image_url));
+			}	
+
+			return Redirect::to('settings');
 		}
 	}
 }

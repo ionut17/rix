@@ -44,6 +44,7 @@ class ContentController extends BaseController
       $contentGithub = $this->listGithub();
       $contentPocket = $this->listPocket();
       $contentVimeo = $this->listVimeo();
+      $contentSlideshare = $this->listSlideshare();
 
     //Adding API's contents
       // echo 'before if';
@@ -69,6 +70,14 @@ class ContentController extends BaseController
         }
         else {
           $content = array_merge($contentVimeo);
+        }
+      }
+      if ($contentSlideshare != null) {
+        if ($content != null){
+          $content = array_merge($content, $contentSlideshare);
+        }
+        else {
+          $content = array_merge($contentSlideshare);
         }
       }
     }
@@ -218,7 +227,7 @@ class ContentController extends BaseController
       }
     }
     catch (\Exception $e){
-        $file_content = null;
+      $file_content = null;
     }
     return $file_content;
   }
@@ -256,33 +265,33 @@ class ContentController extends BaseController
     //Get content of pocket article
   private function contentPocket($id){
 
-      $rix_username = Session::get("username");
+    $rix_username = Session::get("username");
         //Selecting values from db
-        $values=DB::select('SELECT title, url_content, description, image_url, video_url, authors FROM pocket_articles WHERE id_article = ?', array($id));
+    $values=DB::select('SELECT title, url_content, description, image_url, video_url, authors FROM pocket_articles WHERE id_article = ?', array($id));
         // dd($values);
-        $file_content = array();
+    $file_content = array();
 
-        $file_content['type']='pocket';
-        $file_content['id'] = $id;
-        $file_content['title'] = $values[0]->title;
-        $file_content['url_content'] = $values[0]->url_content;
-        $file_content['description'] = $values[0]->description;
-        $file_content['image'] = $values[0]->image_url;
-        $file_content['video'] = $values[0]->video_url;
+    $file_content['type']='pocket';
+    $file_content['id'] = $id;
+    $file_content['title'] = $values[0]->title;
+    $file_content['url_content'] = $values[0]->url_content;
+    $file_content['description'] = $values[0]->description;
+    $file_content['image'] = $values[0]->image_url;
+    $file_content['video'] = $values[0]->video_url;
         //Breaking authors string into array;
-        $authors_string = $values[0]->authors;
-        $author_details = array();
-        $authors = array();
+    $authors_string = $values[0]->authors;
+    $author_details = array();
+    $authors = array();
 
-        $authors_strings = explode(" | ", $authors_string);
-        foreach($authors_strings as $string){
-          if($string!=null){
-            $author_details = explode(" - ", $string);
-            array_push($authors, $author_details);
-          }
-        }
-        $file_content['authors'] = $authors;
-      return $file_content;
+    $authors_strings = explode(" | ", $authors_string);
+    foreach($authors_strings as $string){
+      if($string!=null){
+        $author_details = explode(" - ", $string);
+        array_push($authors, $author_details);
+      }
+    }
+    $file_content['authors'] = $authors;
+    return $file_content;
   }
 
   //Make Vimeo articles
@@ -336,4 +345,38 @@ class ContentController extends BaseController
     }
   }
 
+
+  //Slideshare
+
+    public function listSlideshare()
+    {
+        $content = array();
+        try{
+          $username = Session::get('username');
+          $results = DB::select('select id_article from slideshare_articles where username = ?', array($username));
+          foreach($results as $result){
+            $slideshow = DB::select('SELECT id_article, author, title, description, image_url FROM slideshare_articles WHERE id_article =?', array($result->id_article));
+            $file_content = array();
+            $file_content['type'] = 'slideshare';
+            $file_content['id'] = $slideshow[0]->id_article;
+            $file_content['title'] = $slideshow[0] ->title;
+            $file_content['details'] = $slideshow[0] ->author;
+            $file_content['description'] = $slideshow[0]->description;
+            $file_content['image'] = $slideshow[0]->image_url;
+
+            array_push($content,$file_content);
+          }
+        }catch (\Exception $e){
+          $content = null;
+        }finally{
+          return $content;
+        }
+    }
+
+
+
+    public function contentSlideshare($id)
+    {
+
+    }
 }
