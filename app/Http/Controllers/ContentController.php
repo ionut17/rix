@@ -18,6 +18,7 @@ use Exception;
 use Session;
 use DB;
 
+
 class ContentController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -160,6 +161,11 @@ public function article($type,$api){
       $article = $this->contentPocket($article_id);
       return View::make('articles.video-article',['content'=>$article]);
     }
+      if ($api == 'slideshare'){
+        $article_id = Request::input('id');
+        $article = $this->contentSlideshare($article_id);
+        return View::make('articles.video-article',['content'=>$article]);
+      }
       // return view('articles.video-article');
   }
   if ($type=='code'){
@@ -430,7 +436,7 @@ public function listSlideshare()
     }
   }catch (\Exception $e){
     $content = null;
-  }finally{
+        } finally{
     return $content;
   }
 }
@@ -438,7 +444,16 @@ public function listSlideshare()
 
 public function contentSlideshare($id)
 {
-
+        $SS = new SlideshareController();
+        $validation = $SS->generate_validation();
+        $response = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshow/?'.$validation.'&slideshow_id='.$id));
+        $file_content['type'] = 'slideshare';
+        $file_content['title'] = $response->Title;
+        $file_content['description'] = $response->Description;
+        $file_content['details'] = 'By '.$response->Username;
+        $file_content['content'] = $response->Embed;
+        $file_content['url'] = $response->URL;
+        return $file_content;   
 }
 
     //function used for search

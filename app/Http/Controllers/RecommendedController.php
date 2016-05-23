@@ -68,6 +68,14 @@ class RecommendedController extends BaseController
           $content = array_merge($contentVimeo);
         }
       }
+      if ($contentSlideshare!=null) {
+        if ($content != null){
+          $content = array_merge($content, $contentSlideshare);
+        }
+        else {
+          $content = array_merge($contentSlideshare);
+        }
+      }
       //Get files
       //Settings
       $page_number = intval($page_number);
