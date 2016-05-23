@@ -352,26 +352,40 @@ public function contentVimeo($id, $tag){
     $username = Session::get('username');
     $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
     $access_token = $result->access_token;
+    $more_tags = 0;
     try{
       //verify if content is in database
       $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
       $vimeo_connection= Vimeo::connection('alternative');
       $vimeo_connection->setToken($access_token);
-      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');  
+      $tag = 'Tags: ';
+      $more_tags = 1; 
     }catch(\Exception $e){
       //catch invalid_number exception from db => that means it's a recommended content
       $vimeo_connection =Vimeo::connection('main');
       $article = $vimeo_connection->request($id,[],'GET');
+      $tag = 'Tag: '.$tag;
     }
     //construct file_content object to visualize
     $file_content['type'] = 'vimeo';
     $file_content['title'] = $article['body']['name'];
     $file_content['description'] = $article['body']['description'];
-    $file_content['details'] = 'Author:  '.$article['body']['user']['name'].'<br/> Tag: '.$tag;
+
+    if ($more_tags == 1){
+      foreach($article['body']['tags'] as $current_tag){
+        $tag = $tag.$current_tag['name']. ', ';
+      }
+
+      $tag = substr($tag, 0, strlen($tag)-2);
+    }
+
+    $file_content['details'] = 'Author:  '.$article['body']['user']['name'].'<br/> '.$tag;
     $file_content['content'] = $article['body']['embed']['html'];
     $file_content['url'] = $article['body']['link'];
     return $file_content;
   }catch(\Exception $e){
+    dd($e);
     $file_content = null;
   }finally{
     return $file_content;
@@ -408,67 +422,67 @@ public function listSlideshare()
 public function contentSlideshare($id)
 {
 
-    }
+}
 
     //function used for search
-    public function search(){
-      $search_string = Request::input('search_string');
-      $all_results = array();
+public function search(){
+  $search_string = Request::input('search_string');
+  $all_results = array();
 
-      $modified = '%'.$search_string.'%';
+  $modified = '%'.$search_string.'%';
 
       //Search for Pocket articles
-      $pocket_results = DB::select("SELECT id_article, image_url, video_url FROM pocket_articles WHERE title like ?", array($modified));
-      foreach($pocket_results as $result){
-        $article = array();
-        $article['id'] = $result->id_article;
-        $article['type'] = 'pocket';
+  $pocket_results = DB::select("SELECT id_article, image_url, video_url FROM pocket_articles WHERE title like ?", array($modified));
+  foreach($pocket_results as $result){
+    $article = array();
+    $article['id'] = $result->id_article;
+    $article['type'] = 'pocket';
         //Constructing the article's route
-        $article['url']='/article/';
-        if($result->video_url!=null)
-          $article['url'].='video/pocket?id=';
-        else
-          $article['url'].='image/pocket?id=';
-        $article['url'].=$result->id_article;
-        array_push($all_results,$article);
-      }
+    $article['url']='/article/';
+    if($result->video_url!=null)
+      $article['url'].='video/pocket?id=';
+    else
+      $article['url'].='image/pocket?id=';
+    $article['url'].=$result->id_article;
+    array_push($all_results,$article);
+  }
 
       //Search for Github articles
-      $github_results = DB::select("SELECT id_article FROM github_articles WHERE title like ?", array($modified));
-      foreach($github_results as $result){
-        $article = array();
-        $article['id'] = $result->id_article;
-        $article['type'] = 'github';
+  $github_results = DB::select("SELECT id_article FROM github_articles WHERE title like ?", array($modified));
+  foreach($github_results as $result){
+    $article = array();
+    $article['id'] = $result->id_article;
+    $article['type'] = 'github';
         //Constructing the article's route
-        $article['url']='/article/code/github?id=';
-        $article['url'].=$result->id_article;
-        array_push($all_results,$article);
-      }
+    $article['url']='/article/code/github?id=';
+    $article['url'].=$result->id_article;
+    array_push($all_results,$article);
+  }
 
       //Search for Slideshare articles
-      $slideshare_results = DB::select("SELECT id_article FROM slideshare_articles WHERE title like ?", array($modified));
-      foreach($slideshare_results as $result){
-        $article = array();
-        $article['id'] = $result->id_article;
-        $article['type'] = 'slideshare';
+  $slideshare_results = DB::select("SELECT id_article FROM slideshare_articles WHERE title like ?", array($modified));
+  foreach($slideshare_results as $result){
+    $article = array();
+    $article['id'] = $result->id_article;
+    $article['type'] = 'slideshare';
         //Constructing the article's route
-        $article['url']='/article/video/slideshare?id=';
-        $article['url'].=$result->id_article;
-        array_push($all_results,$article);
-      }
+    $article['url']='/article/video/slideshare?id=';
+    $article['url'].=$result->id_article;
+    array_push($all_results,$article);
+  }
 
       //Search for Vimeo articles
-      $vimeo_results = DB::select("SELECT id_article FROM vimeo_articles WHERE title like ?", array($modified));
-      foreach($vimeo_results as $result){
-        $article = array();
-        $article['id'] = $result->id_article;
-        $article['type'] = 'vimeo';
+  $vimeo_results = DB::select("SELECT id_article FROM vimeo_articles WHERE title like ?", array($modified));
+  foreach($vimeo_results as $result){
+    $article = array();
+    $article['id'] = $result->id_article;
+    $article['type'] = 'vimeo';
         //Constructing the article's route
-        $article['url']='/article/video/vimeo?id=';
-        $article['url'].=$result->id_article;
-        array_push($all_results,$article);
-      }
-      
-      return $all_results;
+    $article['url']='/article/video/vimeo?id=';
+    $article['url'].=$result->id_article;
+    array_push($all_results,$article);
+  }
+
+  return $all_results;
 }
 }

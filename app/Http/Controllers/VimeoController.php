@@ -46,8 +46,7 @@ class VimeoController extends BaseController
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}catch(\Exception $e){
-			dd($e);
-			header('Location: http://localhost:2000/mycontent');
+			header('Location: http://localhost:2000/settings');
 			exit();
 		}
 	}
@@ -55,7 +54,7 @@ class VimeoController extends BaseController
 	public function store($vimeo_connection){
 		$pdo = DB::getPdo();
 		// request to get all the videos from the user vimeo account
-		$response = $vimeo_connection -> request('/me/videos', [], 'GET');
+		$response = $vimeo_connection -> request('/me/videos', ['per_page' => 50], 'GET');
 		$videos = $response['body']['data'];
 		$stmt = $pdo -> prepare("BEGIN
 			:id := articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
@@ -81,7 +80,17 @@ class VimeoController extends BaseController
 			$stmt ->execute();
 
 			foreach($video['tags'] as $tag){
-				DB::table('tags') ->insert(['id_article' => $id, 'source_name' => 'vimeo', 'tagname' => $tag['name']]);
+				//insert into tags article - tag
+				$statement_tags = $pdo->prepare("BEGIN
+					articles_package.insert_into_tags(:id, :source_name, :tagname);
+					END;");
+				$statement_tags ->bindParam(':id', $id);
+				$source_name = 'vimeo';
+				$statement_tags ->bindParam(':source_name', $source_name);
+				$statement_tags ->bindParam(':tagname', $tag['name']);
+				$statement_tags ->execute();	
+
+				//insert into preferences username - tag
 				$statement = $pdo->prepare("BEGIN
 					articles_package.insert_user_tags(:username,:tagname);
 					END;");
