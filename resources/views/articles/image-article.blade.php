@@ -9,6 +9,9 @@
     @if (isset($content['image']))
       <section class="image" style="background-image: url('{{$content['image']}}');">
       </section>
+    @else
+      <section class="image" style="background-image: url('{{ asset('img/articles/'.$content['type'].'-hq.jpg') }}');">
+      </section>
     @endif
     <section class="title">
       @if (isset($content['title']))

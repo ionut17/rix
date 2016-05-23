@@ -96,13 +96,18 @@ class ContentController extends BaseController
       if($api == 'pocket'){
         $article_id = Request::input('id');
         $article = $this->contentPocket($article_id);
+        return View::make('articles.image-article',['content'=>$article]);
       }
-      return View::make('articles.image-article',['content'=>$article]);
     }
     if ($type=='video'){
       if ($api =='vimeo'){
         $id = Request::input('id');
         $article = $this->contentVimeo($id);
+        return View::make('articles.video-article',['content'=>$article]);
+      }
+      if ($api == 'pocket'){
+        $article_id = Request::input('id');
+        $article = $this->contentPocket($article_id);
         return View::make('articles.video-article',['content'=>$article]);
       }
       // return view('articles.video-article');
@@ -119,9 +124,9 @@ class ContentController extends BaseController
         else{
           $article = $this->contentGithub($id);
         }
+        return View::make('articles.code-article',['content'=>$article]);
       }
         // dd($article);
-      return View::make('articles.code-article',['content'=>$article]);
     }
     return view('layouts.article');
   }
@@ -233,7 +238,7 @@ class ContentController extends BaseController
       $content = array();
       foreach ($results as $result){
         //Selecting values from db
-        $values=DB::select('SELECT title, url_content, description, image_url FROM pocket_articles WHERE id_article = ?', array($result->id_article));
+        $values=DB::select('SELECT title, url_content, description, image_url, video_url FROM pocket_articles WHERE id_article = ?', array($result->id_article));
         // dd($values);
         $file_content['type']='pocket';
         $file_content['id'] = $result->id_article;
@@ -241,6 +246,7 @@ class ContentController extends BaseController
         $file_content['url_content'] = $values[0]->url_content;
         $file_content['description'] = $values[0]->description;
         $file_content['image'] = $values[0]->image_url;
+        $file_content['video'] = $values[0]->video_url;
 
         array_push($content,$file_content);
       }
@@ -269,6 +275,7 @@ class ContentController extends BaseController
         $file_content['description'] = $values[0]->description;
         $file_content['image'] = $values[0]->image_url;
         $file_content['video'] = $values[0]->video_url;
+
         //Breaking authors string into array;
         $authors_string = $values[0]->authors;
         $author_details = array();
