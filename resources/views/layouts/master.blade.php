@@ -30,6 +30,7 @@
           <!-- <i class="fa fa-cog fa-spin fa-5x fa-fw margin-bottom"></i> -->
           <!-- <i class="fa fa-spinner fa-pulse fa-3x fa-fw margin-bottom"></i> -->
           <i class="fa fa-spinner fa-spin fa-3x fa-fw margin-bottom"></i>
+          <p id="normal-text"> Loading</p>
           <p id="importing-text" style="display: none;">Importing articles</p>
       </div>
 

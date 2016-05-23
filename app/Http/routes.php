@@ -33,7 +33,8 @@ Route::get('/logout','PageController@logout');
 			return redirect('/login');
 		});
 
-		Route::post('/mycontent','ContentController@show');
+		Route::post('/mycontent','ContentController@buildContent');
+		Route::get('/mycontent','ContentController@buildContent');
 
 
 		Route::get('/mycontent/{page_number?}','ContentController@show');
@@ -65,5 +66,5 @@ Route::get('/logout','PageController@logout');
 	//Remove Routes
 		Route::post('/remove/{api}', 'PageController@removeAPI');
 
-	});	
+	});
 });

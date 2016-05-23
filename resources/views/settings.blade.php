@@ -31,13 +31,17 @@
     <div class="row settings-wrapper">
       <div class="settings-box">
         <a href=""></a>
-        <section class="profile-image" style="background-image: url('{{asset('img/profiles/avatar.jpg')}}');">
+        <section class="profile-image"
+          @if (isset($user_info->avatar))
+            style="background-image: url('{{asset('img/profiles/'.$user_info->avatar.'.jpg')}}');"
+          @endif
+          >
           <figure class="hover-figure" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil" aria-hidden="true"></i></figure>
         </section>
         <div class="box">
-          <label for="username">@if (isset($user)) {{$user}} @endif</label>
+          <label for="username">@if (isset($user_info)) {{$user_info->username}} @endif</label>
           <input type="text" name="username" id="username" class="hide">
-          <label for="email">ionut.iacob17@gmail.com</label>
+          <label for="email">@if (isset($user_info)) {{$user_info->email}} @endif</label>
           <input type="text" name="email" id="email" class="hide">
         </div>
       </div>

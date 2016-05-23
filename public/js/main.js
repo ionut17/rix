@@ -25,6 +25,7 @@ $( document ).ready(function() {
 
     //Loader
     $( "#connect-api" ).click(function() {
+      $('#normal-text').hide();
       $('#importing-text').show();
       $('.main-wrapper').fadeOut(100);
       $('.modal-backdrop').hide();

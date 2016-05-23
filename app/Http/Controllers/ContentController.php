@@ -26,14 +26,14 @@ class ContentController extends BaseController
     $this->middleware('auth');
   }
 
-  public function show($page_number=1){
+  public function buildContent(){
     //Verify if user has any accounts
     $rix_username = Session::get('username');
     $result = DB::table('accounts')->where('username', '=', $rix_username)->count();
     //Pentru celelalte api-uri se adauga vectorii in array_merge
     $content = null;
     if ($result != 0){
-      $has_accounts = true;
+      Session::put('has_accounts',true);
     //Get content
       $contentGithub = null;
       $contentPocket = null;
@@ -71,8 +71,29 @@ class ContentController extends BaseController
           $content = array_merge($contentVimeo);
         }
       }
+      if ($content == null){
+        Session::put('content',$content);
+        Session::save();
+        return $this->show();
+      }
+      else{
+        shuffle($content);
+        Session::put('content',$content);
+        Session::save();
+        return $this->show();
+      }
     }
-    else $has_accounts = false;
+    else{
+       Session::put('content', null);
+       Session::put('has_accounts', false);
+       Session::save();
+       return $this->show();
+    }
+  }
+
+  public function show($page_number=1){
+    $content = Session::get('content');
+    $has_accounts = Session::get('has_accounts');
     // dd($has_accounts);
     //Settings
     $page_number = intval($page_number);
@@ -89,6 +110,7 @@ class ContentController extends BaseController
     }
     $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
+    // dd($has_accounts, $display_content, $page_count, $page_number, $select_values);
     return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
   }
 
