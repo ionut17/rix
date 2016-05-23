@@ -20,6 +20,7 @@
         </ul>
         <section class="search">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
+          <ul class="search-results" id="search-results"></ul>
           <i class="fa fa-search" aria-hidden="true"></i>
         </section>
       </div>
@@ -88,7 +89,7 @@
                   @elseif ($entry['type']=='vimeo')
                       @if (isset($entry['id']))
                         <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
-                      @elseif (isset($entry['tag'])) 
+                      @elseif (isset($entry['tag']))
                         <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['url'].'&tag='.$entry['tag']) }}">
                       @endif
                   @elseif ($entry['type']=='slideshare')
