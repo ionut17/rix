@@ -115,12 +115,17 @@ class PocketController extends BaseController
           //Inserting the article tags into the DB
           if($file_content['tags']!=null){
             foreach($file_content['tags'] as $tag){
-              // DB::statement('insert into tags values (?,?,?)', array($y, 'pocket', $tag));
+              //Inserting tags into table Tags
               $stmt = $pdo->prepare("insert into tags values (:a,'pocket',:c)");
-              // dd($y, $tag['tag']);
               $stmt->bindParam(':a', $y);
               $stmt->bindParam(':c', $tag['tag']);
               $stmt->execute();
+
+              //Inserting tags into table Preferences
+              $stmt2 = $pdo->prepare("BEGIN articles_package.insert_user_tags(:d, :e); END;");
+              $stmt2->bindParam(':d', $rix_username);
+              $stmt2->bindParam(':e', $tag['tag']);
+              $stmt2->execute();
             }
           }
       }
