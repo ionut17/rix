@@ -47,37 +47,54 @@ class ContentController extends BaseController
       $contentSlideshare = $this->listSlideshare();
 
     //Adding API's contents
-      // echo 'before if';
-      if ($contentPocket!=null) {
-        if ($content != null){
-          $content = array_merge($content, $contentPocket);
-        }
-        else {
-          $content = array_merge($contentPocket);
-        }
-      }
-      if ($contentGithub!=null) {
-        if ($content != null){
-          $content = array_merge($content, $contentGithub);
-        }
-        else {
-          $content = array_merge($contentGithub);
-        }
-      }
-      if ($contentVimeo != null) {
-        if ($content != null){
-          $content = array_merge($content, $contentVimeo);
-        }
-        else {
-          $content = array_merge($contentVimeo);
+      //Adding filters to the displayed articles
+
+      // $filter = Session::get('filter');
+
+      $filter=array();
+      $filter['github']=1;
+      $filter['pocket']=1;
+      $filter['slideshare']=1;
+      $filter['vimeo']=1;
+
+      if($filter['pocket']==1){
+        if ($contentPocket!=null) {
+          if ($content != null){
+            $content = array_merge($content, $contentPocket);
+          }
+          else {
+            $content = array_merge($contentPocket);
+          }
         }
       }
-      if ($contentSlideshare != null) {
-        if ($content != null){
-          $content = array_merge($content, $contentSlideshare);
+      if($filter['github']==1){
+        if ($contentGithub!=null) {
+          if ($content != null){
+            $content = array_merge($content, $contentGithub);
+          }
+          else {
+            $content = array_merge($contentGithub);
+          }
         }
-        else {
-          $content = array_merge($contentSlideshare);
+      }
+      if($filter['vimeo']==1){
+        if ($contentVimeo != null) {
+          if ($content != null){
+            $content = array_merge($content, $contentVimeo);
+          }
+          else {
+            $content = array_merge($contentVimeo);
+          }
+        }
+      }
+      if($filter['slideshare']==1){
+        if ($contentSlideshare != null) {
+          if ($content != null){
+            $content = array_merge($content, $contentSlideshare);
+          }
+          else {
+            $content = array_merge($contentSlideshare);
+          }
         }
       }
       if ($content == null){
@@ -474,5 +491,5 @@ public function contentSlideshare($id)
       }
 
       return $all_results;
-    }   
+    }
 }
