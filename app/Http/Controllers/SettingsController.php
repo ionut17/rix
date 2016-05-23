@@ -10,6 +10,7 @@ use View;
 use DB;
 use Session;
 use Request;
+use Redirect;
 
 class SettingsController extends BaseController
 {
@@ -40,8 +41,18 @@ class SettingsController extends BaseController
       return View::make('settings', ['sources' => $sources, 'user' => $user, 'select_values' => $select_values, 'slideshare_error' => $slideshare_error, 'user_info' => $user_info[0]]);
     }
 
+    public function refresh(){
+      //Refreshing Pocket content
+      $pocket_controller = new PocketController();
+      $pocket_controller->store();
+
+      //add here 
+
+      return Redirect::to('mycontent');
+    }
+
     public function modify(){
-      
+
     }
 
 }
