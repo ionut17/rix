@@ -22,7 +22,7 @@ Video Article
 </section>
 <section class="video">
   @if (isset($content['content']))
-  <section>{!! $content['content'] !!}</section>
+  <section>{!! $content['content']!!}</section>
   @endif
 </section>
 <section class="content">

@@ -47,10 +47,10 @@ class VimeoController extends BaseController
 		// request to get all the videos from the user vimeo account
 			$response = $vimeo_connection -> request('/me/videos', [], 'GET');
 			$videos = $response['body']['data'];
-
 			$stmt = $pdo -> prepare("BEGIN
-				articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
+				:id := articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
 				END;");
+			$id = 100000;
 
 			foreach($videos as $video){
 				$title = $video['name'];
@@ -61,6 +61,7 @@ class VimeoController extends BaseController
 					$is_public = 't';
 				else $is_public = 'f';
 
+				$stmt->bindParam(':id', $id);
 				$stmt ->bindParam(':username', $username);
 				$stmt ->bindParam(':title', $title);
 				$stmt ->bindParam(':description', $description);
@@ -73,6 +74,7 @@ class VimeoController extends BaseController
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}catch(\Exception $e){
+			dd($e);
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}

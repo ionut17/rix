@@ -218,7 +218,7 @@ class ContentController extends BaseController
       }
     }
     catch (\Exception $e){
-        $file_content = null;
+      $file_content = null;
     }
     return $file_content;
   }
@@ -256,33 +256,33 @@ class ContentController extends BaseController
     //Get content of pocket article
   private function contentPocket($id){
 
-      $rix_username = Session::get("username");
+    $rix_username = Session::get("username");
         //Selecting values from db
-        $values=DB::select('SELECT title, url_content, description, image_url, video_url, authors FROM pocket_articles WHERE id_article = ?', array($id));
+    $values=DB::select('SELECT title, url_content, description, image_url, video_url, authors FROM pocket_articles WHERE id_article = ?', array($id));
         // dd($values);
-        $file_content = array();
+    $file_content = array();
 
-        $file_content['type']='pocket';
-        $file_content['id'] = $id;
-        $file_content['title'] = $values[0]->title;
-        $file_content['url_content'] = $values[0]->url_content;
-        $file_content['description'] = $values[0]->description;
-        $file_content['image'] = $values[0]->image_url;
-        $file_content['video'] = $values[0]->video_url;
+    $file_content['type']='pocket';
+    $file_content['id'] = $id;
+    $file_content['title'] = $values[0]->title;
+    $file_content['url_content'] = $values[0]->url_content;
+    $file_content['description'] = $values[0]->description;
+    $file_content['image'] = $values[0]->image_url;
+    $file_content['video'] = $values[0]->video_url;
         //Breaking authors string into array;
-        $authors_string = $values[0]->authors;
-        $author_details = array();
-        $authors = array();
+    $authors_string = $values[0]->authors;
+    $author_details = array();
+    $authors = array();
 
-        $authors_strings = explode(" | ", $authors_string);
-        foreach($authors_strings as $string){
-          if($string!=null){
-            $author_details = explode(" - ", $string);
-            array_push($authors, $author_details);
-          }
-        }
-        $file_content['authors'] = $authors;
-      return $file_content;
+    $authors_strings = explode(" | ", $authors_string);
+    foreach($authors_strings as $string){
+      if($string!=null){
+        $author_details = explode(" - ", $string);
+        array_push($authors, $author_details);
+      }
+    }
+    $file_content['authors'] = $authors;
+    return $file_content;
   }
 
   //Make Vimeo articles
@@ -307,33 +307,55 @@ class ContentController extends BaseController
     }
   }
 
-  public function contentVimeo($id){
-    try{
-      $username = Session::get('username');
-      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
-      $access_token = $result->access_token;
-      $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
-      if ($result_video->url_content != null){
-        $vimeo_connection= Vimeo::connection('alternative');
-        $vimeo_connection->setToken($access_token);
-        $article = $vimeo_connection->request($result_video->url_content,[],'GET');
-      }else{
-        $vimeo_connection =Vimeo::connection('main');
-        $article = $vimeo_connection->request($id,[],'GET');
-      };
-      $file_content['type'] = 'vimeo';
-      $file_content['title'] = $article['body']['name'];
-      $file_content['description'] = $article['body']['description'];
-      $file_content['details'] = $article['body']['user']['name'];
-      $file_content['content'] = $article['body']['embed']['html'];
-      $file_content['url'] = $article['body']['link'];
-      return $file_content;
-    }catch(\Exception $e){
-      dd($e);
-      $file_content = null;
-    }finally{
-      return $file_content;
-    }
+  private function curl_get($url){
+   $curl = curl_init($url);
+   curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+   curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+   curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+   $return = curl_exec($curl);
+   curl_close($curl);
+   return $return;
+ }
+
+ public function contentVimeo($id){
+  try{
+    $username = Session::get('username');
+    $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
+    $access_token = $result->access_token;
+    $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
+    if ($result_video->url_content != null){
+      $vimeo_connection= Vimeo::connection('alternative');
+      $vimeo_connection->setToken($access_token);
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+    }else{
+      $vimeo_connection =Vimeo::connection('main');
+      $article = $vimeo_connection->request($id,[],'GET');
+    };
+    $file_content['type'] = 'vimeo';
+    $file_content['title'] = $article['body']['name'];
+    $file_content['description'] = $article['body']['description'];
+    $file_content['details'] = $article['body']['user']['name'];
+    $file_content['content'] = $article['body']['embed']['html'];
+    $file_content['url'] = $article['body']['link'];
+    return $file_content;
+  }catch(\Exception $e){
+    $file_content = null;
+  }finally{
+    return $file_content;
   }
+}
+
+// private function resizeVideo($video_url){
+//   $url = 'http://vimeo.com/'.substr($video_url,8);
+//   $oembed_endpoint = 'http://vimeo.com/api/oembed';
+//   echo $url;
+//   $video_url = 'http://vimeo.com/108650530';
+//   dd($video_url);
+
+//   $xml_url = $oembed_endpoint . '.xml?url=' . rawurlencode($video_url) . '&width=1000&height=700';
+//   // dd($this->curl_get($xml_url));
+//   $oembed = simplexml_load_string($this->curl_get($xml_url));
+//   return $oembed->html;
+// }
 
 }
