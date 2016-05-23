@@ -57,7 +57,7 @@ class GithubController extends BaseController
       // DB::statement('insert into accounts (id_account, username, access_token, source_name) values (?, ?, ?, ?)', array(1, $username, $access_token, 'github'));
       $this->store();
     }
-    catch (/Exception $e){
+    catch (\Exception $e){
       return redirect('mycontent');
     }
     //Redirect to content

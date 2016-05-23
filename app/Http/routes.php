@@ -46,6 +46,8 @@ Route::get('/logout','PageController@logout');
 
 
 
+
+
 	//Activate APIs
 		Route::post('/authorize','PageController@authorizeAPI');
 

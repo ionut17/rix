@@ -46,6 +46,7 @@ class ContentController extends BaseController
       $contentVimeo = $this->listVimeo();
 
     //Adding API's contents
+      // echo 'before if';
       if ($contentPocket!=null) {
         if ($content != null){
           $content = array_merge($content, $contentPocket);
@@ -92,7 +93,11 @@ class ContentController extends BaseController
 
   public function article($type,$api){
     if ($type=='image'){
-      return view('articles.image-article');
+      if($api == 'pocket'){
+        $article_id = Request::input('id');
+        $article = $this->contentPocket($article_id);
+      }
+      return View::make('articles.image-article',['content'=>$article]);
     }
     if ($type=='video'){
       if ($api =='vimeo'){
@@ -100,6 +105,7 @@ class ContentController extends BaseController
         $article = $this->contentVimeo($id);
         return View::make('articles.video-article',['content'=>$article]);
       }
+      // return view('articles.video-article');
     }
     if ($type=='code'){
       if ($api == 'github'){
@@ -147,6 +153,7 @@ class ContentController extends BaseController
         //Pushing object to array
         array_push($content,$file_content);
       }
+      // dd($content);
     } catch (\Exception $e) {
         // dd($e->getMessage());
       $content = null;
@@ -220,43 +227,26 @@ class ContentController extends BaseController
     //POCKET
     //List pocket articles
   public function listPocket(){
-      //Getting the consumer key and user key
-    $consumer_key=env('POCKET_CONSUMER_KEY');
     try{
-      $rix_username = Session::get('username');
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"pocket"));
-      $access_token = $result[0]->access_token;
-        //Making connection
-      $pockpack = new Pockpack($consumer_key, $access_token);
-        //Setting the options
-      $options = array(
-        'state'         => 'all',
-        'contentType'   => 'article',
-        'detailType'    => 'complete'
-        );
-      $array = $pockpack->retrieve($options,1);
-      $articles_list = $array['list'];
-      $content = null;
+      $rix_username = Session::get("username");
+      $results = DB::select('SELECT id_article FROM pocket_articles WHERE username=?',array($rix_username));
       $content = array();
-      foreach($articles_list as $value){
-        $file_content['type']= "pocket";
-        $file_content['title']=$value['resolved_title'];
-        $file_content['path']=$value['resolved_url'];
-        $file_content['description']=$value['excerpt'];
-        if ($value['has_image']==1){
-          $file_content['image']=$value['images'][1]['src'];
-        }
-        // $file_content['image']=$value['images'][1]['src'];
-          // if(in_array('images', $value)){
-          //   $file_content['images']=$value['images'];
-          // }
-          // if(in_array('videos', $value)){
-          //   $file_content['videos']=$value['videos'];
-          // }
+      foreach ($results as $result){
+        //Selecting values from db
+        $values=DB::select('SELECT title, url_content, description, image_url FROM pocket_articles WHERE id_article = ?', array($result->id_article));
+        // dd($values);
+        $file_content['type']='pocket';
+        $file_content['id'] = $result->id_article;
+        $file_content['title'] = $values[0]->title;
+        $file_content['url_content'] = $values[0]->url_content;
+        $file_content['description'] = $values[0]->description;
+        $file_content['image'] = $values[0]->image_url;
+
         array_push($content,$file_content);
       }
+      // dd($content);
     } catch (\Exception $e) {
-      // dd($e->getMessage());
+        // dd($e->getMessage());
       $content = null;
     } finally {
       return $content;
@@ -264,8 +254,35 @@ class ContentController extends BaseController
   }
 
     //Get content of pocket article
-  private function contentPocket(){
+  private function contentPocket($id){
 
+      $rix_username = Session::get("username");
+        //Selecting values from db
+        $values=DB::select('SELECT title, url_content, description, image_url, video_url, authors FROM pocket_articles WHERE id_article = ?', array($id));
+        // dd($values);
+        $file_content = array();
+
+        $file_content['type']='pocket';
+        $file_content['id'] = $id;
+        $file_content['title'] = $values[0]->title;
+        $file_content['url_content'] = $values[0]->url_content;
+        $file_content['description'] = $values[0]->description;
+        $file_content['image'] = $values[0]->image_url;
+        $file_content['video'] = $values[0]->video_url;
+        //Breaking authors string into array;
+        $authors_string = $values[0]->authors;
+        $author_details = array();
+        $authors = array();
+
+        $authors_strings = explode(" | ", $authors_string);
+        foreach($authors_strings as $string){
+          if($string!=null){
+            $author_details = explode(" - ", $string);
+            array_push($authors, $author_details);
+          }
+        }
+        $file_content['authors'] = $authors;
+      return $file_content;
   }
 
   //Make Vimeo articles
