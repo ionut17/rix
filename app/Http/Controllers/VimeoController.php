@@ -47,10 +47,10 @@ class VimeoController extends BaseController
 		// request to get all the videos from the user vimeo account
 			$response = $vimeo_connection -> request('/me/videos', [], 'GET');
 			$videos = $response['body']['data'];
-
 			$stmt = $pdo -> prepare("BEGIN
-				articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
+				:id := articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);
 				END;");
+			$id = 100000;
 
 			foreach($videos as $video){
 				$title = $video['name'];
@@ -60,7 +60,7 @@ class VimeoController extends BaseController
 				if ($video['status'] == 'available')
 					$is_public = 't';
 				else $is_public = 'f';
-
+				$stmt->bindParam(':id', $id);
 				$stmt ->bindParam(':username', $username);
 				$stmt ->bindParam(':title', $title);
 				$stmt ->bindParam(':description', $description);
@@ -68,11 +68,22 @@ class VimeoController extends BaseController
 				$stmt ->bindParam(':authors', $authors);
 				$stmt ->bindParam(':is_public', $is_public);
 				$stmt ->execute();
+
+				foreach($video['tags'] as $tag){
+					DB::table('tags') ->insert(['id_article' => $id, 'source_name' => 'vimeo', 'tagname' => $tag['name']]);
+					$statement = $pdo->prepare("BEGIN
+						articles_package.insert_user_tags(:username,:tagname);
+						END;");
+					$statement ->bindParam(':username', $username);
+					$statement ->bindParam(':tagname', $tag['tag']);
+					$statement->execute();
+				}
 			}
 
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}catch(\Exception $e){
+			dd($e);
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}
