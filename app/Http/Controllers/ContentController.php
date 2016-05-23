@@ -418,10 +418,11 @@ public function contentSlideshare($id)
       $modified = '%'.$search_string.'%';
 
       //Search for Pocket articles
-      $pocket_results = DB::select("SELECT id_article, image_url, video_url FROM pocket_articles WHERE title like ?", array($modified));
+      $pocket_results = DB::select("SELECT id_article, title, image_url, video_url FROM pocket_articles WHERE upper(title) like upper(?)", array($modified));
       foreach($pocket_results as $result){
         $article = array();
         $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
         $article['type'] = 'pocket';
         //Constructing the article's route
         $article['url']='/article/';
@@ -434,10 +435,11 @@ public function contentSlideshare($id)
       }
 
       //Search for Github articles
-      $github_results = DB::select("SELECT id_article FROM github_articles WHERE title like ?", array($modified));
+      $github_results = DB::select("SELECT id_article, title FROM github_articles WHERE upper(title) like upper(?)", array($modified));
       foreach($github_results as $result){
         $article = array();
         $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
         $article['type'] = 'github';
         //Constructing the article's route
         $article['url']='/article/code/github?id=';
@@ -446,10 +448,11 @@ public function contentSlideshare($id)
       }
 
       //Search for Slideshare articles
-      $slideshare_results = DB::select("SELECT id_article FROM slideshare_articles WHERE title like ?", array($modified));
+      $slideshare_results = DB::select("SELECT id_article, title FROM slideshare_articles WHERE upper(title) like upper(?)", array($modified));
       foreach($slideshare_results as $result){
         $article = array();
         $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
         $article['type'] = 'slideshare';
         //Constructing the article's route
         $article['url']='/article/video/slideshare?id=';
@@ -458,17 +461,18 @@ public function contentSlideshare($id)
       }
 
       //Search for Vimeo articles
-      $vimeo_results = DB::select("SELECT id_article FROM vimeo_articles WHERE title like ?", array($modified));
+      $vimeo_results = DB::select("SELECT id_article, title FROM vimeo_articles WHERE upper(title) like upper(?)", array($modified));
       foreach($vimeo_results as $result){
         $article = array();
         $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
         $article['type'] = 'vimeo';
         //Constructing the article's route
         $article['url']='/article/video/vimeo?id=';
         $article['url'].=$result->id_article;
         array_push($all_results,$article);
       }
-      
+
       return $all_results;
-}
+    }   
 }
