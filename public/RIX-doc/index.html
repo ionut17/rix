@@ -201,19 +201,6 @@
 
         </p>
 
-        <!-- Feedly -->
-        <h4>Feedly</h4>
-        <p>
-          Feedly este o aplicație ce permite vizualizarea fluxurilor RSS în format text sau sub forma unei reviste digitale. Prin intermediul unui wrapper PHP pentru API-ul Feedly avem acces la profilul, istoricul precum și favoritele unui anumit user, cererile fiind rezolvate printr-un document în format JSON.
-          Pentru conectare este necesar un <code>access token</code> dat la cerere, contul și prola utilizatorului, stocate în baza de date. Informațiile necesare apliației RIX sunt obținute cu ajutorul următoarele metode:
-          <ul>
-            <li><code>GET tags</code> pentru tag-urile create de utilizator</li>
-            <li><code>GET preferences</code> pentru link-urile preferințelor utilizatorului</li>
-            <li><code>GET subscriptions</code> pentru a obține metadatele despre channel-urile pe care le urmărește utilizatorul</li>
-          </ul>
-          Fiecare accesare va fi stocată în baza de date ca un link, iar tag-urile obținute vor fi utilizate pentru oferirea de recomandări ulterioare. Fiecare channel urmărit are asociate anumite tag-uri ce vor fi folosite pentru a oferi recomandări, utilizând metoda <code>GET search/feeds</code> prin care pot fi accesate noi articole pe baza titlului, url-ului sau a tag-ului, articole ale căror link-uri vor fi de asemenea stocate în baza de date.S
-        </p>
-
         <!-- GitHub -->
         <h4>GitHub</h4>
         <p>
@@ -229,6 +216,19 @@
         <p>La construcţia unei pagini se va parsa doar link-ul salvat în baza de date şi va fi preluat conţinutul lui şi afisat în pagina pentru a evita salvarea volumelor
           mari de date în baza de date. Integrarea API-ului GitHub v3 cu <code>Laravel 5</code> va avea loc prin intermediul unui <code>wrapper PHP</code>. Astfel iniţial se va realiza conexiunea cu API-ul pentru a avea datele de conectare în caz
           că cererile au nevoie de date private specifice unui user ce nu sunt publice.</p>
+
+          <!-- Pocket -->
+          <h4>Pocket</h4>
+          <p>
+            Pocket este o aplicație ce ține evidența listei de lecturi a unui utilizator. Prin intermediul unui wrapper PHP pentru API-ul Pocket avem acces atât la conținutul arhivat, cît și la cel nearhivat al unui utilizator. Răspunsurile la cererile făcute sunt returnate în format JSON.
+            Conectarea are loc în trei pași, fiind necesare un <code>consumer key</code>, un <code>request token</code> și un <code>access token</code>, primul fiind necesar pentru a identifica aplicația, iau ultimul fiind specific fiecărui utilizator. Informațiile necesare apliației RIX sunt obținute cu ajutorul următoarelor metode:
+            <ul>
+              <li><code>POST /v3/oauth/request</code> pentru conectarea aplicației RIX la API-ul Pocket</li>
+              <li><code>POST /v3/oauth/authorize</code> pentru obținerea token-ului specific fiecărui utilizator</li>
+              <li><code>GET cu parametrii specifici (tag, contentType, detailType, etc.)</code> pentru a obține metadate despre articolele din contul de pocket atașat de utilizator, permițând căutarea după diferite criterii</li>
+            </ul>
+            Fiecare accesare va fi stocată în baza de date, în tabelul specific pentru acest API, atunci când contul de Pocket este atașat. Fiecare articol poate avea atașate diferite tag-uri ce vor fi folosite pentru a oferi ulterior recomandări.
+          </p>
 
           <!-- Slideshare -->
           <h4>Slideshare</h4>
@@ -306,7 +306,7 @@
           <ul>
             <li> Anca Adăscăliței  <ul>
               <li>Gestionarea fluxului aplicației, partea de server</li>
-              <li>Integrarea Feedly</li>
+              <li>Integrarea Pocket</li>
             </ul> </li>
             <li> Giosanu Eveline  <ul>
               <li>Lucrul cu baza de date și crearea conexiunii cu partea de server</li>
