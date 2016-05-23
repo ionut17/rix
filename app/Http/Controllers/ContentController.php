@@ -47,37 +47,54 @@ class ContentController extends BaseController
       $contentSlideshare = $this->listSlideshare();
 
     //Adding API's contents
-      // echo 'before if';
-      if ($contentPocket!=null) {
-        if ($content != null){
-          $content = array_merge($content, $contentPocket);
-        }
-        else {
-          $content = array_merge($contentPocket);
-        }
-      }
-      if ($contentGithub!=null) {
-        if ($content != null){
-          $content = array_merge($content, $contentGithub);
-        }
-        else {
-          $content = array_merge($contentGithub);
-        }
-      }
-      if ($contentVimeo != null) {
-        if ($content != null){
-          $content = array_merge($content, $contentVimeo);
-        }
-        else {
-          $content = array_merge($contentVimeo);
+      //Adding filters to the displayed articles
+
+      // $filter = Session::get('filter');
+
+      $filter=array();
+      $filter['github']=1;
+      $filter['pocket']=1;
+      $filter['slideshare']=1;
+      $filter['vimeo']=1;
+
+      if($filter['pocket']==1){
+        if ($contentPocket!=null) {
+          if ($content != null){
+            $content = array_merge($content, $contentPocket);
+          }
+          else {
+            $content = array_merge($contentPocket);
+          }
         }
       }
-      if ($contentSlideshare != null) {
-        if ($content != null){
-          $content = array_merge($content, $contentSlideshare);
+      if($filter['github']==1){
+        if ($contentGithub!=null) {
+          if ($content != null){
+            $content = array_merge($content, $contentGithub);
+          }
+          else {
+            $content = array_merge($contentGithub);
+          }
         }
-        else {
-          $content = array_merge($contentSlideshare);
+      }
+      if($filter['vimeo']==1){
+        if ($contentVimeo != null) {
+          if ($content != null){
+            $content = array_merge($content, $contentVimeo);
+          }
+          else {
+            $content = array_merge($contentVimeo);
+          }
+        }
+      }
+      if($filter['slideshare']==1){
+        if ($contentSlideshare != null) {
+          if ($content != null){
+            $content = array_merge($content, $contentSlideshare);
+          }
+          else {
+            $content = array_merge($contentSlideshare);
+          }
         }
       }
       if ($content == null){
@@ -432,10 +449,11 @@ public function search(){
   $modified = '%'.$search_string.'%';
 
       //Search for Pocket articles
-  $pocket_results = DB::select("SELECT id_article, image_url, video_url FROM pocket_articles WHERE title like ?", array($modified));
+      $pocket_results = DB::select("SELECT id_article, title, image_url, video_url FROM pocket_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($pocket_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
     $article['type'] = 'pocket';
         //Constructing the article's route
     $article['url']='/article/';
@@ -448,10 +466,11 @@ public function search(){
   }
 
       //Search for Github articles
-  $github_results = DB::select("SELECT id_article FROM github_articles WHERE title like ?", array($modified));
+      $github_results = DB::select("SELECT id_article, title FROM github_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($github_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
     $article['type'] = 'github';
         //Constructing the article's route
     $article['url']='/article/code/github?id=';
@@ -460,10 +479,11 @@ public function search(){
   }
 
       //Search for Slideshare articles
-  $slideshare_results = DB::select("SELECT id_article FROM slideshare_articles WHERE title like ?", array($modified));
+      $slideshare_results = DB::select("SELECT id_article, title FROM slideshare_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($slideshare_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
     $article['type'] = 'slideshare';
         //Constructing the article's route
     $article['url']='/article/video/slideshare?id=';
@@ -472,10 +492,11 @@ public function search(){
   }
 
       //Search for Vimeo articles
-  $vimeo_results = DB::select("SELECT id_article FROM vimeo_articles WHERE title like ?", array($modified));
+      $vimeo_results = DB::select("SELECT id_article, title FROM vimeo_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($vimeo_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
+        $article['title'] = $result->title;
     $article['type'] = 'vimeo';
         //Constructing the article's route
     $article['url']='/article/video/vimeo?id=';
@@ -484,5 +505,5 @@ public function search(){
   }
 
   return $all_results;
-}
+    }
 }

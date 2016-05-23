@@ -18,8 +18,9 @@
           <li><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
           <li><a href="">More</a></li>
         </ul>
-        <section class="search">
+        <section class="search" id="search-box">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
+          <ul class="search-results" id="search-results"></ul>
           <i class="fa fa-search" aria-hidden="true"></i>
         </section>
       </div>

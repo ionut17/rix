@@ -22,12 +22,10 @@
       @endif
     </section>
     <section class="details">
-      @if (isset($content['url_content']))
-        <label><a href={{$content['url_content']}} target="_blank">Article link</a></label>
-      @endif
       @if (isset($content['authors']))
+        <br><label>By </label>
         @foreach ($content['authors'] as $author)
-          <label><a href={{$author[1]}} target="_blank">{{$author[0]}}</a></label>
+          <label><span><a href={{$author[1]}} target="_blank">{{$author[0]}}</a></span></label>
         @endforeach
       @endif
     </section>
@@ -36,6 +34,9 @@
         <p>
           {{$content['description']}}
         </p>
+        @if (isset($content['url_content']))
+          <label><span><a href={{$content['url_content']}} target="_blank">Article link</a></span></label>
+        @endif
       @endif
     </section>
   @endif

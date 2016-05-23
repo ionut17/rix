@@ -16,8 +16,9 @@
         <ul class="status-list">
           <li><a href="{{ URL::to('/settings') }}">Settings</a></li>
         </ul>
-        <section class="search">
+        <section class="search" id="search-box">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
+          <ul class="search-results" id="search-results"></ul>
           <i class="fa fa-search" aria-hidden="true"></i>
         </section>
       </div>
@@ -29,6 +30,31 @@
 
   <div class="container">
     <div class="row settings-wrapper">
+      <div class="settings-box accounts">
+        <!-- Added dinamicaly -->
+        <div class="accounts-box">
+          <h2 class="title">Attached accounts</h2>
+          @if (isset($sources))
+            @foreach($sources as $source)
+              <section class="account-row">
+                <label>{{$source}}</label>
+                <div>
+                  <span class="status green">CONNECTED</span>
+                  <i class="fa fa-times-circle-o" aria-hidden="true" data-toggle="modal" data-target="#{{$source}}RemoveConfirm"></i>
+                </div>
+              </section>
+              @include ('modals.remove-account')
+            @endforeach
+          @endif
+        </div>
+        <div class="accounts-buttons">
+          <h2 class="title">Actions</h2>
+          <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Connect account</button>
+          <a href="{{ URL::to('/refresh') }}">
+            <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#refreshModal">Refresh content</button>
+          </a>
+        </div>
+      </div>
       <div class="settings-box">
         <a href=""></a>
         <section class="profile-image"
@@ -44,20 +70,6 @@
           <label for="email">@if (isset($user_info)) {{$user_info->email}} @endif</label>
           <input type="text" name="email" id="email" class="hide">
         </div>
-      </div>
-      <div class="settings-box accounts">
-        <!-- Added dinamicaly -->
-        @if (isset($sources))
-          @foreach($sources as $source)
-            <section class="account-row">
-              <label>{{$source}}</label>
-              <span class="status green">CONNECTED</span>
-              <i class="fa fa-times-circle-o" aria-hidden="true" data-toggle="modal" data-target="#{{$source}}RemoveConfirm"></i>
-            </section>
-            @include ('modals.remove-account')
-          @endforeach
-        @endif
-        <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Connect account</button>
       </div>
     </div>
     @if (isset($slideshare_error))
