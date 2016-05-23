@@ -85,7 +85,7 @@ class PocketController extends BaseController
         else{
           $file_content['image']=null;
         }
-          if(in_array('tags', $value)){
+          if(isset($value['tags'])){
             $file_content['tags']=$value['tags'];
         }
         else{
@@ -99,6 +99,7 @@ class PocketController extends BaseController
           }
 
           $result = DB::statement('BEGIN articles_package.add_particle(?,?,?,?,?,?,?); END;', array($rix_username, $value['resolved_title'],$value['resolved_url'],$value['excerpt'],$file_content['image'],$file_content['video'],$file_content['authors']));
+          // DB::statement('insert into tags values (?,?,?)', array($username, $access_token, 'pocket'));
 
       }
     // } catch (\Exception $e) {
