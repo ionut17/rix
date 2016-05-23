@@ -20,6 +20,24 @@
         </ul>
         <section class="search">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
+          <ul class="search-results">
+            <li>
+              <h3>Title</h3>
+              <label>Service</label>
+            </li>
+            <li>
+              <h3>Title</h3>
+              <label>Service</label>
+            </li>
+            <li>
+              <h3>Title</h3>
+              <label>Service</label>
+            </li>
+            <li>
+              <h3>Title</h3>
+              <label>Service</label>
+            </li>
+          </ul>
           <i class="fa fa-search" aria-hidden="true"></i>
         </section>
       </div>

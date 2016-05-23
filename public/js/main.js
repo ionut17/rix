@@ -34,7 +34,6 @@ $( document ).ready(function() {
     });
 
     //Search
-    var searchBox = $('#search');
     // searchBox.focus(function() {
     //   $(this).css({
     //     backgroundColor: 'white',
@@ -48,4 +47,26 @@ $( document ).ready(function() {
     //     color: white
     //   });
     // });
+
+    //AJAX Search
+
+    var searchBox = $('#search');
+    searchBox.on('input', function() {
+      var searchInput = $(this).val();
+      if (searchInput.length>=3){
+        $.ajax({
+          url: '/search',
+          type: 'GET',
+          data: {search_string: searchInput},
+          success: function (data) {
+            $.each(data, function(index, value){
+              console.log(index, value);
+              console.log("id"+value.id);
+            });
+          }
+        });
+      }
+    });
+
+
 });

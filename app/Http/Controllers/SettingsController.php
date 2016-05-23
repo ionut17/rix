@@ -46,7 +46,7 @@ class SettingsController extends BaseController
       $pocket_controller = new PocketController();
       $pocket_controller->store();
 
-      //add here 
+      //add here
 
       return Redirect::to('mycontent');
     }

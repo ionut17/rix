@@ -785,6 +785,50 @@ figure.small.logo {
     color: #24a259;
     font-weight: 600; }
 
+ul.search-results {
+  width: 400px;
+  height: auto;
+  max-height: 300px;
+  background-color: white;
+  border: 1px solid #dadada;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  position: absolute;
+  margin-top: 17px;
+  right: 0;
+  padding: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  list-style-type: none; }
+  ul.search-results li {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: white;
+    border: 1px solid #dadada;
+    border-top: none;
+    border-bottom: 2px solid #dadada;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; }
+    ul.search-results li h3 {
+      font-family: 'Source Sans Pro', Myriad Pro, serif;
+      font-size: 15px;
+      font-weight: bold;
+      color: #7f8c8d;
+      margin: 0;
+      padding: 0; }
+    ul.search-results li label {
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 12px;
+      color: #dadada;
+      text-transform: uppercase;
+      margin: 0; }
+    ul.search-results li:hover {
+      background-color: #f2f2f2;
+      cursor: pointer; }
+
 @media screen and (max-width: 991px) {
   .article-box {
     width: 330px; }
