@@ -62,7 +62,7 @@ class PocketController extends BaseController
       //Setting the options
       $options = array(
         'state'         => 'all',
-        'contentType'   => 'article',
+        'contentType'   => 'all',
         'detailType'    => 'complete'
         );
       $array = $pockpack->retrieve($options,1);
@@ -98,9 +98,36 @@ class PocketController extends BaseController
             $file_content['video']=null;
           }
 
-          $result = DB::statement('BEGIN articles_package.add_particle(?,?,?,?,?,?,?); END;', array($rix_username, $value['resolved_title'],$value['resolved_url'],$value['excerpt'],$file_content['image'],$file_content['video'],$file_content['authors']));
-          // DB::statement('insert into tags values (?,?,?)', array($username, $access_token, 'pocket'));
+          //Inserting the article into the DB
+          $pdo = DB::getPdo();
+          $stmt = $pdo->prepare("BEGIN :y := articles_package.add_particle(:a,:b,:c,:d,:e,:f,:g); END;");
+          $y=10000;
+          $stmt->bindParam(':y', $y);
+          $stmt->bindParam(':a',$rix_username);
+          $stmt->bindParam(':b',$value['resolved_title']);
+          $stmt->bindParam(':c',$value['resolved_url']);
+          $stmt->bindParam(':d',$value['excerpt']);
+          $stmt->bindParam(':e',$file_content['image']);
+          $stmt->bindParam(':f',$file_content['video']);
+          $stmt->bindParam(':g',$file_content['authors']);
+          $stmt->execute();
 
+          //Inserting the article tags into the DB
+          if($file_content['tags']!=null){
+            foreach($file_content['tags'] as $tag){
+              //Inserting tags into table Tags
+              $stmt = $pdo->prepare("insert into tags values (:a,'pocket',:c)");
+              $stmt->bindParam(':a', $y);
+              $stmt->bindParam(':c', $tag['tag']);
+              $stmt->execute();
+
+              //Inserting tags into table Preferences
+              $stmt2 = $pdo->prepare("BEGIN articles_package.insert_user_tags(:d, :e); END;");
+              $stmt2->bindParam(':d', $rix_username);
+              $stmt2->bindParam(':e', $tag['tag']);
+              $stmt2->execute();
+            }
+          }
       }
     // } catch (\Exception $e) {
     //   dd($e->getMessage());

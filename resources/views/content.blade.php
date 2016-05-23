@@ -82,7 +82,7 @@
                   @elseif ($entry['type']=='pocket')
                     @if (isset($entry['video']))
                       <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
-                    @elseif(isset($entry['image']))
+                    @else
                       <a href="{{ URL::to('/article/image/'.$entry['type'].'?id='.$entry['id']) }}">
                     @endif
                   @elseif ($entry['type']=='vimeo')

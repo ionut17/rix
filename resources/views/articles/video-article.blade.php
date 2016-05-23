@@ -24,6 +24,11 @@ Video Article
   @if (isset($content['content']))
   <section>{!! $content['content']!!}</section>
   @endif
+  @if (isset($content['video']))
+    <section>
+      <iframe width="560" height="315" src="{!! $content['video'] !!}" frameborder="0" allowfullscreen></iframe>
+    </section>
+  @endif
 </section>
 <section class="content">
   {{ $content['description'] }}
