@@ -1,4 +1,10 @@
 $( document ).ready(function() {
+    //Variables
+    var searchBox = $('#search');
+    var searchResults = $('#search-results');
+
+    searchResults.hide();
+
     //Loader gear
     $('.loader').fadeOut(500, function() {
       console.log("fading in");
@@ -50,23 +56,30 @@ $( document ).ready(function() {
 
     //AJAX Search
 
-    var searchBox = $('#search');
-    searchBox.on('input', function() {
-      var searchInput = $(this).val();
-      if (searchInput.length>=3){
-        $.ajax({
-          url: '/search',
-          type: 'GET',
-          data: {search_string: searchInput},
-          success: function (data) {
-            $.each(data, function(index, value){
-              console.log(index, value);
-              console.log("id"+value.id);
-            });
-          }
-        });
-      }
-    });
-
+    setTimeout(function(){
+      searchBox.on('input', function() {
+        var searchInput = $(this).val();
+        searchResults.hide();
+        searchResults.empty();
+        if (searchInput.length>=3){
+          $.ajax({
+            url: '/search',
+            type: 'GET',
+            data: {search_string: searchInput},
+            success: function (data) {
+              searchResults.empty();
+              searchResults.show();
+              //Building li's
+              $.each(data, function(index, value){
+                var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
+                var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
+                searchResults.append(wrapper);
+                $('#wrapper'+value.id).slideDown('fast');
+              });
+            }
+          });
+        }
+      });
+    }, 500);
 
 });

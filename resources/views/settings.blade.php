@@ -18,6 +18,7 @@
         </ul>
         <section class="search" id="search-box">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
+          <ul class="search-results" id="search-results"></ul>
           <i class="fa fa-search" aria-hidden="true"></i>
         </section>
       </div>
