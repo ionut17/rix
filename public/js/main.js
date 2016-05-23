@@ -32,4 +32,20 @@ $( document ).ready(function() {
       $('.loader').fadeIn(100);
       console.log( "Importing api..." );
     });
+
+    //Search
+    var searchBox = $('#search');
+    // searchBox.focus(function() {
+    //   $(this).css({
+    //     backgroundColor: 'white',
+    //     color: '#114f2b'
+    //   });
+    // });
+    // searchBox.blur(function(){
+    //   console.log('fired');
+    //   $(this).css({
+    //     backgroundColor: '#114f2b',
+    //     color: white
+    //   });
+    // });
 });

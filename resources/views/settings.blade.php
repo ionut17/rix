@@ -16,7 +16,7 @@
         <ul class="status-list">
           <li><a href="{{ URL::to('/settings') }}">Settings</a></li>
         </ul>
-        <section class="search">
+        <section class="search" id="search-box">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
           <i class="fa fa-search" aria-hidden="true"></i>
         </section>

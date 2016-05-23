@@ -767,6 +767,7 @@ figure.small.logo {
   margin: 0;
   padding: 10px 40px 8px 20px;
   border: 0;
+  transition: 300ms all ease-in-out;
   background-color: #114f2b;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -777,7 +778,9 @@ figure.small.logo {
   font-weight: 600;
   color: white; }
   .search-box:focus {
-    outline: 0; }
+    outline: 0;
+    background-color: white;
+    color: #7f8c8d; }
   .search-box::-webkit-input-placeholder {
     color: #24a259;
     font-weight: 600; }
