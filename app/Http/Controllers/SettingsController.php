@@ -41,7 +41,7 @@ class SettingsController extends BaseController
     }
 
     public function modify(){
-      
+
     }
 
 }
