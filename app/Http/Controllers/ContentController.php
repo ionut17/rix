@@ -71,6 +71,10 @@ class ContentController extends BaseController
           $filter['vimeo'] = $filter_session['vimeo'];
         }
       }
+      else{
+        Session::put('filter', $filter);
+        Session::save();
+      }
 
       if($filter['pocket']==1){
         if ($contentPocket!=null) {
