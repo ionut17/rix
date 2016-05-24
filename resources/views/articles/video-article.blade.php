@@ -15,7 +15,12 @@ Video Article
 </section>
 <section class="details">
   @if (isset($content['details']) && isset($content['url']))
-  <label><span><a href="{{$content['url']}}" target="_blank">{!! $content['details'] !!}</a></span></label>
+    <br><label>By </label>
+    <label><span><a href="{{$content['url']}}" target="_blank">{!! $content['details'] !!}</a></span></label>
+    @if(isset($content['tags']))
+    <br><label>Tags </label>
+    <label><span>{{$content['tags']}}</span></label>
+    @endif
   @elseif (isset($content['details']))
   <label><span>{{$content['details']}}</span></label>
   @endif
