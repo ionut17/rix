@@ -104,6 +104,14 @@ class AuthController extends Controller
 
    public function ajax_validator(){
      $username = Request::input('username');
+     if(empty($username)){
+       return 'Username too short';
+     }
+     else{
+       if(strlen($username) < 5){
+         return 'Username too short';
+       }
+     }
      $result = DB::table('users')->where('username',$username)->first();
      if(!empty($result)){
        return 'Username already taken';
