@@ -28,6 +28,8 @@ class PageController extends BaseController
     }
 
     public function register(){
+      if(Session::has('username'))
+          return Redirect::to('mycontent');
         $this->middleware('registerauth');
         return view('auth.register');
       // $this->middleware('registerauth');
@@ -35,7 +37,7 @@ class PageController extends BaseController
 
     public function authorizeAPI(){
         $type = Request::input('api');
-        switch ($type) 
+        switch ($type)
         {
             case 'github':
                 //Requesting authorization

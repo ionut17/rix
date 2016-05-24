@@ -70,9 +70,11 @@ Route::get('/logout','PageController@logout');
 	//Remove Routes
 		Route::post('/remove/{api}', 'PageController@removeAPI');
 
-		//API Rest
+	//API Rest
 		Route::get('/api/{token}/{service}', 'APIController@call');
 		Route::get('/generatetoken','APIController@get_token');
 
+	//register ajax route
+		Route::get('/validator','Auth\AuthController@ajax_validator')
 	});
 });
