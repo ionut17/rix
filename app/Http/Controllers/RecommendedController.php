@@ -34,7 +34,7 @@ public function show($page_number=1){
     try{
       $contentGithub = null;
       $contentPocket = null;
-      $contentSlideshare = $this->recommendedSlideshare();
+      $contentSlideshare = $this->recommendSlideshare();
       $contentVimeo = $this->recommendVimeo();
         //Content (se adauga un array pentru fiecare API)
 
@@ -183,7 +183,7 @@ public function recommendVimeo(){
 }
 }
 
-public function recommendedSlideshare()
+public function recommendSlideshare()
 {
 
     $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
@@ -207,8 +207,7 @@ public function recommendedSlideshare()
                 $file_content['details'] = $result->Username;
                 $file_content['description'] = $result[0]->Description;
                 $file_content['image'] = $result[0]->ThumbnailXLargeURL;
-                $file_content['tag']=$tag->tagname;
-                array_push($recommended_files,$file_content);
+                array_push($recommended_files,$file_content);   
             }
         }
     }

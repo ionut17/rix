@@ -20,7 +20,7 @@ Video Article
     @if(isset($content['tags']))
     <br><label>Tags </label>
     <label><span>{{$content['tags']}}</span></label>
-    @endif;
+    @endif
   @elseif (isset($content['details']))
   <label><span>{{$content['details']}}</span></label>
   @endif
