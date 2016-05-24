@@ -31,3 +31,7 @@
   <label class="box-label"> Have an account? <a href="{{ URL::to('/login') }}">Login now</a></label>
 
 @endsection
+
+@section('auth-scripts')
+  <script src="js/register.js"></script>
+@endsection
