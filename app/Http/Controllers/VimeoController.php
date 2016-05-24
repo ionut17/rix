@@ -16,6 +16,10 @@ const REDIRECT_URI = 'http://localhost:2000/activate/vimeo';
 class VimeoController extends BaseController
 {
 
+	private function setAccessToken($new_access_token){
+		$this->access_token = $new_access_token;
+	}
+
 	public function authorize(){
 		Session::put('state_vimeo', base64_encode(openssl_random_pseudo_bytes(30)));
 		Session::save();
@@ -36,25 +40,34 @@ class VimeoController extends BaseController
 			} else {
 				echo "Unsuccessful authentication";
 			}
+
 			$vimeo_connection = Vimeo::connection('alternative');
 			$vimeo_connection->setToken($tokens['body']['access_token']);
 			$username = Session::get('username');
 
 		//added the access token for the current user in the DB
 			DB::table('accounts') -> insert(['username' => $username, 'access_token' => $tokens['body']['access_token'], 'source_name' => 'vimeo']);
-			$this->store($vimeo_connection);
+			$this->store($tokens['body']['access_token']);
 			header('Location: http://localhost:2000/mycontent');
 			exit();
 		}catch(\Exception $e){
+			// dd($e);
 			header('Location: http://localhost:2000/settings');
 			exit();
 		}
 	}
+	public function store($access_token){
+		$vimeo_connection = Vimeo::connection('alternative');
+		$vimeo_connection->setToken($access_token);
+		$username = Session::get('username');
 
-	public function store($vimeo_connection){
-		$pdo = DB::getPdo();
 		// request to get all the videos from the user vimeo account
-		$response = $vimeo_connection -> request('/me/videos', ['per_page' => 50], 'GET');
+		$response = $vimeo_connection->request('/me/videos', ['per_page' => 50], 'GET');
+
+		$pdo = DB::getPdo();
+		DB::table('accounts')->where('username',$username)->where('source_name','vimeo')->delete();
+		DB::table('accounts')->insert(['username' => $username, 'access_token' => $access_token, 'source_name' => 'vimeo']);
+
 		$videos = $response['body']['data'];
 		$stmt = $pdo -> prepare("BEGIN
 			:id := articles_package.add_varticle(:username, :title, :description, :url_content, :authors, :is_public);

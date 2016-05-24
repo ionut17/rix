@@ -382,13 +382,11 @@ public function contentVimeo($id, $tag){
       $vimeo_connection= Vimeo::connection('alternative');
       $vimeo_connection->setToken($access_token);
       $article = $vimeo_connection->request($result_video->url_content,[],'GET');  
-      $tag = 'Tags: ';
       $more_tags = 1; 
     }catch(\Exception $e){
       //catch invalid_number exception from db => that means it's a recommended content
       $vimeo_connection =Vimeo::connection('main');
       $article = $vimeo_connection->request($id,[],'GET');
-      $tag = 'Tag: '.$tag;
     }
     //construct file_content object to visualize
     $file_content['type'] = 'vimeo';
@@ -403,9 +401,10 @@ public function contentVimeo($id, $tag){
       $tag = substr($tag, 0, strlen($tag)-2);
     }
 
-    $file_content['details'] = 'Author:  '.$article['body']['user']['name'].'<br/> '.$tag;
+    $file_content['details'] = $article['body']['user']['name'];
     $file_content['content'] = $article['body']['embed']['html'];
     $file_content['url'] = $article['body']['link'];
+    $file_content['tags'] = $tag;
     return $file_content;
   }catch(\Exception $e){
     dd($e);
