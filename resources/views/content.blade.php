@@ -15,7 +15,7 @@
       <div class="status-container">
         <ul class="status-list">
           <li><a href="{{ URL::to('/mycontent') }}">My Content</a></li>
-          <li><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
+          <li id="recommended-generate"><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
           <li><a href="">More</a></li>
         </ul>
         <section class="search">
@@ -35,7 +35,6 @@
     <div class="filter-container">
       <div class="filters">
         <span id="filter-option">Filters</span>
-        <span id="tag-option">Tags</span>
       </div>
       <ul class="pagination">
         @for ($i=1;$i<=$page_count;$i++)
@@ -74,6 +73,31 @@
         @if (isset($content))
           @foreach ($content as $entry)
               <div class="article-box">
+                @if ($entry['type']=='github')
+                  @if ($entry['id']!='')
+                    <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
+                  @else
+                    <a href="{{ URL::to('/article/code/'.$entry['type'].'?username='.urlencode($entry['username']).'&repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
+                  @endif
+                @elseif ($entry['type']=='pocket')
+                  @if (isset($entry['video']))
+                    <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                  @else
+                    <a href="{{ URL::to('/article/image/'.$entry['type'].'?id='.$entry['id']) }}">
+                  @endif
+                @elseif ($entry['type']=='vimeo')
+                    @if (isset($entry['id']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @elseif (isset($entry['tag']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['url'].'&tag='.$entry['tag']) }}">
+                    @endif
+                @elseif ($entry['type']=='slideshare')
+                    @if (isset($entry['id']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @elseif (isset($entry['tag']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['url'].'&tag='.$entry['tag']) }}">
+                    @endif
+                @endif
                 <section class="image"
                   @if (isset($entry['image']))
                     style="background-image: url('{{ $entry['image'] }}')"
@@ -81,6 +105,7 @@
                     style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"
                   @endif
                 ></section>
+                </a>
                 <section class="tag">
                   @if (isset($entry['type'])) {{$entry['type']}} @endif
                 </section>

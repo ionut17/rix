@@ -31,13 +31,31 @@ $( document ).ready(function() {
 
     //Loader
     $( "#connect-api" ).click(function() {
-      $('#normal-text').hide();
-      $('#importing-text').show();
+      $('#text').html('Importing articles');
       $('.main-wrapper').fadeOut(100);
       $('.modal-backdrop').hide();
       $('.loader').fadeIn(100);
       console.log( "Importing api..." );
     });
+
+    //refresh
+    $('#refresh-content').click(function() {
+      $('#text').html('Refreshing content');
+      $('.main-wrapper').fadeOut(100);
+      $('.modal-backdrop').hide();
+      $('.loader').fadeIn(100);
+      console.log( "Refreshing content..." );
+    });
+
+    //generating recommendations
+    $('#recommended-generate').click(function() {
+      $('#text').html('Generating recommendations');
+      $('.main-wrapper').fadeOut(100);
+      $('.modal-backdrop').hide();
+      $('.loader').fadeIn(100);
+      console.log( "Refreshing content..." );
+    });
+
 
     //Search
     // searchBox.focus(function() {

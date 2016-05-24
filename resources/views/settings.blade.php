@@ -52,7 +52,7 @@
           <h2 class="title">Actions</h2>
           <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Connect account</button>
           <a href="{{ URL::to('/refresh') }}">
-            <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#refreshModal">Refresh content</button>
+            <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#refreshModal" id="refresh-content">Refresh content</button>
           </a>
           <a href="{{ URL::to('/generatetoken') }}">
             <button type="button" name="view-btn" class="article-button">Generate API token</button>

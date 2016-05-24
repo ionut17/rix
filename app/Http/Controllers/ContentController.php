@@ -212,7 +212,7 @@ public function article($type,$api){
       else{
         $article = $this->contentGithub($id);
       }
-      return View::make('articles.code-article',['content'=>$article]);
+      return View::make('articles.code-article',['content'=>$article, 'recommended' => $recommended]);
     }
         // dd($article);
   }
