@@ -14,6 +14,7 @@
         @if (session('error')!=null)
           <label class="error">Error: {{session('error')}}</label>
         @endif
+        <label class="error"></label>
         <label for="username">Username</label>
         <input type="text" name="username" id="username">
         <label for="username">Email Address</label>
@@ -29,4 +30,8 @@
   </form>
   <label class="box-label"> Have an account? <a href="{{ URL::to('/login') }}">Login now</a></label>
 
+@endsection
+
+@section('auth-scripts')
+  <script src="js/register.js"></script>
 @endsection

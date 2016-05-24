@@ -1,7 +1,8 @@
 $( document ).ready(function() {
-
+    $('.button').prop('disabled',true);
+    $('.error').hide();
     //AJAX Search
-    $(":input").on('input', function() {
+    $(":input").on('blur', function() {
       $.ajax({
         url: '/validator',
         type: 'GET',
@@ -13,8 +14,15 @@ $( document ).ready(function() {
         },
         success: function (data) {
           console.log(data);
+          if (data=='ok'){
+            $('.error').hide();
+            $('.button').prop('disabled',false);
+          } else{
+            $('.error').show();
+            $('.error').html(data);
+          }
         }
       });
     });
-    
+
 });
