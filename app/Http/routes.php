@@ -75,6 +75,6 @@ Route::get('/logout','PageController@logout');
 		Route::get('/generatetoken','APIController@get_token');
 
 	//register ajax route
-		Route::get('/validator','Auth\AuthController@ajax_validator')
+		Route::get('/validator','Auth\AuthController@ajax_validator');
 	});
 });
