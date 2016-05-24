@@ -35,7 +35,7 @@ class RecommendedController extends BaseController
       $contentGithub = null;
       $contentPocket = null;
       $contentSlideshare = null;
-      $contentVimeo = $this->recommendedVimeo();
+      $contentVimeo = $this->recommendVimeo();
         //Content (se adauga un array pentru fiecare API)
       $contentGithub = $this->recommendGithub('website',array('language' => 'html'));
       // $contentPocket = $this->listPocket();
@@ -153,7 +153,7 @@ class RecommendedController extends BaseController
     }
   }
 
-  public function recommendedVimeo(){
+  public function recommendVimeo(){
     //Get all the favourites tags for user
     $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
     $recommended_files = array();
@@ -176,7 +176,6 @@ class RecommendedController extends BaseController
         } 
       }
     }catch(\Exception $e){
-      dd($e);
       $recommended_files = null;
     }finally{
       return $recommended_files;

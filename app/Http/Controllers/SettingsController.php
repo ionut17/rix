@@ -43,23 +43,24 @@ class SettingsController extends BaseController
 
   public function refresh(){
     try{
-      
+      $access_token = DB::table('accounts')->select('access_token')->where('username',Session::get('username'))->first();
+      $vimeo_controller =  new VimeoController();
+      $vimeo_controller->store($access_token->access_token);
+
       //Refreshing Pocket content
       $pocket_controller = new PocketController();
       $pocket_controller->store();
 
-      $vimeo_controller =  new VimeoController;
-      $vimeo_controller->store();
-
     }catch(\Exception $e){
-      //If you don't have
-       return Redirect::to('mycontent');
-    }
-    return Redirect::to('mycontent');
-  }
+      // dd($e);
+      //If you don't have an account attached
+     return Redirect::to('mycontent');
+   }
+   return Redirect::to('mycontent');
+ }
 
-  public function modify(){
+ public function modify(){
 
-  }
+ }
 
 }
