@@ -151,9 +151,9 @@ public function article($type,$api){
   }
   if ($type=='video'){
     if ($api =='vimeo'){
-      $id = Request::input('id');
+      $article_id = Request::input('id');
       $tag = Request::input('tag');
-      $article = $this->contentVimeo($id, $tag);
+      $article = $this->contentVimeo($article_id, $tag);
       return View::make('articles.video-article',['content'=>$article]);
     }
     if ($api == 'pocket'){
