@@ -91,12 +91,21 @@ $( document ).ready(function() {
                 searchResults.empty();
                 searchResults.show();
                 //Building li's
-                $.each(data, function(index, value){
-                  var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
-                  var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
+                console.log(data.length);
+                if (data.length>0){
+                  $.each(data, function(index, value){
+                    var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
+                    var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
+                    searchResults.append(wrapper);
+                    $('#wrapper'+value.id).slideDown('fast');
+                  });
+                }
+                else{
+                  var currentItem = "<a href=''><li><h3>No results found</h3><label></label></li></a>";
+                  var wrapper = "<div style='display:none' id='wrapper0'>"+currentItem+"</div>";
                   searchResults.append(wrapper);
-                  $('#wrapper'+value.id).slideDown('fast');
-                });
+                  $('#wrapper0').slideDown('fast');
+                }
               }
             });
           }
