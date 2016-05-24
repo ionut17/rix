@@ -34,8 +34,14 @@ class RecommendedController extends BaseController
     try{
       $contentGithub = null;
       $contentPocket = null;
+<<<<<<< HEAD
       $contentSlideshare = $this->recommendedSlideshare();
+
+      $contentVimeo = $this->recommendedVimeo();
+=======
+      $contentSlideshare = null;
       $contentVimeo = $this->recommendVimeo();
+>>>>>>> 2d6ed401881afbcba2515ff6ea9584df018bf543
         //Content (se adauga un array pentru fiecare API)
 
       $contentGithub = $this->recommendGithub('website',array('language' => 'html'));
@@ -215,7 +221,7 @@ public function recommendedSlideshare()
     }
     catch(\Exception $e)
     {
-        dd($e);
+        dd($e);1
         $recommended_files = null;
     }
     finally
