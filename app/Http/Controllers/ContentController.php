@@ -191,7 +191,7 @@ public function article($type,$api){
 
     //GITHUB
     //List github articles
-private function listGithub(){
+public function listGithub(){
       //Connection
       // dd('entered');
   $client = new \Github\Client();
@@ -345,6 +345,15 @@ private function contentPocket($id){
     }
   }
   $file_content['authors'] = $authors;
+
+  $tags=DB::select("SELECT tagname FROM tags WHERE id_article = ? and source_name='pocket'", array($id));
+  $file_content['tags'] = '';
+  foreach($tags as $tag){
+    $file_content['tags'].=$tag->tagname.', ';
+
+  }
+  $file_content['tags'] = rtrim($file_content['tags'],', ');
+
   return $file_content;
 }
 
@@ -381,8 +390,8 @@ public function contentVimeo($id, $tag){
       $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
       $vimeo_connection= Vimeo::connection('alternative');
       $vimeo_connection->setToken($access_token);
-      $article = $vimeo_connection->request($result_video->url_content,[],'GET');  
-      $more_tags = 1; 
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+      $more_tags = 1;
     }catch(\Exception $e){
       //catch invalid_number exception from db => that means it's a recommended content
       $vimeo_connection =Vimeo::connection('main');
@@ -452,7 +461,7 @@ public function contentSlideshare($id)
         $file_content['details'] = 'By '.$response->Username;
         $file_content['content'] = $response->Embed;
         $file_content['url'] = $response->URL;
-        return $file_content;   
+        return $file_content;
 }
 
     //function used for search

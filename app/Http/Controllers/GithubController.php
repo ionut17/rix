@@ -71,6 +71,10 @@ class GithubController extends BaseController
       $rix_username = Session::get("username");
       $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
       $token = $result[0]->access_token;
+      if($result!=0){
+        DB::table('accounts')->where('username',$rix_username)->where('source_name','github')->delete();
+        DB::table('accounts')->insert(['username' => $rix_username, 'access_token' => $token, 'source_name' => 'github']);
+      }
       $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
       $repos = $client->api('current_user')->repositories();
       $account = $repos[0]['owner']['login'];
@@ -102,7 +106,7 @@ class GithubController extends BaseController
         }
       }
     } catch (\Exception $e) {
-        // dd($e->getMessage());
+        dd($e->getMessage());
     }
   }
 

@@ -66,5 +66,9 @@ Route::get('/logout','PageController@logout');
 	//Remove Routes
 		Route::post('/remove/{api}', 'PageController@removeAPI');
 
+		//API Rest
+		Route::get('/api/{token}/{service}', 'APIController@call');
+		Route::get('/generatetoken','APIController@get_token');
+
 	});
 });

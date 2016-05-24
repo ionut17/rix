@@ -57,6 +57,13 @@ class PocketController extends BaseController
       $rix_username = Session::get('username');
       $result= DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"pocket"));
       $access_token = $result[0]->access_token;
+
+      //Deleting the articles  of a user
+      $result = DB::table('accounts')->where('username',$rix_username)->where ('source_name','pocket')->count();
+      if($result!=0){
+      	DB::table('accounts')->where('username',$rix_username)->where('source_name','pocket')->delete();
+  		    DB::table('accounts')->insert(['username' => $rix_username, 'access_token' => $access_token, 'source_name' => 'pocket']);
+        }
       //Making connection
       $pockpack = new Pockpack($consumer_key, $access_token);
       //Setting the options
