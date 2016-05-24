@@ -65,8 +65,13 @@ class VimeoController extends BaseController
 		$response = $vimeo_connection->request('/me/videos', ['per_page' => 50], 'GET');
 
 		$pdo = DB::getPdo();
-		DB::table('accounts')->where('username',$username)->where('source_name','vimeo')->delete();
-		DB::table('accounts')->insert(['username' => $username, 'access_token' => $access_token, 'source_name' => 'vimeo']);
+
+		$result = DB::table('accounts')->where('username',$username)->where('source_name','vimeo')->count();
+
+		if ($result != 0){
+			DB::table('accounts')->where('username',$username)->where('source_name','vimeo')->delete();
+			DB::table('accounts')->insert(['username' => $username, 'access_token' => $access_token, 'source_name' => 'vimeo']);
+		}
 
 		$videos = $response['body']['data'];
 		$stmt = $pdo -> prepare("BEGIN
