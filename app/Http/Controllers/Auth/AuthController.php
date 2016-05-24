@@ -109,6 +109,9 @@ class AuthController extends Controller
        return 'Username already taken';
      }
      $email = Request::input('email');
+     if(empty($email)){
+       return 'Email not entered';
+     }
      $result = DB::table('users')->where('email',$email)->first();
      if(!empty($result)){
        return 'Email already taken';
