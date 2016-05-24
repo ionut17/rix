@@ -14,6 +14,7 @@
         @if (session('error')!=null)
           <label class="error">Error: {{session('error')}}</label>
         @endif
+        <label class="error"></label>
         <label for="username">Username</label>
         <input type="text" name="username" id="username">
         <label for="username">Email Address</label>
