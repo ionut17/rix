@@ -22,6 +22,10 @@
       @endif
     </section>
     <section class="details">
+      @if(isset($content['tags']))
+        <br><label>Tags </label>
+        <label><span>{{$content['tags']}}</span></label>
+      @endif
       @if (isset($content['authors']))
         <br><label>By </label>
         @foreach ($content['authors'] as $author)
