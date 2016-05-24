@@ -48,6 +48,10 @@ Route::get('/logout','PageController@logout');
 		Route::get('/refresh','SettingsController@refresh');
 		Route::get('/search','ContentController@search');
 
+		//Save filters
+		Route::get('/filters','FilterController@get');
+		Route::post('/filters','FilterController@save');
+
 
 	//Activate APIs
 		Route::post('/authorize','PageController@authorizeAPI');

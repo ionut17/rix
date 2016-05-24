@@ -33,9 +33,8 @@
   <div class="container">
     <div class="filter-container">
       <div class="filters">
-        <div>Filters:</div>
-        <span>Sort by</span>
-        <span>Tags</span>
+        <span id="filter-option">Filters</span>
+        <span id="tag-option">Tags</span>
       </div>
       <ul class="pagination">
         @for ($i=1;$i<=$page_count;$i++)
@@ -46,6 +45,28 @@
           @endif
         @endfor
       </ul>
+    </div>
+    <div class="filter-content" id="filter-content" style="display: none;">
+      <label class="tag">Filters:</label>
+      <ul>
+        <li>
+          <input type="checkbox" name="github" id="github-opt" checked>
+          <label for="github">Github</label>
+        </li>
+        <li>
+          <input type="checkbox" name="pocket" id="pocket-opt" checked>
+          <label for="pocket">Pocket</label>
+        </li>
+        <li>
+          <input type="checkbox" name="slideshare" id="slideshare-opt" checked>
+          <label for="slideshare">Slideshare</label>
+        </li>
+        <li>
+          <input type="checkbox" name="vimeo" id="vimeo-opt" checked>
+          <label for="vimeo">Vimeo</label>
+        </li>
+      </ul>
+      <button type="button" name="view-btn" class="article-button" id="filter-save">Filter</button>
     </div>
     <div class="content-container">
       @if ($has_accounts==true)

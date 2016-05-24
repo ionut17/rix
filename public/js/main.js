@@ -82,4 +82,78 @@ $( document ).ready(function() {
       });
     }, 500);
 
+    //Filters
+    var filterOption = $( "#filter-option" );
+    var filterContent = $("#filter-content");
+    var filterSave = $('#filter-save');
+    $.ajax({
+      url: '/filters',
+      type: 'GET',
+      success: function (data) {
+        if (data.github==1){
+          $('#github-opt').prop('checked',true);
+        }
+        else $('#github-opt').prop('checked',false);
+        if (data.pocket==1){
+          $('#pocket-opt').prop('checked',true);
+        }
+        else $('#pocket-opt').prop('checked',false);
+        if (data.slideshare==1){
+          $('#slideshare-opt').prop('checked',true);
+        }
+        else $('#slideshare-opt').prop('checked',false);
+        if (data.vimeo==1){
+          $('#vimeo-opt').prop('checked',true);
+        }
+        else $('#vimeo-opt').prop('checked',false);
+      }
+    });
+    filterOption.click(function() {
+      filterContent.slideToggle('fast');
+    });
+
+    filterSave.click(function() {
+      var githubSwitch, pocketSwitch, slideshareSwitch, vimeoSwitch;
+      if ($('#github-opt').is(':checked')){
+        githubSwitch = 1;
+      }
+      else {
+        githubSwitch = 0;
+      }
+      if ($('#pocket-opt').is(':checked')){
+        pocketSwitch = 1;
+      }
+      else {
+        pocketSwitch = 0;
+      }
+      if ($('#slideshare-opt').is(':checked')){
+        slideshareSwitch = 1;
+      }
+      else {
+        slideshareSwitch = 0;
+      }
+      if ($('#vimeo-opt').is(':checked')){
+        vimeoSwitch = 1;
+      }
+      else {
+        vimeoSwitch = 0;
+      }
+      console.log(githubSwitch,pocketSwitch,slideshareSwitch,vimeoSwitch);
+      $.ajax({
+        url: '/filters',
+        type: 'POST',
+        data: {
+          github: githubSwitch,
+          pocket: pocketSwitch,
+          slideshare: slideshareSwitch,
+          vimeo: vimeoSwitch
+        },
+        success: function (data) {
+          console.log(data);
+          window.location.href = '/mycontent';
+          // location.reload();
+        }
+      });
+    });
+
 });

@@ -50,13 +50,27 @@ class ContentController extends BaseController
     //Adding API's contents
       //Adding filters to the displayed articles
 
-      // $filter = Session::get('filter');
-
       $filter=array();
       $filter['github']=1;
       $filter['pocket']=1;
       $filter['slideshare']=1;
       $filter['vimeo']=1;
+
+      $filter_session = Session::get('filter');
+      if (isset($filter_session)){
+        if (isset($filter_session['github'])){
+          $filter['github'] = $filter_session['github'];
+        }
+        if (isset($filter_session['pocket'])){
+          $filter['pocket'] = $filter_session['pocket'];
+        }
+        if (isset($filter_session['slideshare'])){
+          $filter['slideshare'] = $filter_session['slideshare'];
+        }
+        if (isset($filter_session['vimeo'])){
+          $filter['vimeo'] = $filter_session['vimeo'];
+        }
+      }
 
       if($filter['pocket']==1){
         if ($contentPocket!=null) {
@@ -381,9 +395,9 @@ public function contentVimeo($id, $tag){
       $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
       $vimeo_connection= Vimeo::connection('alternative');
       $vimeo_connection->setToken($access_token);
-      $article = $vimeo_connection->request($result_video->url_content,[],'GET');  
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
       $tag = 'Tags: ';
-      $more_tags = 1; 
+      $more_tags = 1;
     }catch(\Exception $e){
       //catch invalid_number exception from db => that means it's a recommended content
       $vimeo_connection =Vimeo::connection('main');
@@ -453,7 +467,7 @@ public function contentSlideshare($id)
         $file_content['details'] = 'By '.$response->Username;
         $file_content['content'] = $response->Embed;
         $file_content['url'] = $response->URL;
-        return $file_content;   
+        return $file_content;
 }
 
     //function used for search
