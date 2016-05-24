@@ -30,10 +30,6 @@ class SlideshareController extends BaseController
 		$validation = 'api_key='.$this->api_key.'&ts='.$time.'&hash='.sha1($this->shared_secret.$time);
 		return $validation;
 	}
-	public function store()
-	{
-
-	}
 	public function authorize()
 	{
 		$username = Session::get('username');
@@ -55,7 +51,6 @@ class SlideshareController extends BaseController
 		}
 		else
 		{	
-
 			//create the account
 			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
 			//store the data for showing
