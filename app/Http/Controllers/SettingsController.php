@@ -43,7 +43,8 @@ class SettingsController extends BaseController
 
   public function refresh(){
     try{
-      $access_token = DB::table('accounts')->select('access_token')->where('username',Session::get('username'))->first();
+      $username = Session::get('username');
+      $access_token = DB::table('accounts')->where('username',$username)->where('source_name','vimeo')->select('access_token')->first();
       $vimeo_controller =  new VimeoController();
       $vimeo_controller->store($access_token->access_token);
 
@@ -51,8 +52,11 @@ class SettingsController extends BaseController
       $pocket_controller = new PocketController();
       $pocket_controller->store();
 
+      $slideshare_controller = new SlideshareController();
+
+
     }catch(\Exception $e){
-      // dd($e);
+      dd($e);
       //If you don't have an account attached
      return Redirect::to('mycontent');
    }

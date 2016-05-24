@@ -30,12 +30,23 @@ class SlideshareController extends BaseController
 		$validation = 'api_key='.$this->api_key.'&ts='.$time.'&hash='.sha1($this->shared_secret.$time);
 		return $validation;
 	}
-	public function authorize()
+	public function store()
 	{
 
-		$slideshare_username = Request::get('slideshare_username');
+	}
+	public function authorize()
+	{
 		$username = Session::get('username');
-
+		$result = DB::table('accounts')->where('username','=',$username)->where('source_name','=','slideshare')->select('access_token')->get();
+		if(empty($result))
+		{
+			$slideshare_username = Request::get('slideshare_username');
+		}
+		else
+		{
+			DB::table('accounts')->where('username','=',$username)->where('source_name','=','slideshare')->delete();
+			$slideshare_username = $result[0]->access_token;
+		}
 		//Get the XML with presentations
 		$response = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshows_by_user/?'.$this->generate_validation().'&username_for='.$slideshare_username.'&limit=50'));
 		if(array_key_exists('Message', $response))
@@ -44,9 +55,9 @@ class SlideshareController extends BaseController
 		}
 		else
 		{	
+
 			//create the account
 			DB::statement('insert into accounts(username,access_token,source_name) values (?,?,?)',array($username,$slideshare_username,'slideshare'));
-
 			//store the data for showing
 			$min = min($response->Count,50);
 			for($i = 0; $i < $min; $i++)
