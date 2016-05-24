@@ -55,32 +55,46 @@ $( document ).ready(function() {
     // });
 
     //AJAX Search
-
+    $('#search-clear').hide();
     setTimeout(function(){
       searchBox.on('input', function() {
         var searchInput = $(this).val();
         searchResults.hide();
         searchResults.empty();
-        if (searchInput.length>=3){
-          $.ajax({
-            url: '/search',
-            type: 'GET',
-            data: {search_string: searchInput},
-            success: function (data) {
-              searchResults.empty();
-              searchResults.show();
-              //Building li's
-              $.each(data, function(index, value){
-                var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
-                var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
-                searchResults.append(wrapper);
-                $('#wrapper'+value.id).slideDown('fast');
-              });
-            }
-          });
+        if (searchInput.length>0){
+          $('#search-normal').hide();
+          $('#search-clear').show();
+          if (searchInput.length>=3){
+            $.ajax({
+              url: '/search',
+              type: 'GET',
+              data: {search_string: searchInput},
+              success: function (data) {
+                searchResults.empty();
+                searchResults.show();
+                //Building li's
+                $.each(data, function(index, value){
+                  var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
+                  var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
+                  searchResults.append(wrapper);
+                  $('#wrapper'+value.id).slideDown('fast');
+                });
+              }
+            });
+          }
+        } else{
+          $('#search-normal').show();
+          $('#search-clear').hide();
         }
       });
     }, 500);
+
+    //Clear on x-click
+    $('#search-clear').click(function() {
+      searchBox.val("");
+      $('#search-normal').show();
+      $('#search-clear').hide();
+    });
 
     //Filters
     var filterOption = $( "#filter-option" );

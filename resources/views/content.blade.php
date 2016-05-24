@@ -21,7 +21,8 @@
         <section class="search">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
           <ul class="search-results" id="search-results"></ul>
-          <i class="fa fa-search" aria-hidden="true"></i>
+          <i class="fa fa-times-circle" aria-hidden="true" id="search-clear"></i>
+          <i class="fa fa-search" aria-hidden="true" id="search-normal"></i>
         </section>
       </div>
     </div>

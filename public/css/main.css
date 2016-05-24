@@ -659,6 +659,8 @@ button.article-button {
       .settings-box.accounts .accounts-buttons a {
         width: 100%;
         max-width: 300px; }
+        .settings-box.accounts .accounts-buttons a:not(:last-child) {
+          margin-bottom: 20px; }
       .settings-box.accounts .accounts-buttons h2 {
         margin-bottom: 23px; }
       .settings-box.accounts .accounts-buttons .article-button {
@@ -889,6 +891,10 @@ ul.search-results {
     ul.search-results li:hover {
       background-color: #f2f2f2;
       cursor: pointer; }
+
+#search-clear:hover {
+  color: black;
+  cursor: pointer; }
 
 @media screen and (max-width: 991px) {
   .article-box {
