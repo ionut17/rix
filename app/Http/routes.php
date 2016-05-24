@@ -46,6 +46,7 @@ Route::get('/logout','PageController@logout');
 		Route::get('/article/{type}/{api}','ContentController@article');
 
 		Route::get('/settings','SettingsController@show');
+		Route::post('/settings/modify', 'SettingsController@modify');
 		Route::get('/recommended/{page_number?}','RecommendedController@show');
 
 		Route::get('/refresh','SettingsController@refresh');

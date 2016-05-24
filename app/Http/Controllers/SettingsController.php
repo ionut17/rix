@@ -76,7 +76,7 @@ class SettingsController extends BaseController
  }
 
  public function modify(){
-
+    dd(Request::all());
  }
 
 }
