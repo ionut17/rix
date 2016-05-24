@@ -62,7 +62,8 @@ class SettingsController extends BaseController
             $pocket_controller->store();
             break;
           case 'github':
-            //insert code for git
+            $github_controller = new GithubController();
+            $github_controller->store();
             break;
         }
       }
