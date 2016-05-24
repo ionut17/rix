@@ -449,7 +449,7 @@ public function contentSlideshare($id)
         $file_content['type'] = 'slideshare';
         $file_content['title'] = $response->Title;
         $file_content['description'] = $response->Description;
-        $file_content['details'] = 'By '.$response->Username;
+        $file_content['details'] = $response->Username;
         $file_content['content'] = $response->Embed;
         $file_content['url'] = $response->URL;
         return $file_content;   
