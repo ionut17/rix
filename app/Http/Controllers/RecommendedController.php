@@ -22,7 +22,7 @@ class RecommendedController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-  private $max_files_per_api = 10;
+  private $max_files_per_api = 5;
   protected $rix_username;
 
   public function __construct(){
@@ -34,9 +34,11 @@ class RecommendedController extends BaseController
     try{
       $contentGithub = null;
       $contentPocket = null;
-      $contentSlideshare = null;
+      $contentSlideshare = $this->recommendedSlideshare();
+
       $contentVimeo = $this->recommendedVimeo();
         //Content (se adauga un array pentru fiecare API)
+
       $contentGithub = $this->recommendGithub('website',array('language' => 'html'));
       // $contentPocket = $this->listPocket();
       // $contentVimeo = $this -> listVimeo();
@@ -182,6 +184,47 @@ class RecommendedController extends BaseController
       return $recommended_files;
     }
   }
+
+public function recommendedSlideshare()
+{
+
+    $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
+    $recommended_files = array();
+    try 
+    {
+
+        foreach($tags as $tag)
+        {
+            $SS = new SlideshareController();
+            $validation = $SS->generate_validation();
+
+            $results = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshows_by_tag/?'.$validation.'&tag='.$tag->tagname.'&limit='.$this->max_files_per_api));
+            $results = $results->Slideshow;
+        
+            foreach($results as $result)
+            {
+                $file_content = array();
+                $file_content['type'] = 'slideshare';
+                $file_content['id'] = $result[0]->id_article;
+                $file_content['title'] = $result[0] ->title;
+                $file_content['details'] = $result[0] ->author;
+                $file_content['description'] = $result[0]->description;
+                $file_content['image'] = $result[0]->image_url;
+                dd($file_content);
+                array_push($recommended_files,$file_content);
+            }
+        }
+    }
+    catch(\Exception $e)
+    {
+        dd($e);1
+        $recommended_files = null;
+    }
+    finally
+    {
+        return $recommended_files;
+    }
+}
 
   public function article($type,$api){
     $repo = Request::input('repo');
