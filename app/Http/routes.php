@@ -23,6 +23,9 @@ Route::post('/login_authorize','Auth\AuthController@validate_login');
 
 Route::get('/register','PageController@register');
 Route::post('/register','PageController@register');
+
+//register ajax route
+	Route::get('/validator','Auth\AuthController@ajax_validator');
 Route::post('/register_authorize','Auth\AuthController@validate_register');
 
 Route::get('/logout','PageController@logout');
@@ -74,7 +77,5 @@ Route::get('/logout','PageController@logout');
 		Route::get('/api/{token}/{service}', 'APIController@call');
 		Route::get('/generatetoken','APIController@get_token');
 
-	//register ajax route
-		Route::get('/validator','Auth\AuthController@ajax_validator');
 	});
 });
