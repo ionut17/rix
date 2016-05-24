@@ -28,9 +28,9 @@ class RecommendedController extends BaseController
   public function __construct(){
       // $this->middleware('auth');
     $this->rix_username = Session::get('username');
-  }
+}
 
-  public function show($page_number=1){
+public function show($page_number=1){
     try{
       $contentGithub = null;
       $contentPocket = null;
@@ -48,63 +48,63 @@ class RecommendedController extends BaseController
       if ($contentPocket!=null) {
         if ($content != null){
           $content = array_merge($content, $contentPocket);
-        }
-        else {
+      }
+      else {
           $content = array_merge($contentPocket);
-        }
       }
-      if ($contentGithub!=null) {
-        if ($content != null){
-          $content = array_merge($content, $contentGithub);
-        }
-        else {
-          $content = array_merge($contentGithub);
-        }
-      }
-      if ($contentVimeo != null) {
-        if ($content != null){
-          $content = array_merge($content, $contentVimeo);
-        }
-        else {
-          $content = array_merge($contentVimeo);
-        }
-      }
-      if ($contentSlideshare!=null) {
-        if ($content != null){
-          $content = array_merge($content, $contentSlideshare);
-        }
-        else {
-          $content = array_merge($contentSlideshare);
-        }
-      }
+  }
+  if ($contentGithub!=null) {
+    if ($content != null){
+      $content = array_merge($content, $contentGithub);
+  }
+  else {
+      $content = array_merge($contentGithub);
+  }
+}
+if ($contentVimeo != null) {
+    if ($content != null){
+      $content = array_merge($content, $contentVimeo);
+  }
+  else {
+      $content = array_merge($contentVimeo);
+  }
+}
+if ($contentSlideshare!=null) {
+    if ($content != null){
+      $content = array_merge($content, $contentSlideshare);
+  }
+  else {
+      $content = array_merge($contentSlideshare);
+  }
+}
       //Get files
       //Settings
-      $page_number = intval($page_number);
-      $per_page = 8;
+$page_number = intval($page_number);
+$per_page = 8;
       //Pagination
-      $article_count = count($content);
-      $page_count = intval(ceil($article_count/$per_page));
-      $index_start = ($page_number-1)*$per_page;
+$article_count = count($content);
+$page_count = intval(ceil($article_count/$per_page));
+$index_start = ($page_number-1)*$per_page;
       //Display content
-      $display_content = null;
-      if ($content!=null){
+$display_content = null;
+if ($content!=null){
           // shuffle($content); //TO REMOVE NOT SHUFFLING CORECTLY
-        $display_content = array_slice($content,$index_start,$per_page);
-      }
-      $has_accounts = true;
-    }
-    catch(\Exception $e){
-      $has_accounts = false;
-      $display_content = null;
-      $page_count = 1;
-      $page_numer = 1;
-    }
-    return View::make('content', ['has_accounts' => $has_accounts, 'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number, 'target'=>'recommended']);
-  }
+    $display_content = array_slice($content,$index_start,$per_page);
+}
+$has_accounts = true;
+}
+catch(\Exception $e){
+  $has_accounts = false;
+  $display_content = null;
+  $page_count = 1;
+  $page_numer = 1;
+}
+return View::make('content', ['has_accounts' => $has_accounts, 'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number, 'target'=>'recommended']);
+}
 
   //API's recommendations
 
-  public function recommendGithub($search_input,$languages){
+public function recommendGithub($search_input,$languages){
     try{
       // $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
       $client = new \Github\Client();
@@ -122,8 +122,8 @@ class RecommendedController extends BaseController
         foreach ($files as $file){
           if ($counted_files > $this->max_files_per_api){
             break;
-          }
-          if ($file['type']=='file' && $file['size']<1000000){
+        }
+        if ($file['type']=='file' && $file['size']<1000000){
             // dd($file);
             $file_content['type'] = 'github';
             $file_content['title'] = $file['name'];
@@ -137,24 +137,24 @@ class RecommendedController extends BaseController
               // $file_content['username'] = $repos['repositories'][$count]['username'];
             if (isset($file['description'])){
               $file_content['description'] = $file['description'];
-            }
-            $counted_files = $counted_files + 1;
-              // $file_content['content'] = base64_decode($myfile['content']);
-            array_push($recommended_files, $file_content);
           }
-        }
+          $counted_files = $counted_files + 1;
+              // $file_content['content'] = base64_decode($myfile['content']);
+          array_push($recommended_files, $file_content);
       }
-    }
-    catch (\Exception $e){
-      // dd($e->getMessage());
-      $recommended_files = null;
-    }
-    finally{
-      return $recommended_files;
-    }
   }
+}
+}
+catch (\Exception $e){
+      // dd($e->getMessage());
+  $recommended_files = null;
+}
+finally{
+  return $recommended_files;
+}
+}
 
-  public function recommendVimeo(){
+public function recommendVimeo(){
     //Get all the favourites tags for user
     $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
     $recommended_files = array();
@@ -174,14 +174,14 @@ class RecommendedController extends BaseController
           $file_content['url'] = $article['uri'];
           $file_content['tag'] = $tag->tagname;
           array_push($recommended_files, $file_content);
-        } 
-      }
-    }catch(\Exception $e){
-      $recommended_files = null;
-    }finally{
-      return $recommended_files;
-    }
+      } 
   }
+}catch(\Exception $e){
+  $recommended_files = null;
+}finally{
+  return $recommended_files;
+}
+}
 
 public function recommendedSlideshare()
 {
@@ -198,17 +198,16 @@ public function recommendedSlideshare()
 
             $results = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshows_by_tag/?'.$validation.'&tag='.$tag->tagname.'&limit='.$this->max_files_per_api));
             $results = $results->Slideshow;
-        
             foreach($results as $result)
             {
                 $file_content = array();
                 $file_content['type'] = 'slideshare';
-                $file_content['id'] = $result[0]->id_article;
-                $file_content['title'] = $result[0] ->title;
-                $file_content['details'] = $result[0] ->author;
-                $file_content['description'] = $result[0]->description;
-                $file_content['image'] = $result[0]->image_url;
-                dd($file_content);
+                $file_content['id'] = $result->ID;
+                $file_content['title'] = $result->Title;
+                $file_content['details'] = $result->Username;
+                $file_content['description'] = $result[0]->Description;
+                $file_content['image'] = $result[0]->ThumbnailXLargeURL;
+                $file_content['tag']=$tag->tagname;
                 array_push($recommended_files,$file_content);
             }
         }
@@ -224,23 +223,23 @@ public function recommendedSlideshare()
     }
 }
 
-  public function article($type,$api){
+public function article($type,$api){
     $repo = Request::input('repo');
     $path = Request::input('path');
     if ($type=='image'){
       return view('articles.image-article');
-    }
-    if ($type=='video'){
+  }
+  if ($type=='video'){
       return view('articles.video-article');
-    }
-    if ($type=='code'){
+  }
+  if ($type=='code'){
       if ($api == 'github'){
         $article = $this->contentGithub($repo,$path);
-      }
-        // dd($article);
-      return View::make('articles.code-article',['content'=>$article]);
     }
-    return view('layouts.article');
-  }
+        // dd($article);
+    return View::make('articles.code-article',['content'=>$article]);
+}
+return view('layouts.article');
+}
 
 }
