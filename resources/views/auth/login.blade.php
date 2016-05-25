@@ -19,8 +19,8 @@
       <input type="text" name="username" id="username">
       <label for="password">Password</label>
       <input type="password" name="password" id="password">
-      <input type="checkbox" name="remember" id="remember">
-      <label for="remember">Remember me</label>
+      <!-- <input type="checkbox" name="remember" id="remember"> -->
+      <!-- <label for="remember">Remember me</label> -->
     </div>
     <button type="submit" class="button">
       Login
