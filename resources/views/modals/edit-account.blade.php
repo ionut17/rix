@@ -18,8 +18,10 @@
             <input type="text" name="username" id="username" value="@if (isset($user_info)) {{$user_info->username}} @endif">
             <label for="email">Email</label>
             <input type="text" name="email" id="email" value="@if (isset($user_info)) {{$user_info->email}} @endif">
-            <label for="avatar">Profile picture</label>
-            <input type="file" name="avatar" id="avatar-input">
+            <label for="password">New Password</label>
+            <input type="password" name="password" id="password">
+            <label for="rpassword">Repeat password</label>
+            <input type="password" name="rpassword" id="rpassword">
           </div>
         </div>
         <div class="modal-footer" style="padding: 0;">
