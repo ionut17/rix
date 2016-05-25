@@ -19,13 +19,24 @@ class SettingsController extends BaseController
     $slideshare_error = Session::get('slideshare_error');
     $username = Session::get('username');
     $user_info = DB::select('SELECT username, email FROM users WHERE username=?',array($username));
-    $dir = getcwd();
-    $filename = $dir.'\img\profiles\\'.$user_info[0]->username.'.jpg';
-    if (file_exists($filename)) {
-      $user_info[0]->avatar= $user_info[0]->username;
-    } else {
-      $user_info[0]->avatar='default';
+
+    if(!empty($user_info)){
+      $dir = getcwd();
+      $filename = $dir.'\img\profiles\\'.$user_info[0]->username.'.jpg';
+      if (file_exists($filename)) {
+        $user_info[0]->avatar= $user_info[0]->username;
+      } else {
+        $user_info[0]->avatar='default';
+      }
     }
+    else {
+        $small_array = array();
+        $small_array['avatar'] = 'default';
+        $user_info = array();
+        $user_info[0] = $small_array;
+        dd($user_info);
+    };
+
       //Getting sources
     $results = DB::select('SELECT source_name FROM accounts WHERE username=?',array($username));
     $sources = array();

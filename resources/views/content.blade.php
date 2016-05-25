@@ -89,7 +89,7 @@
                   @elseif ($entry['type']=='vimeo')
                       @if (isset($entry['id']))
                         <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
-                      @elseif (isset($entry['tag']))
+                      @elseif (isset($entry['tags']))
                         <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['url'].'&tag='.$entry['tag']) }}">
                       @endif
                   @elseif ($entry['type']=='slideshare')

@@ -43,7 +43,7 @@ Route::get('/logout','PageController@logout');
 		Route::get('/article/{type}/{api}','ContentController@article');
 
 		Route::get('/settings','SettingsController@show');
-		Route::get('/recommended/{page_number?}','RecommendedController@show');
+		Route::get('/recommended/{page_number?}','RecommendedController@buildRecommendedContent');
 
 		Route::get('/refresh','SettingsController@refresh');
 		Route::get('/search','ContentController@search');
