@@ -32,7 +32,7 @@ Route::get('/logout','PageController@logout');
 
 //API Rest
 	Route::get('/api/{token}/{service}/get', 'APIController@call');
-	Route::post('/api/{token}/{service}/delete','APIController@delete');
+	Route::post('/api/{token}/{service}/deleteaccount','APIController@delete_account');
 	Route::post('/api/{token}/{service}/connect','APIController@connect');
 	Route::get('/generatetoken','APIController@get_token');
 

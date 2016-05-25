@@ -70,11 +70,11 @@ class APIController extends BaseController
       return $token;
     }
 
-    public function delete(){
+    public function delete_account($token, $service){
 
     }
 
-    public function connect(){
-      
+    public function connect($token, $service){
+
     }
 }
