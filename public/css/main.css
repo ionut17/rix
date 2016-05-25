@@ -756,15 +756,18 @@ button.article-button {
   align-items: center;
   justify-content: center;
   padding: 20px; }
-  .notification p.error {
+  .notification p {
     text-align: center;
     font-family: 'Montserrat', Arial, sans-serif;
     text-transform: uppercase;
     font-size: 14px;
-    font-weight: bold;
-    color: #e74c3c; }
-    .notification p.error:last-child {
+    font-weight: bold; }
+    .notification p:last-child {
       margin-bottom: 0; }
+    .notification p.error {
+      color: #e74c3c; }
+    .notification p.success {
+      color: #2dcc70; }
 
 figure.logo, figure.logo.small {
   margin: 0;

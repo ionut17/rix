@@ -79,11 +79,24 @@
         </div>
       </div>
     </div>
-    @if (isset($slideshare_error))
+      @if (isset($slideshare_error))
       <div class="notification">
           <p class="error">Slideshare: {{$slideshare_error}}</p>
       </div>
-    @endif
+      @endif
+      @if (isset($edit_error))
+        @if ($edit_error!='ok')
+          {{Session::forget('error')}}
+          <div class="notification">
+              <p class="error">Edit: {{$edit_error}}</p>
+          </div>
+        @else
+          {{Session::forget('error')}}
+          <div class="notification">
+              <p class="success">Password changed succesfully</p>
+          </div>
+        @endif
+      @endif
   </div>
 
   @include ('modals.attach-account')

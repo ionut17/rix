@@ -17,6 +17,7 @@ class SettingsController extends BaseController
 
   public function show(){
     $slideshare_error = Session::get('slideshare_error');
+    $edit_error = Session::get('error');
     $username = Session::get('username');
     $user_info = DB::select('SELECT username, email, unseen_tutorial FROM users WHERE username=?',array($username));
 
@@ -58,7 +59,7 @@ class SettingsController extends BaseController
         $show_tutorial = false;
       }
       //
-    return View::make('settings', ['sources' => $sources, 'user' => $user, 'select_values' => $select_values, 'slideshare_error' => $slideshare_error, 'user_info' => $user_info[0],'show_tutorial'=>$show_tutorial]);
+    return View::make('settings', ['sources' => $sources, 'user' => $user, 'select_values' => $select_values, 'slideshare_error' => $slideshare_error, 'edit_error'=> $edit_error, 'user_info' => $user_info[0],'show_tutorial'=>$show_tutorial]);
   }
 
   public function refresh(){
@@ -102,7 +103,13 @@ class SettingsController extends BaseController
     $confirmed_password= Request::get('rpassword');
     if ($password == $confirmed_password){
       $username = Session::get('username');
-      DB::table('users')->where('username', $username)->update(['PASSWORD' => sha1($password)]);
+      if (strlen($password)<6){
+        Session::put('error','Password is too short');
+      }
+      else{
+        DB::table('users')->where('username', $username)->update(['PASSWORD' => sha1($password)]);
+        Session::put('error','ok');
+      }
     }
     else
     {
