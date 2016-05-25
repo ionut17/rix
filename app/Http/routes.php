@@ -16,20 +16,25 @@ Route::group(['middleware'=>['web']],function(){
 	Route::get('/example', 'DBController@');
 	//Delete this ^
 
-Route::get('/login','PageController@login');
-Route::post('/login','PageController@login');
-Route::post('/login_authorize','Auth\AuthController@validate_login');
+	Route::get('/login','PageController@login');
+	Route::post('/login','PageController@login');
+	Route::post('/login_authorize','Auth\AuthController@validate_login');
 
 
-Route::get('/register','PageController@register');
-Route::post('/register','PageController@register');
+	Route::get('/register','PageController@register');
+	Route::post('/register','PageController@register');
 
 //register ajax route
 	Route::get('/validator','Auth\AuthController@ajax_validator');
-Route::post('/register_authorize','Auth\AuthController@validate_register');
+	Route::post('/register_authorize','Auth\AuthController@validate_register');
 
-Route::get('/logout','PageController@logout');
+	Route::get('/logout','PageController@logout');
 
+//API Rest
+	Route::get('/api/{token}/{service}/get', 'APIController@call');
+	Route::get('/api/{token}/{service}/deleteaccount','APIController@delete_account');
+	Route::post('/api/{token}/{service}/connect','APIController@connect');
+	Route::get('/generatetoken','APIController@get_token');
 
 	Route::group(['middleware'=>['authgroup']],function(){
 		Route::get('/', function () {
@@ -46,8 +51,7 @@ Route::get('/logout','PageController@logout');
 		Route::get('/article/{type}/{api}','ContentController@article');
 
 		Route::get('/settings','SettingsController@show');
-		Route::post('/settings/modify', 'SettingsController@modify');
-		Route::get('/recommended/{page_number?}','RecommendedController@show');
+		Route::get('/recommended/{page_number?}','RecommendedController@buildRecommendedContent');
 
 		Route::get('/refresh','SettingsController@refresh');
 		Route::get('/search','ContentController@search');
@@ -77,9 +81,6 @@ Route::get('/logout','PageController@logout');
 	//Remove Routes
 		Route::post('/remove/{api}', 'PageController@removeAPI');
 
-	//API Rest
-		Route::get('/api/{token}/{service}', 'APIController@call');
-		Route::get('/generatetoken','APIController@get_token');
 
 	});
 });

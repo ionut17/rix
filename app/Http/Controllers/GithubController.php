@@ -17,7 +17,7 @@ class GithubController extends BaseController
   private $client;
   private $client_secret;
 
-  public function __construct(GithubClient $client)
+  public function __construct()
   {
     $this->client = env('GITHUB_CLIENT');
     $this->client_secret = env('GITHUB_CLIENT_SECRET');
