@@ -32,7 +32,7 @@ Route::group(['middleware'=>['web']],function(){
 
 //API Rest
 	Route::get('/api/{token}/{service}/get', 'APIController@call');
-	Route::post('/api/{token}/{service}/deleteaccount','APIController@delete_account');
+	Route::get('/api/{token}/{service}/deleteaccount','APIController@delete_account');
 	Route::post('/api/{token}/{service}/connect','APIController@connect');
 	Route::get('/generatetoken','APIController@get_token');
 
@@ -51,8 +51,7 @@ Route::group(['middleware'=>['web']],function(){
 		Route::get('/article/{type}/{api}','ContentController@article');
 
 		Route::get('/settings','SettingsController@show');
-		Route::post('/settings/modify', 'SettingsController@modify');
-		Route::get('/recommended/{page_number?}','RecommendedController@show');
+		Route::get('/recommended/{page_number?}','RecommendedController@buildRecommendedContent');
 
 		Route::get('/refresh','SettingsController@refresh');
 		Route::get('/search','ContentController@search');
