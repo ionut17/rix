@@ -906,7 +906,7 @@ ul.search-results {
   height: 100vh;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -1025,7 +1025,16 @@ ul.search-results {
       justify-content: center; }
     .filter-content .article-button {
       height: 45px;
-      width: 100%; } }
+      width: 100%; }
+  .tutorial-wrapper {
+    overflow: scroll; }
+    .tutorial-wrapper .button {
+      width: 100%; }
+  .tutorial {
+    border-radius: 0;
+    width: 100%; }
+    .tutorial .tutorial-image {
+      height: 300px; } }
 
 @media screen and (max-width: 600px) {
   .filter-content {
