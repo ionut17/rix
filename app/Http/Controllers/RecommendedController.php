@@ -22,7 +22,7 @@ class RecommendedController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-  private $max_files_per_api = 1;
+    private $max_files_per_api = 1;
     protected $rix_username;
 
     public function __construct(){
@@ -42,41 +42,41 @@ class RecommendedController extends BaseController
         $slideshare_recommended = null;
         $github_recommended = null;
 
-    $result = DB::table('vimeo_recommended')->where('username', $rix_username)->count();
-    if ($result == 0)
-      $this->storeRecommendVimeo();
-    $vimeo_recommended = $this ->recommendVimeo();
-    if($content == null)
-      $content = array_merge($vimeo_recommended);
-    else $content = array_merge($content, $vimeo_recommended);
+        $result = DB::table('vimeo_recommended')->where('username', $rix_username)->count();
+        if ($result == 0)
+          $this->storeRecommendVimeo();
+      $vimeo_recommended = $this ->recommendVimeo();
+      if($content == null)
+          $content = array_merge($vimeo_recommended);
+      else $content = array_merge($content, $vimeo_recommended);
 
         //Github
-    $result = DB::table('github_recommended')->where('username', $rix_username)->count();
-    if ($result == 0){
-      $this->storeRecommendGithub();       
-    }
-    $github_recommended = $this ->recommendGithub();
-    if($content == null)
-      $content = array_merge($github_recommended);
-    else $content = array_merge($content, $github_recommended);
+      $result = DB::table('github_recommended')->where('username', $rix_username)->count();
+      if ($result == 0){
+          $this->storeRecommendGithub();       
+      }
+      $github_recommended = $this ->recommendGithub();
+      if($content == null)
+          $content = array_merge($github_recommended);
+      else $content = array_merge($content, $github_recommended);
         //Slideshare
-        $result = DB::table('slideshare_recommended')->where('username',$rix_username)->count();
-        if($result == 0)
-            $this->storeRecommendSlideshare();
-        $slideshare_recommended = $this ->recommendSlideshare();
-        if($content == null)
-            $content = array_merge($slideshare_recommended);
-        else
-            $content = array_merge($content,$slideshare_recommended);
+      $result = DB::table('slideshare_recommended')->where('username',$rix_username)->count();
+      if($result == 0)
+        $this->storeRecommendSlideshare();
+    $slideshare_recommended = $this ->recommendSlideshare();
+    if($content == null)
+        $content = array_merge($slideshare_recommended);
+    else
+        $content = array_merge($content,$slideshare_recommended);
     
 
   //If there is any content collected we shuffle it
-if ($content != null)
-  shuffle($content);
-Session::put('content', $content);
-Session::put('has_accounts', $has_accounts);
-Session::save();
-return $this->show();
+    if ($content != null)
+      shuffle($content);
+  Session::put('content', $content);
+  Session::put('has_accounts', $has_accounts);
+  Session::save();
+  return $this->show();
 } 
 
 public function show($page_number=1){
@@ -161,54 +161,55 @@ public function storeRecommendVimeo(){
       $stmt->bindParam(':tagname',$tagnm);
       $stmt ->execute();
   } 
-    }
-  }
+}
+}
 
 
-  public function storeRecommendGithub(){
+public function storeRecommendGithub(){
     $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
-  // try {
+    try{
     //Authenticate the user to get recommandations
-    $rix_username = Session::get("username");
-    $client = new \Github\Client();
-    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
-    $token = $result[0]->access_token;
-    $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+        $rix_username = Session::get("username");
+        $client = new \Github\Client();
+        $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
+        if(!empty($result)){
+          $token = $result[0]->access_token;
+          $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
 
       //Get files for every tag in the DB for the current user
-    foreach($tags as $tag){
+          foreach($tags as $tag){
 
-      $search_input = $tag->tagname;
-      $repos = $client->api('repo')->find($search_input);;
-      $count = 0;
-      $counted_files = 0;
-      while($counted_files<$this->max_files_per_api){
-        $count = $count + 1;
+              $search_input = $tag->tagname;
+              $repos = $client->api('repo')->find($search_input);;
+              $count = 0;
+              $counted_files = 0;
+              while($counted_files<$this->max_files_per_api){
+                $count = $count + 1;
           // dd($repos['repositories'][$count]['owner']);
-        $files = $client ->api('repo')->contents()->show($repos['repositories'][$count]['owner'],$repos['repositories'][$count]['name'],'.');
+                $files = $client ->api('repo')->contents()->show($repos['repositories'][$count]['owner'],$repos['repositories'][$count]['name'],'.');
 
-        foreach($files as $file){
-          if($counted_files < $this->max_files_per_api){
-            $counted_files = $counted_files + 1;
-            if($file['type']=='file' && $file['size']<1000000){
-              $repo_name = $repos['repositories'][$count]['name'];
-              dd($repos['repositories'][$count]);
-              dd($repos['repositories'][$count]['owner']);
-              $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-              $id = null;
-              $result = DB::statement('BEGIN articles_package.add_rgarticle(?,?,?,?,?,?,?,?,?); END;', array($rix_username, $repo_name, $file['path'], $file['name'], $extension, '', 'f', $tag->tagname, $repos['repositories'][$count]['owner']));
-            }
+                foreach($files as $file){
+                  if($counted_files < $this->max_files_per_api){
+                    $counted_files = $counted_files + 1;
+                    if($file['type']=='file' && $file['size']<1000000){
+                      $repo_name = $repos['repositories'][$count]['name'];
+                      $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                      $id = null;
+                      $result = DB::statement('BEGIN articles_package.add_rgarticle(?,?,?,?,?,?,?,?,?); END;', array($rix_username, $repo_name, $file['path'], $file['name'], $extension, '', 'f', $tag->tagname, $repos['repositories'][$count]['owner']));
+                  }
+              }
+              else break;
           }
-          else break;
-        }
       }
-    }
-  // }catch(\Exception $e){
-  //   dd($e);
-  // }
   }
 
-  public function recommendGithub(){
+}
+}catch(\Exception $e){
+    // dd($e);
+}
+}
+
+public function recommendGithub(){
     $client = new \Github\Client();
     try {
       $rix_username = Session::get("username");
@@ -228,13 +229,13 @@ public function storeRecommendVimeo(){
         $file_content['username'] = $values[0]->owner_name;
         //Pushing object to array
         array_push($content,$file_content);
-      }
+    }
       // dd($content);
-    } catch (\Exception $e) {
-      dd($e->getMessage());
-      $content = null;
-    } finally {
-      return $content;    
+} catch (\Exception $e) {
+  dd($e->getMessage());
+  $content = null;
+} finally {
+  return $content;    
 }
 }
 
