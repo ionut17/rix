@@ -88,17 +88,26 @@ class SettingsController extends BaseController
         }
       }
     }catch(\Exception $e){
-      // dd($e);
       //If you don't have an account attached
-     return Redirect::to('mycontent');
+      return Redirect::to('mycontent');
    }
    return Redirect::to('mycontent');
  }
 
  public function modify(){
+    Session::forget('error');
     $username = Request::get('username');
     $email = Request::get('email');
     $password = Request::get('password');
+    $confirmed_password= Request::get('rpassword');
+    if ($password == $confirmed_password){
+      $username = Session::get('username');
+      DB::table('users')->where('username', $username)->update(['password' => sha1($password)]);
+    }
+    else
+    {
+      Session::put('error','Passwords do not match.');
+    }
  }
 
 }
