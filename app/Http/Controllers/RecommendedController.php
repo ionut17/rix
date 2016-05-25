@@ -20,39 +20,39 @@ use Session;
 
 class RecommendedController extends BaseController
 {
-  use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-  private $max_files_per_api = 10;
-  protected $rix_username;
+    private $max_files_per_api = 10;
+    protected $rix_username;
 
-  public function __construct(){
+    public function __construct(){
       // $this->middleware('auth');
-    $this->rix_username = Session::get('username');
-  }
+        $this->rix_username = Session::get('username');
+    }
 
-  public function buildRecommendedContent(){
+    public function buildRecommendedContent(){
     //Verify if user has any account
-    $rix_username = Session::get('username');
-    $accounts = DB::table('accounts')->where('username', '=', $rix_username)->select('source_name')->count();
-    $has_accounts = $accounts;
+        $rix_username = Session::get('username');
+        $accounts = DB::table('accounts')->where('username', '=', $rix_username)->select('source_name')->count();
+        $has_accounts = $accounts;
 
-    $content = array();
+        $content = array();
 
-    $vimeo_recommended = null;
-    $slideshare_recommended = null;
-    $github_recommended = null;
+        $vimeo_recommended = null;
+        $slideshare_recommended = null;
+        $github_recommended = null;
 
-    for($i=0; $i<3; $i++){
-      switch ($i) {
-        case '0':
-        $result = DB::table('vimeo_recommended')->where('username', $rix_username)->count();
-        if ($result == 0)
-          $this->storeRecommendVimeo();
-        $vimeo_recommended = $this ->recommendVimeo();
-        if($content == null)
-          $content = array_merge($vimeo_recommended);
-        else $content = array_merge($content, $vimeo_recommended);
-        break;
+        for($i=0; $i<3; $i++){
+          switch ($i) {
+            case '0':
+            $result = DB::table('vimeo_recommended')->where('username', $rix_username)->count();
+            if ($result == 0)
+              $this->storeRecommendVimeo();
+          $vimeo_recommended = $this ->recommendVimeo();
+          if($content == null)
+              $content = array_merge($vimeo_recommended);
+          else $content = array_merge($content, $vimeo_recommended);
+          break;
         case '1': //Github
           // $result = DB::table('github_recommended')->where('username', $rix_username)->count();
           // if ($result == 0)
@@ -63,27 +63,28 @@ class RecommendedController extends BaseController
           // else $content = array_merge($content, $github_recommended);
         break;
         case '2': //Slideshare
-          // $result = DB::table('slideshare_recommended')->where('username', $rix_username)->count();
-          // if ($result == 0)
-          //   $this->storeRecommendSlideshare();
-          // $slideshare_recommended = $this ->recommendSlideshare();
-          // if($content == null)
-          //   $content = array_merge($slideshare_recommended);
-          // else $content = array_merge($content, $slideshare_recommended);
+        $result = DB::table('slideshare_recommended')->where('username',$rix_username)->count();
+        if($result == 0)
+            $this->storeRecommendSlideshare();
+        $slideshare_recommended = $this ->recommendSlideshare();
+        if($content == null)
+            $content = array_merge($slideshare_recommended);
+        else
+            $content = array_merge($content,$slideshare_recommended);
         break;
-      }
     }
+}
 
   //If there is any content collected we shuffle it
-    if ($content != null)
-      shuffle($content);
-    Session::put('content', $content);
-    Session::put('has_accounts', $has_accounts);
-    Session::save();
-    return $this->show();
-  } 
+if ($content != null)
+  shuffle($content);
+Session::put('content', $content);
+Session::put('has_accounts', $has_accounts);
+Session::save();
+return $this->show();
+} 
 
-  public function show($page_number=1){
+public function show($page_number=1){
     $content = Session::get('content');
 
     $page_number = intval($page_number);
@@ -96,14 +97,14 @@ class RecommendedController extends BaseController
 
     if ($content != null)
       $display_content = array_slice($content, $index_start, $per_page);
-    $select_values = array('github', 'vimeo', 'slideshare');
+  $select_values = array('github', 'vimeo', 'slideshare');
 
-    return View::make('content', ['has_accounts' => Session::get('has_accounts'),'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
-  }
+  return View::make('content', ['has_accounts' => Session::get('has_accounts'),'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
+}
 
   //API's recommendations
 
-  public function recommendGithub($search_input,$languages){
+public function recommendGithub($search_input,$languages){
     try{
       // $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
       $client = new \Github\Client();
@@ -121,8 +122,8 @@ class RecommendedController extends BaseController
         foreach ($files as $file){
           if ($counted_files > $this->max_files_per_api){
             break;
-          }
-          if ($file['type']=='file' && $file['size']<1000000){
+        }
+        if ($file['type']=='file' && $file['size']<1000000){
             // dd($file);
             $file_content['type'] = 'github';
             $file_content['title'] = $file['name'];
@@ -136,25 +137,25 @@ class RecommendedController extends BaseController
               // $file_content['username'] = $repos['repositories'][$count]['username'];
             if (isset($file['description'])){
               $file_content['description'] = $file['description'];
-            }
-            $counted_files = $counted_files + 1;
-              // $file_content['content'] = base64_decode($myfile['content']);
-            array_push($recommended_files, $file_content);
           }
-        }
+          $counted_files = $counted_files + 1;
+              // $file_content['content'] = base64_decode($myfile['content']);
+          array_push($recommended_files, $file_content);
       }
-    }
-    catch (\Exception $e){
-      // dd($e->getMessage());
-      $recommended_files = null;
-    }
-    finally{
-      return $recommended_files;
-    }
   }
+}
+}
+catch (\Exception $e){
+      // dd($e->getMessage());
+  $recommended_files = null;
+}
+finally{
+  return $recommended_files;
+}
+}
 
 
-  public function recommendVimeo(){
+public function recommendVimeo(){
     //Get from DB all the recommendations collected for the current user
     $content = array();
     try{
@@ -169,16 +170,16 @@ class RecommendedController extends BaseController
         $file_content['id'] = $video[0]->id_article;
         $file_content['tag'] = $video[0]->tagname;
         array_push($content, $file_content);
-      }
-    }catch(\Exception $e){
-      dd($e);
-      $content = null;
-    }finally{
-      return $content;
     }
-  }
+}catch(\Exception $e){
+  //dd($e);
+  $content = null;
+}finally{
+  return $content;
+}
+}
 
-  public function storeRecommendVimeo(){
+public function storeRecommendVimeo(){
     //Get all the favourites tags for user
     $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
     $recommended_files = array();
@@ -205,76 +206,111 @@ class RecommendedController extends BaseController
         $tagnm = $tag->tagname;
         if ($video['status'] == 'available')
           $is_public = 't';
-        else $is_public = 'f';
-        $stmt->bindParam(':id', $id);
-        $stmt ->bindParam(':username', $username);
-        $stmt ->bindParam(':title', $title);
-        $stmt ->bindParam(':description', $description);
-        $stmt ->bindParam(':url_content', $url_content);
-        $stmt ->bindParam(':authors', $authors);
-        $stmt ->bindParam(':is_public', $is_public);
-        $stmt->bindParam(':tagname',$tagnm);
-        $stmt ->execute();
-      } 
-    }
-  }
+      else $is_public = 'f';
+      $stmt->bindParam(':id', $id);
+      $stmt ->bindParam(':username', $username);
+      $stmt ->bindParam(':title', $title);
+      $stmt ->bindParam(':description', $description);
+      $stmt ->bindParam(':url_content', $url_content);
+      $stmt ->bindParam(':authors', $authors);
+      $stmt ->bindParam(':is_public', $is_public);
+      $stmt->bindParam(':tagname',$tagnm);
+      $stmt ->execute();
+  } 
+}
+}
 
-  public function recommendSlideshare()
-  {
-
-    $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
-    $recommended_files = array();
-    try 
+public function recommendSlideshare()
+{
+    $content = array();
+    try
     {
-
-      foreach($tags as $tag)
-      {
-        $SS = new SlideshareController();
-        $validation = $SS->generate_validation();
-
-        $results = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshows_by_tag/?'.$validation.'&tag='.$tag->tagname.'&limit='.$this->max_files_per_api));
-        $results = $results->Slideshow;
+        $username = Session::get('username');
+        $results = DB::select('select id_article from slideshare_recommended where username = ?',array($username));
         foreach($results as $result)
         {
-          $file_content = array();
-          $file_content['type'] = 'slideshare';
-          $file_content['id'] = $result->ID;
-          $file_content['title'] = $result->Title;
-          $file_content['details'] = $result->Username;
-          $file_content['description'] = $result[0]->Description;
-          $file_content['image'] = $result[0]->ThumbnailXLargeURL;
-          array_push($recommended_files,$file_content);   
+            $video = DB::select('SELECT id_article, title, description, author,image_url FROM slideshare_recommended WHERE id_article = ?', array($result->id_article));
+            $file_content['type'] = 'slideshare';
+            $file_content['id'] = $video[0]->id_article;
+            $file_content['title'] = $video[0] ->title;
+            $file_content['details'] = $video[0]->author;
+            $file_content['description'] = $video[0]->description;
+            $file_content['image'] = $video[0]->image_url;
+            $file_content['tag'] = '';
+            array_push($content, $file_content);
         }
-      }
     }
     catch(\Exception $e)
     {
-      dd($e);
-      $recommended_files = null;
+        //dd($e);
+        $content = null;
     }
     finally
     {
-      return $recommended_files;
+        return $content;
     }
-  }
+}
 
-  public function article($type,$api){
+public function storeRecommendSlideshare() {
+    try
+    {
+        $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
+        $recommended_files = array();
+
+        $pdo = DB::getPdo();
+        $stmt = $pdo -> prepare("BEGIN
+          articles_package.add_rsarticle(:new_id, :v_username, :v_author, :v_title, :v_description, :v_image_url);
+          END;");
+
+        foreach($tags as $tag)
+        {
+            $SS = new SlideshareController();
+            $validation = $SS->generate_validation();
+            $results = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshows_by_tag/?'.$validation.'&tag='.$tag->tagname.'&limit='.$this->max_files_per_api));
+            $results = $results->Slideshow;
+            foreach($results as $result)
+            {
+                $id = json_decode($result->ID);
+                $username = Session::get('username');
+                $details = (string)$result->Username;
+                $title = (string)$result->Title;
+                $description = (string)$result[0]->Description;
+                $image = (string)$result[0]->ThumbnailXLargeURL;
+
+                $stmt->bindParam(':new_id',$id);
+                $stmt->bindParam(':v_username',$username);
+                $stmt->bindParam(':v_author',$details);
+                $stmt->bindParam(':v_title',$title);
+                $stmt->bindParam(':v_description',$description);
+                $stmt->bindParam(':v_image_url',$image);
+                $stmt->execute();
+            }
+        }
+    }
+    catch (\Exception $e){
+      // dd($e->getMessage());
+      $recommended_files = null;
+  }
+}
+
+
+public function article($type,$api){
     $repo = Request::input('repo');
     $path = Request::input('path');
     if ($type=='image'){
       return view('articles.image-article');
-    }
-    if ($type=='video'){
+  }
+  if ($type=='video'){
       return view('articles.video-article');
-    }
-    if ($type=='code'){
+  }
+  if ($type=='code'){
       if ($api == 'github'){
         $article = $this->contentGithub($repo,$path);
-      }
-        // dd($article);
-      return View::make('articles.code-article',['content'=>$article]);
     }
-    return view('layouts.article');
-  }
+        // dd($article);
+    return View::make('articles.code-article',['content'=>$article]);
+}
+return view('layouts.article');
+}
 
 }
