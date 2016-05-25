@@ -155,7 +155,6 @@ class ContentController extends BaseController
   }
   $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
-    // dd($has_accounts, $display_content, $page_count, $page_number, $select_values);
   return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
 }
 
@@ -187,9 +186,9 @@ public function article($type,$api){
   }
   if ($type=='video'){
     if ($api =='vimeo'){
-      $id = Request::input('id');
+      $article_id = Request::input('id');
       $tag = Request::input('tag');
-      $article = $this->contentVimeo($id, $tag);
+      $article = $this->contentVimeo($article_id, $tag);
       return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
     }
     if ($api == 'pocket'){
@@ -197,11 +196,11 @@ public function article($type,$api){
       $article = $this->contentPocket($article_id);
       return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
     }
-      if ($api == 'slideshare'){
-        $article_id = Request::input('id');
-        $article = $this->contentSlideshare($article_id);
+    if ($api == 'slideshare'){
+      $article_id = Request::input('id');
+      $article = $this->contentSlideshare($article_id);
         return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
-      }
+    }
       // return view('articles.video-article');
   }
   if ($type=='code'){
@@ -418,20 +417,24 @@ public function listVimeo(){
 public function contentVimeo($id, $tag){
   try{
     $username = Session::get('username');
-    $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
-    $access_token = $result->access_token;
     $more_tags = 0;
-    try{
       //verify if content is in database
-      $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
+    $result_video = DB::table('vimeo_articles')->select('url_content')->where('id_article','=',$id)->first();
+    if($result_video != null){
+      $result = DB::table('accounts')->select('access_token')->where('username','=',$username)->where('source_name','=','vimeo')->first();
+      $access_token = $result->access_token;
       $vimeo_connection= Vimeo::connection('alternative');
-      $vimeo_connection->setToken($access_token);
+      $vimeo_connection->setToken($access_token);;
       $article = $vimeo_connection->request($result_video->url_content,[],'GET');
       $more_tags = 1;
-    }catch(\Exception $e){
-      //catch invalid_number exception from db => that means it's a recommended content
-      $vimeo_connection =Vimeo::connection('main');
-      $article = $vimeo_connection->request($id,[],'GET');
+    }
+    else {
+      $result_video = DB::table('vimeo_recommended')->select('url_content')->where('id_article','=',$id)->first();
+
+      $vimeo_connection = Vimeo::connection('main');
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+      $tagname = DB::table('vimeo_recommended')->select('tagname')->where('id_article',$id)->first();
+      $tag= $tagname->tagname;
     }
     //construct file_content object to visualize
     $file_content['type'] = 'vimeo';
@@ -442,9 +445,9 @@ public function contentVimeo($id, $tag){
       foreach($article['body']['tags'] as $current_tag){
         $tag = $tag.$current_tag['name']. ', ';
       }
-
       $tag = substr($tag, 0, strlen($tag)-2);
     }
+
 
     $file_content['details'] = $article['body']['user']['name'];
     $file_content['content'] = $article['body']['embed']['html'];
@@ -452,7 +455,6 @@ public function contentVimeo($id, $tag){
     $file_content['tags'] = $tag;
     return $file_content;
   }catch(\Exception $e){
-    dd($e);
     $file_content = null;
   }finally{
     return $file_content;
@@ -480,7 +482,7 @@ public function listSlideshare()
     }
   }catch (\Exception $e){
     $content = null;
-        } finally{
+  } finally{
     return $content;
   }
 }
@@ -488,16 +490,16 @@ public function listSlideshare()
 
 public function contentSlideshare($id)
 {
-        $SS = new SlideshareController();
-        $validation = $SS->generate_validation();
-        $response = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshow/?'.$validation.'&slideshow_id='.$id));
-        $file_content['type'] = 'slideshare';
-        $file_content['title'] = $response->Title;
-        $file_content['description'] = $response->Description;
-        $file_content['details'] = $response->Username;
-        $file_content['content'] = $response->Embed;
-        $file_content['url'] = $response->URL;
-        return $file_content;
+  $SS = new SlideshareController();
+  $validation = $SS->generate_validation();
+  $response = simplexml_load_string(file_get_contents('https://www.slideshare.net/api/2/get_slideshow/?'.$validation.'&slideshow_id='.$id));
+  $file_content['type'] = 'slideshare';
+  $file_content['title'] = $response->Title;
+  $file_content['description'] = $response->Description;
+  $file_content['details'] = $response->Username;
+  $file_content['content'] = $response->Embed;
+  $file_content['url'] = $response->URL;
+  return $file_content;   
 }
 
     //function used for search
@@ -508,11 +510,11 @@ public function search(){
   $modified = '%'.$search_string.'%';
 
       //Search for Pocket articles
-      $pocket_results = DB::select("SELECT id_article, title, image_url, video_url FROM pocket_articles WHERE upper(title) like upper(?)", array($modified));
+  $pocket_results = DB::select("SELECT id_article, title, image_url, video_url FROM pocket_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($pocket_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
-        $article['title'] = $result->title;
+    $article['title'] = $result->title;
     $article['type'] = 'pocket';
         //Constructing the article's route
     $article['url']='/article/';
@@ -525,11 +527,11 @@ public function search(){
   }
 
       //Search for Github articles
-      $github_results = DB::select("SELECT id_article, title FROM github_articles WHERE upper(title) like upper(?)", array($modified));
+  $github_results = DB::select("SELECT id_article, title FROM github_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($github_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
-        $article['title'] = $result->title;
+    $article['title'] = $result->title;
     $article['type'] = 'github';
         //Constructing the article's route
     $article['url']='/article/code/github?id=';
@@ -538,11 +540,11 @@ public function search(){
   }
 
       //Search for Slideshare articles
-      $slideshare_results = DB::select("SELECT id_article, title FROM slideshare_articles WHERE upper(title) like upper(?)", array($modified));
+  $slideshare_results = DB::select("SELECT id_article, title FROM slideshare_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($slideshare_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
-        $article['title'] = $result->title;
+    $article['title'] = $result->title;
     $article['type'] = 'slideshare';
         //Constructing the article's route
     $article['url']='/article/video/slideshare?id=';
@@ -551,11 +553,11 @@ public function search(){
   }
 
       //Search for Vimeo articles
-      $vimeo_results = DB::select("SELECT id_article, title FROM vimeo_articles WHERE upper(title) like upper(?)", array($modified));
+  $vimeo_results = DB::select("SELECT id_article, title FROM vimeo_articles WHERE upper(title) like upper(?)", array($modified));
   foreach($vimeo_results as $result){
     $article = array();
     $article['id'] = $result->id_article;
-        $article['title'] = $result->title;
+    $article['title'] = $result->title;
     $article['type'] = 'vimeo';
         //Constructing the article's route
     $article['url']='/article/video/vimeo?id=';
@@ -564,5 +566,5 @@ public function search(){
   }
 
   return $all_results;
-    }
+}
 }
