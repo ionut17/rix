@@ -30,13 +30,16 @@ class SlideshareController extends BaseController
 		$validation = 'api_key='.$this->api_key.'&ts='.$time.'&hash='.sha1($this->shared_secret.$time);
 		return $validation;
 	}
-	public function authorize()
+	public function authorize($api=null)
 	{
 		$username = Session::get('username');
 		$result = DB::table('accounts')->where('username','=',$username)->where('source_name','=','slideshare')->select('access_token')->get();
 		if(empty($result))
 		{
-			$slideshare_username = Request::get('slideshare_username');
+			if($api==null)
+				$slideshare_username = Request::get('slideshare_username');
+			else
+				$slideshare_username = $api;
 		}
 		else
 		{
