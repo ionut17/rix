@@ -900,6 +900,67 @@ ul.search-results {
   color: black;
   cursor: pointer; }
 
+.tutorial-wrapper {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; }
+  .tutorial-wrapper .button {
+    width: 700px; }
+
+.tutorial {
+  width: 700px;
+  height: auto;
+  background-color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  position: relative; }
+  .tutorial .close {
+    font-size: 20px;
+    color: black;
+    position: absolute;
+    top: 20px;
+    right: 20px; }
+  .tutorial .tutorial-image {
+    background-position: top;
+    background-size: cover;
+    width: inherit;
+    height: 400px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #dadada;
+    box-sizing: border-box; }
+  .tutorial .tutorial-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background-color: white;
+    padding: 40px 40px; }
+  .tutorial figure.image {
+    margin: 0;
+    padding: 0; }
+  .tutorial p {
+    font-family: 'Source Sans Pro', Myriad Pro, sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    color: #7f8c8d; }
+    .tutorial p.bold {
+      font-weight: bold; }
+    .tutorial p:not(:first-child) {
+      margin-top: 10px; }
+
 @media screen and (max-width: 991px) {
   .article-box {
     width: 330px; }

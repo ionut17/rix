@@ -8,7 +8,7 @@
         </figure>
       </a>
       <ul class="nav-items">
-        <li><a href="{{ URL::to('/settings') }}"><figure class="profile-picture" style="background-image: url('{{asset('img/profiles/avatar.jpg')}}');"></figure></a></li>
+        <!-- <li><a href="{{ URL::to('/settings') }}"><figure class="profile-picture" style="background-image: url('{{asset('img/profiles/avatar.jpg')}}');"></figure></a></li> -->
         <li>
           <a href="{{ URL::to('/settings') }}">
           <i class="fa fa-cog" aria-hidden="true"></i>

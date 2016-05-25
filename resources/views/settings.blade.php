@@ -57,6 +57,9 @@
           <a href="{{ URL::to('/generatetoken') }}">
             <button type="button" name="view-btn" class="article-button">Generate API token</button>
           </a>
+          <a href="{{ URL::to('/showtutorial') }}">
+            <button type="button" name="view-btn" class="article-button">Show tutorial</button>
+          </a>
         </div>
       </div>
       <div class="settings-box">
@@ -102,4 +105,5 @@
 
   <script src="{{ asset('js/bootstrap/bootstrap.min.js')}}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
+  <!-- <script src="{{ asset('js/tutorial.js') }}"></script> -->
 @endsection

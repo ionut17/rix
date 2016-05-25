@@ -16,7 +16,6 @@
         <ul class="status-list">
           <li><a href="{{ URL::to('/mycontent') }}">My Content</a></li>
           <li id="recommended-generate"><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
-          <li><a href="">More</a></li>
         </ul>
         <section class="search">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
@@ -190,4 +189,10 @@
 
   <script src="{{ asset('js/bootstrap/bootstrap.min.js')}}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
+  @if (isset($show_tutorial))
+    @if ($show_tutorial==true)
+      <script src="{{ asset('js/tutorial.js') }}"></script>
+    @endif
+  @endif
+
 @endsection

@@ -18,7 +18,7 @@ class SettingsController extends BaseController
   public function show(){
     $slideshare_error = Session::get('slideshare_error');
     $username = Session::get('username');
-    $user_info = DB::select('SELECT username, email FROM users WHERE username=?',array($username));
+    $user_info = DB::select('SELECT username, email, unseen_tutorial FROM users WHERE username=?',array($username));
     $dir = getcwd();
     $filename = $dir.'\img\profiles\\'.$user_info[0]->username.'.jpg';
     if (file_exists($filename)) {
@@ -38,7 +38,16 @@ class SettingsController extends BaseController
     }
     $user = Session::get('username');
       // dd($sources);
-    return View::make('settings', ['sources' => $sources, 'user' => $user, 'select_values' => $select_values, 'slideshare_error' => $slideshare_error, 'user_info' => $user_info[0]]);
+      //tutorial
+      $show_tutorial = null;
+      if (intval($user_info[0]->unseen_tutorial) == 1){
+        $show_tutorial = true;
+      }
+      else {
+        $show_tutorial = false;
+      }
+      //
+    return View::make('settings', ['sources' => $sources, 'user' => $user, 'select_values' => $select_values, 'slideshare_error' => $slideshare_error, 'user_info' => $user_info[0],'show_tutorial'=>$show_tutorial]);
   }
 
   public function refresh(){
