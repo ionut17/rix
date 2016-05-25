@@ -69,4 +69,12 @@ class APIController extends BaseController
 
       return $token;
     }
+
+    public function delete(){
+
+    }
+
+    public function connect(){
+      
+    }
 }

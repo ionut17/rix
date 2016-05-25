@@ -30,6 +30,11 @@ Route::post('/register_authorize','Auth\AuthController@validate_register');
 
 Route::get('/logout','PageController@logout');
 
+//API Rest
+	Route::get('/api/{token}/{service}/get', 'APIController@call');
+	Route::post('/api/{token}/{service}/delete','APIController@delete');
+	Route::post('/api/{token}/{service}/connect','APIController@connect');
+	Route::get('/generatetoken','APIController@get_token');
 
 	Route::group(['middleware'=>['authgroup']],function(){
 		Route::get('/', function () {
@@ -74,9 +79,6 @@ Route::get('/logout','PageController@logout');
 	//Remove Routes
 		Route::post('/remove/{api}', 'PageController@removeAPI');
 
-	//API Rest
-		Route::get('/api/{token}/{service}', 'APIController@call');
-		Route::get('/generatetoken','APIController@get_token');
 
 	});
 });
