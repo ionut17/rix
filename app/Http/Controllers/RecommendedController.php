@@ -53,7 +53,7 @@ class RecommendedController extends BaseController
         //Github
     $result = DB::table('github_recommended')->where('username', $rix_username)->count();
     if ($result == 0){
-      $this->storeRecommendGithub();       
+      $this->storeRecommendGithub();
     }
     $github_recommended = $this ->recommendGithub();
     if($content == null)
@@ -68,7 +68,7 @@ class RecommendedController extends BaseController
           //   $content = array_merge($slideshare_recommended);
           // else $content = array_merge($content, $slideshare_recommended);
 
-    
+
 
   //If there is any content collected we shuffle it
     if ($content != null)
@@ -77,7 +77,7 @@ class RecommendedController extends BaseController
     Session::put('has_accounts', $has_accounts);
     Session::save();
     return $this->show();
-  } 
+  }
 
   public function show($page_number=1){
     $content = Session::get('content');
@@ -116,7 +116,7 @@ class RecommendedController extends BaseController
         array_push($content, $file_content);
       }
     }catch(\Exception $e){
-      dd($e);
+      // dd($e);
       $content = null;
     }finally{
       return $content;
@@ -160,7 +160,7 @@ class RecommendedController extends BaseController
         $stmt ->bindParam(':is_public', $is_public);
         $stmt->bindParam(':tagname',$tagnm);
         $stmt ->execute();
-      } 
+      }
     }
   }
 
@@ -192,8 +192,8 @@ class RecommendedController extends BaseController
             $counted_files = $counted_files + 1;
             if($file['type']=='file' && $file['size']<1000000){
               $repo_name = $repos['repositories'][$count]['name'];
-              dd($repos['repositories'][$count]);
-              dd($repos['repositories'][$count]['owner']);
+              // dd($repos['repositories'][$count]);
+              // dd($repos['repositories'][$count]['owner']);
               $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
               $id = null;
               $result = DB::statement('BEGIN articles_package.add_rgarticle(?,?,?,?,?,?,?,?,?); END;', array($rix_username, $repo_name, $file['path'], $file['name'], $extension, '', 'f', $tag->tagname, $repos['repositories'][$count]['owner']));
@@ -231,10 +231,10 @@ class RecommendedController extends BaseController
       }
       // dd($content);
     } catch (\Exception $e) {
-      dd($e->getMessage());
+      // dd($e->getMessage());
       $content = null;
     } finally {
-      return $content;    
+      return $content;
     }
   }
 
@@ -243,7 +243,7 @@ class RecommendedController extends BaseController
 
     $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
     $recommended_files = array();
-    try 
+    try
     {
 
       foreach($tags as $tag)
@@ -262,7 +262,7 @@ class RecommendedController extends BaseController
           $file_content['details'] = $result->Username;
           $file_content['description'] = $result[0]->Description;
           $file_content['image'] = $result[0]->ThumbnailXLargeURL;
-          array_push($recommended_files,$file_content);   
+          array_push($recommended_files,$file_content);
         }
       }
     }
