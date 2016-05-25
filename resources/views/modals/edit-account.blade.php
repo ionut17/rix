@@ -14,10 +14,8 @@
             <span aria-hidden="true">&times;</span>
           </button>
           <div class="box" style="margin-top:0;">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" value="@if (isset($user_info)) {{$user_info->username}} @endif">
-            <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="@if (isset($user_info)) {{$user_info->email}} @endif">
+            <!-- <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="@if (isset($user_info)) {{$user_info->email}} @endif"> -->
             <label for="password">New Password</label>
             <input type="password" name="password" id="password">
             <label for="rpassword">Repeat password</label>

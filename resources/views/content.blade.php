@@ -32,9 +32,12 @@
 
   <div class="container">
     <div class="filter-container">
-      <div class="filters">
-        <span id="filter-option">Filters</span>
-      </div>
+        <div class="filters">
+          @if (Request::is('mycontent'))
+            <span id="filter-option">Filters</span>
+          @endif
+        </div>
+
       <ul class="pagination">
         @for ($i=1;$i<=$page_count;$i++)
           @if (isset($target))
