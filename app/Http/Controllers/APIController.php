@@ -16,8 +16,6 @@ class APIController extends BaseController
     public function call($token, $service){
       $result = DB::table('api_tokens')->select('username')->where('token',$token)->get();
 
-      //Interoghezi baza de date dupa token si gasesti user-ul
-      //Si apoi faci call la list-ul aferent serviciului dorit
       if(!empty($result)){
         $content_controller = new ContentController();
         switch($service){
@@ -71,7 +69,32 @@ class APIController extends BaseController
     }
 
     public function delete_account($token, $service){
+      $result = DB::table('api_tokens')->select('username')->where('token',$token)->get();
+      if(!empty($result)){
+        switch($service){
+          case 'github':
+            DB::table('accounts')->where('username',$result[0]->username)->where('source_name','github')->delete();
+            break;
+          case 'pocket':
+            DB::table('accounts')->where('username',$result[0]->username)->where('source_name','pocket')->delete();
+            break;
+          case 'slideshare':
+            DB::table('accounts')->where('username',$result[0]->username)->where('source_name','slideshare')->delete();
+            break;
+          case 'vimeo':
+            DB::table('accounts')->where('username',$result[0]->username)->where('source_name','vimeo')->delete();
+            break;
+          case 'recommend':
+            $recommend_controller = new RecommendedController();
+            $content = $recommend_controller->recommendVimeo();//.$recommendGithub();
+            break;
+          default:
+            $content = 'Invalid service name.';
+            break;
+        }
 
+      }
+      return 'ok';
     }
 
     public function connect($token, $service){
