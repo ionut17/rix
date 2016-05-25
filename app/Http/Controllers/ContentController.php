@@ -291,54 +291,58 @@ private function contentGithub($id, $username='', $g_repo='', $g_path=''){
     $token = $result[0]->access_token;
     $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
       // Content
-    if ($username!=''){
-      $repos = $client->api('user')->repositories($username);
-      $repo = $g_repo;
-      $path = $g_path;
-      $account = $username;
-    }
-    else {
-      $result = DB::select('SELECT repo, path FROM github_articles WHERE id_article = ?', array($id));
-      $repo = $result[0]->repo;
-      $path = $result[0]->path;
-      $repos = $client->api('current_user')->repositories();
-      $account = $repos[0]['owner']['login'];
-    }
-    $content = array();
-    $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
-        // dd($myfile);
-    $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
-    $file_content['type'] = 'github';
-    $file_content['title'] = $myfile['name'];
-    $file_content['details'] = $repo.'/'.$myfile['path'];
-        // $file_content['path'] = $myfile['path'];
-    $file_content['tag'] = $extension;
-    $file_content['url'] = $myfile['html_url'];
+
+    $result = DB::select('SELECT repo, path FROM github_articles WHERE id_article = ?', array($id));
+    if (empty($result)){
+     $result = DB::select('SELECT repo, path, owner_name FROM github_recommended WHERE id_article = ?', array($id));
+     $account = $result[0]->owner_name;
+   }else { 
+    //Aici
+     $repos = $client->api('current_user')->repositories();
+     $account = $repos[0]['owner']['login']; 
+   }
+
+   $repo = $result[0]->repo;
+   $path = $result[0]->path;
+   
+   $content = array();
+   //Si aici
+   $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
+
+
+   $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
+   $file_content['type'] = 'github';
+   $file_content['title'] = $myfile['name'];
+   $file_content['details'] = $repo.'/'.$myfile['path'];
+
+   $file_content['tag'] = $extension;
+   $file_content['url'] = $myfile['html_url'];
         //Get beautiful code and colors (Hilite API)
-    try{
-      $beautify_url = 'http://hilite.me/api';
-      $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
-      $beautify_type = 'default';
-      $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
-      $beautify_options = array(
-        'http' => array(
-          'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-          'method'  => 'POST',
-          'content' => http_build_query($beautify_data)
-          )
-        );
-      $beautify_context  = stream_context_create($beautify_options);
-      $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
-      $file_content['content'] = $beautify_result;
-    }
-    catch (\Exception $e){
-      $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
-    }
+   try{
+    $beautify_url = 'http://hilite.me/api';
+    $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
+    $beautify_type = 'default';
+    $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
+    $beautify_options = array(
+      'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($beautify_data)
+        )
+      );
+    $beautify_context  = stream_context_create($beautify_options);
+    $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
+    $file_content['content'] = $beautify_result;
   }
   catch (\Exception $e){
-    $file_content = null;
+    // dd($e);
+    $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
   }
-  return $file_content;
+}
+catch (\Exception $e){
+  $file_content = null;
+}
+return $file_content;
 }
 
 

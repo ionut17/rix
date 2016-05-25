@@ -22,7 +22,7 @@ class RecommendedController extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-  private $max_files_per_api = 10;
+  private $max_files_per_api = 1;
   protected $rix_username;
 
   public function __construct(){
@@ -42,27 +42,24 @@ class RecommendedController extends BaseController
     $slideshare_recommended = null;
     $github_recommended = null;
 
-    for($i=0; $i<3; $i++){
-      switch ($i) {
-        case '0':
-        $result = DB::table('vimeo_recommended')->where('username', $rix_username)->count();
-        if ($result == 0)
-          $this->storeRecommendVimeo();
-        $vimeo_recommended = $this ->recommendVimeo();
-        if($content == null)
-          $content = array_merge($vimeo_recommended);
-        else $content = array_merge($content, $vimeo_recommended);
-        break;
-        case '1': //Github
-          // $result = DB::table('github_recommended')->where('username', $rix_username)->count();
-          // if ($result == 0)
-          //   $this->storeRecommendGithub();
-          // $slideshare_recommended = $this ->recommendGithub();
-          // if($content == null)
-          //   $content = array_merge($github_recommended);
-          // else $content = array_merge($content, $github_recommended);
-        break;
-        case '2': //Slideshare
+    $result = DB::table('vimeo_recommended')->where('username', $rix_username)->count();
+    if ($result == 0)
+      $this->storeRecommendVimeo();
+    $vimeo_recommended = $this ->recommendVimeo();
+    if($content == null)
+      $content = array_merge($vimeo_recommended);
+    else $content = array_merge($content, $vimeo_recommended);
+
+        //Github
+    $result = DB::table('github_recommended')->where('username', $rix_username)->count();
+    if ($result == 0){
+      $this->storeRecommendGithub();       
+    }
+    $github_recommended = $this ->recommendGithub();
+    if($content == null)
+      $content = array_merge($github_recommended);
+    else $content = array_merge($content, $github_recommended);
+        //Slideshare
           // $result = DB::table('slideshare_recommended')->where('username', $rix_username)->count();
           // if ($result == 0)
           //   $this->storeRecommendSlideshare();
@@ -70,9 +67,8 @@ class RecommendedController extends BaseController
           // if($content == null)
           //   $content = array_merge($slideshare_recommended);
           // else $content = array_merge($content, $slideshare_recommended);
-        break;
-      }
-    }
+
+    
 
   //If there is any content collected we shuffle it
     if ($content != null)
@@ -102,57 +98,6 @@ class RecommendedController extends BaseController
   }
 
   //API's recommendations
-
-  public function recommendGithub($search_input,$languages){
-    try{
-      // $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
-      $client = new \Github\Client();
-      $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($this->rix_username,"github"));
-      $token = $result[0]->access_token;
-      $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
-      //Get repos
-      $repos = $client->api('repo')->find($search_input, $languages);
-      $recommended_files = array();
-      $count = 0;
-      $counted_files = 0;
-      while ($counted_files<$this->max_files_per_api){
-        $count = $count + 1;
-        $files = $client->api('repo')->contents()->show($repos['repositories'][$count]['username'], $repos['repositories'][$count]['name'], '.');
-        foreach ($files as $file){
-          if ($counted_files > $this->max_files_per_api){
-            break;
-          }
-          if ($file['type']=='file' && $file['size']<1000000){
-            // dd($file);
-            $file_content['type'] = 'github';
-            $file_content['title'] = $file['name'];
-            $file_content['repo'] = $repos['repositories'][$count]['name'];
-            $file_content['path'] = $file['path'];
-            $file_content['details'] = $repos['repositories'][$count]['username'].'\\'.$repos['repositories'][$count]['name'].'\\'.$file['path'];
-            $file_content['username'] = $repos['repositories'][$count]['username'];
-            $file_content['id'] = '';
-              // $file_content['path'] = $file['path'];
-            $file_content['tag'] = pathinfo($file['name'], PATHINFO_EXTENSION);
-              // $file_content['username'] = $repos['repositories'][$count]['username'];
-            if (isset($file['description'])){
-              $file_content['description'] = $file['description'];
-            }
-            $counted_files = $counted_files + 1;
-              // $file_content['content'] = base64_decode($myfile['content']);
-            array_push($recommended_files, $file_content);
-          }
-        }
-      }
-    }
-    catch (\Exception $e){
-      // dd($e->getMessage());
-      $recommended_files = null;
-    }
-    finally{
-      return $recommended_files;
-    }
-  }
-
 
   public function recommendVimeo(){
     //Get from DB all the recommendations collected for the current user
@@ -216,6 +161,80 @@ class RecommendedController extends BaseController
         $stmt->bindParam(':tagname',$tagnm);
         $stmt ->execute();
       } 
+    }
+  }
+
+
+  public function storeRecommendGithub(){
+    $tags = DB::table('preferences')->select('tagname')->where('username',$this->rix_username)->get();
+  // try {
+    //Authenticate the user to get recommandations
+    $rix_username = Session::get("username");
+    $client = new \Github\Client();
+    $result = DB::select('select access_token from accounts where username = ? and source_name = ?', array($rix_username,"github"));
+    $token = $result[0]->access_token;
+    $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
+
+      //Get files for every tag in the DB for the current user
+    foreach($tags as $tag){
+
+      $search_input = $tag->tagname;
+      $repos = $client->api('repo')->find($search_input);;
+      $count = 0;
+      $counted_files = 0;
+      while($counted_files<$this->max_files_per_api){
+        $count = $count + 1;
+          // dd($repos['repositories'][$count]['owner']);
+        $files = $client ->api('repo')->contents()->show($repos['repositories'][$count]['owner'],$repos['repositories'][$count]['name'],'.');
+
+        foreach($files as $file){
+          if($counted_files < $this->max_files_per_api){
+            $counted_files = $counted_files + 1;
+            if($file['type']=='file' && $file['size']<1000000){
+              $repo_name = $repos['repositories'][$count]['name'];
+              dd($repos['repositories'][$count]);
+              dd($repos['repositories'][$count]['owner']);
+              $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+              $id = null;
+              $result = DB::statement('BEGIN articles_package.add_rgarticle(?,?,?,?,?,?,?,?,?); END;', array($rix_username, $repo_name, $file['path'], $file['name'], $extension, '', 'f', $tag->tagname, $repos['repositories'][$count]['owner']));
+            }
+          }
+          else break;
+        }
+      }
+    }
+  // }catch(\Exception $e){
+  //   dd($e);
+  // }
+  }
+
+  public function recommendGithub(){
+    $client = new \Github\Client();
+    try {
+      $rix_username = Session::get("username");
+      $results = DB::select('SELECT id_article FROM github_recommended WHERE username=?',array($rix_username));
+      // dd($results);
+      $content = array();
+      foreach ($results as $result){
+        //Selecting values from db
+        $values=DB::select('SELECT id_article, title, repo, path, extension, owner_name FROM github_recommended WHERE id_article = ?', array($result->id_article));
+
+        //Saving values to object
+        $file_content['type']='github';
+        $file_content['id'] = $values[0]->id_article;
+        $file_content['title'] = $values[0]->title;
+        $file_content['details'] = $values[0]->repo.'\\'.$values[0]->path;
+        $file_content['tag'] = $values[0]->extension;
+        $file_content['username'] = $values[0]->owner_name;
+        //Pushing object to array
+        array_push($content,$file_content);
+      }
+      // dd($content);
+    } catch (\Exception $e) {
+      dd($e->getMessage());
+      $content = null;
+    } finally {
+      return $content;    
     }
   }
 
