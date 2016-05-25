@@ -25,4 +25,5 @@
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>')</script>
 
   <script src="js/main.js"></script>
+  @yield('auth-scripts')
 @endsection

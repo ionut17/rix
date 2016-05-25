@@ -8,18 +8,18 @@
         </button>
         <h4 class="modal-title" id="editModalLabel">Edit user <details></details></h4>
       </div>
-      <form action="{{ URL::to('/mycontent') }}" method="post">
+      <form action="{{ URL::to('/settings/modify') }}" method="post">
         <div class="modal-body">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
           <div class="box" style="margin-top:0;">
             <label for="username">Username</label>
-            <input type="text" name="username" id="username" value="Iacob Ionut">
+            <input type="text" name="username" id="username" value="@if (isset($user_info)) {{$user_info->username}} @endif">
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="ionut.iacob17@gmail.com">
+            <input type="text" name="email" id="email" value="@if (isset($user_info)) {{$user_info->email}} @endif">
             <label for="avatar">Profile picture</label>
-            <input type="file" name="avatar" id="avatar">
+            <input type="file" name="avatar" id="avatar-input">
           </div>
         </div>
         <div class="modal-footer" style="padding: 0;">

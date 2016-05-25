@@ -31,13 +31,31 @@ $( document ).ready(function() {
 
     //Loader
     $( "#connect-api" ).click(function() {
-      $('#normal-text').hide();
-      $('#importing-text').show();
+      $('#text').html('Importing articles');
       $('.main-wrapper').fadeOut(100);
       $('.modal-backdrop').hide();
       $('.loader').fadeIn(100);
       console.log( "Importing api..." );
     });
+
+    //refresh
+    $('#refresh-content').click(function() {
+      $('#text').html('Refreshing content');
+      $('.main-wrapper').fadeOut(100);
+      $('.modal-backdrop').hide();
+      $('.loader').fadeIn(100);
+      console.log( "Refreshing content..." );
+    });
+
+    //generating recommendations
+    $('#recommended-generate').click(function() {
+      $('#text').html('Generating recommendations');
+      $('.main-wrapper').fadeOut(100);
+      $('.modal-backdrop').hide();
+      $('.loader').fadeIn(100);
+      console.log( "Refreshing content..." );
+    });
+
 
     //Search
     // searchBox.focus(function() {
@@ -55,31 +73,143 @@ $( document ).ready(function() {
     // });
 
     //AJAX Search
-
+    $('#search-clear').hide();
     setTimeout(function(){
       searchBox.on('input', function() {
         var searchInput = $(this).val();
         searchResults.hide();
         searchResults.empty();
-        if (searchInput.length>=3){
-          $.ajax({
-            url: '/search',
-            type: 'GET',
-            data: {search_string: searchInput},
-            success: function (data) {
-              searchResults.empty();
-              searchResults.show();
-              //Building li's
-              $.each(data, function(index, value){
-                var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
-                var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
-                searchResults.append(wrapper);
-                $('#wrapper'+value.id).slideDown('fast');
-              });
-            }
-          });
+        if (searchInput.length>0){
+          $('#search-normal').hide();
+          $('#search-clear').show();
+          if (searchInput.length>=3){
+            $.ajax({
+              url: '/search',
+              type: 'GET',
+              data: {search_string: searchInput},
+              success: function (data) {
+                searchResults.empty();
+                searchResults.show();
+                //Building li's
+                console.log(data.length);
+                if (data.length>0){
+                  $.each(data, function(index, value){
+                    var currentItem = "<a href='"+value.url+"'><li><h3>"+value.title+"</h3><label>"+value.type+"</label></li></a>";
+                    var wrapper = "<div style='display:none' id='wrapper"+value.id+"'>"+currentItem+"</div>";
+                    searchResults.append(wrapper);
+                    $('#wrapper'+value.id).slideDown('fast');
+                  });
+                }
+                else{
+                  var currentItem = "<a href=''><li><h3>No results found</h3><label></label></li></a>";
+                  var wrapper = "<div style='display:none' id='wrapper0'>"+currentItem+"</div>";
+                  searchResults.append(wrapper);
+                  $('#wrapper0').slideDown('fast');
+                }
+              }
+            });
+          }
+        } else{
+          $('#search-normal').show();
+          $('#search-clear').hide();
         }
       });
     }, 500);
+
+    //Clear on x-click
+    $('#search-clear').click(function() {
+      searchBox.val("");
+      $('#search-normal').show();
+      $('#search-clear').hide();
+    });
+
+    //Filters
+    var filterOption = $( "#filter-option" );
+    var filterContent = $("#filter-content");
+    var filterSave = $('#filter-save');
+    $.ajax({
+      url: '/filters',
+      type: 'GET',
+      success: function (data) {
+        if (data.github==1){
+          $('#github-opt').prop('checked',true);
+        }
+        else $('#github-opt').prop('checked',false);
+        if (data.pocket==1){
+          $('#pocket-opt').prop('checked',true);
+        }
+        else $('#pocket-opt').prop('checked',false);
+        if (data.slideshare==1){
+          $('#slideshare-opt').prop('checked',true);
+        }
+        else $('#slideshare-opt').prop('checked',false);
+        if (data.vimeo==1){
+          $('#vimeo-opt').prop('checked',true);
+        }
+        else $('#vimeo-opt').prop('checked',false);
+      }
+    });
+    filterOption.click(function() {
+      filterContent.slideToggle('fast');
+    });
+
+    filterSave.click(function() {
+      var githubSwitch, pocketSwitch, slideshareSwitch, vimeoSwitch;
+      if ($('#github-opt').is(':checked')){
+        githubSwitch = 1;
+      }
+      else {
+        githubSwitch = 0;
+      }
+      if ($('#pocket-opt').is(':checked')){
+        pocketSwitch = 1;
+      }
+      else {
+        pocketSwitch = 0;
+      }
+      if ($('#slideshare-opt').is(':checked')){
+        slideshareSwitch = 1;
+      }
+      else {
+        slideshareSwitch = 0;
+      }
+      if ($('#vimeo-opt').is(':checked')){
+        vimeoSwitch = 1;
+      }
+      else {
+        vimeoSwitch = 0;
+      }
+      console.log(githubSwitch,pocketSwitch,slideshareSwitch,vimeoSwitch);
+      $.ajax({
+        url: '/filters',
+        type: 'POST',
+        data: {
+          github: githubSwitch,
+          pocket: pocketSwitch,
+          slideshare: slideshareSwitch,
+          vimeo: vimeoSwitch
+        },
+        success: function (data) {
+          console.log(data);
+          window.location.href = '/mycontent';
+          // location.reload();
+        }
+      });
+    });
+
+    //File input handler
+    var fileInput = $('#avatar-input');
+    fileInput.change(function(evt){
+      console.log($(this).val());
+      var files = evt.target.files;
+      var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
+          output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                      f.size, ' bytes, last modified: ',
+                      f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                      '</li>');
+        }
+      console.log(output);
+    });
 
 });

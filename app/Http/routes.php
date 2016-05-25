@@ -23,10 +23,18 @@ Route::post('/login_authorize','Auth\AuthController@validate_login');
 
 Route::get('/register','PageController@register');
 Route::post('/register','PageController@register');
+
+//register ajax route
+	Route::get('/validator','Auth\AuthController@ajax_validator');
 Route::post('/register_authorize','Auth\AuthController@validate_register');
 
 Route::get('/logout','PageController@logout');
 
+//API Rest
+	Route::get('/api/{token}/{service}/get', 'APIController@call');
+	Route::post('/api/{token}/{service}/deleteaccount','APIController@delete_account');
+	Route::post('/api/{token}/{service}/connect','APIController@connect');
+	Route::get('/generatetoken','APIController@get_token');
 
 	Route::group(['middleware'=>['authgroup']],function(){
 		Route::get('/', function () {
@@ -48,6 +56,10 @@ Route::get('/logout','PageController@logout');
 		Route::get('/refresh','SettingsController@refresh');
 		Route::get('/search','ContentController@search');
 
+		//Save filters
+		Route::get('/filters','FilterController@get');
+		Route::post('/filters','FilterController@save');
+
 
 	//Activate APIs
 		Route::post('/authorize','PageController@authorizeAPI');
@@ -65,6 +77,7 @@ Route::get('/logout','PageController@logout');
 
 	//Remove Routes
 		Route::post('/remove/{api}', 'PageController@removeAPI');
+
 
 	});
 });

@@ -50,13 +50,31 @@ class ContentController extends BaseController
     //Adding API's contents
       //Adding filters to the displayed articles
 
-      // $filter = Session::get('filter');
-
       $filter=array();
       $filter['github']=1;
       $filter['pocket']=1;
       $filter['slideshare']=1;
       $filter['vimeo']=1;
+
+      $filter_session = Session::get('filter');
+      if (isset($filter_session)){
+        if (isset($filter_session['github'])){
+          $filter['github'] = $filter_session['github'];
+        }
+        if (isset($filter_session['pocket'])){
+          $filter['pocket'] = $filter_session['pocket'];
+        }
+        if (isset($filter_session['slideshare'])){
+          $filter['slideshare'] = $filter_session['slideshare'];
+        }
+        if (isset($filter_session['vimeo'])){
+          $filter['vimeo'] = $filter_session['vimeo'];
+        }
+      }
+      else{
+        Session::put('filter', $filter);
+        Session::save();
+      }
 
       if($filter['pocket']==1){
         if ($contentPocket!=null) {
@@ -141,11 +159,29 @@ class ContentController extends BaseController
 }
 
 public function article($type,$api){
+  //Choosing two articles to display
+  $recommended = array();
+  $content = Session::get('content');
+  if(!empty($content)){
+  //   type" => "pocket"
+  // "id" => "1023"
+  // "title" => "What disturbed me about the Facebook meeting."
+  // "url_content" => "https://medium.com/@glennbeck/what-disturbed-me-about-the-facebook-meeting-3bbe0b96b87f#.43b5x0gcn"
+  // "description" => "Yesterday, I had an opportunity to meet with some of the senior staff at Facebook, including Mark Zuckerberg and Sheryl Sandberg. I found the meeting deeply disturbing — but not for the reasons you might think."
+  // "image" => "https://cdn-images-1.medium.com/max/1600/1*X7ZwkHWGyKdQk8yyg7feHg.png"
+  // "video" => null
+
+    $rand_keys = array_rand($content, 2);
+    array_push($recommended,$content[$rand_keys[0]]);
+    array_push($recommended,$content[$rand_keys[1]]);
+  }
+
+  //Article
   if ($type=='image'){
     if($api == 'pocket'){
       $article_id = Request::input('id');
       $article = $this->contentPocket($article_id);
-      return View::make('articles.image-article',['content'=>$article]);
+      return View::make('articles.image-article',['content'=>$article, 'recommended' => $recommended]);
     }
   }
   if ($type=='video'){
@@ -153,17 +189,17 @@ public function article($type,$api){
       $article_id = Request::input('id');
       $tag = Request::input('tag');
       $article = $this->contentVimeo($article_id, $tag);
-      return View::make('articles.video-article',['content'=>$article]);
+      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
     }
     if ($api == 'pocket'){
       $article_id = Request::input('id');
       $article = $this->contentPocket($article_id);
-      return View::make('articles.video-article',['content'=>$article]);
+      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
     }
     if ($api == 'slideshare'){
       $article_id = Request::input('id');
       $article = $this->contentSlideshare($article_id);
-      return View::make('articles.video-article',['content'=>$article]);
+        return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
     }
       // return view('articles.video-article');
   }
@@ -179,7 +215,7 @@ public function article($type,$api){
       else{
         $article = $this->contentGithub($id);
       }
-      return View::make('articles.code-article',['content'=>$article]);
+      return View::make('articles.code-article',['content'=>$article, 'recommended' => $recommended]);
     }
         // dd($article);
   }
@@ -190,7 +226,7 @@ public function article($type,$api){
 
     //GITHUB
     //List github articles
-private function listGithub(){
+public function listGithub(){
       //Connection
       // dd('entered');
   $client = new \Github\Client();
@@ -344,6 +380,15 @@ private function contentPocket($id){
     }
   }
   $file_content['authors'] = $authors;
+
+  $tags=DB::select("SELECT tagname FROM tags WHERE id_article = ? and source_name='pocket'", array($id));
+  $file_content['tags'] = '';
+  foreach($tags as $tag){
+    $file_content['tags'].=$tag->tagname.', ';
+
+  }
+  $file_content['tags'] = rtrim($file_content['tags'],', ');
+
   return $file_content;
 }
 
@@ -380,8 +425,8 @@ public function contentVimeo($id, $tag){
       $access_token = $result->access_token;
       $vimeo_connection= Vimeo::connection('alternative');
       $vimeo_connection->setToken($access_token);;
-      $article = $vimeo_connection->request($result_video->url_content,[],'GET');  
-      $more_tags = 1; 
+      $article = $vimeo_connection->request($result_video->url_content,[],'GET');
+      $more_tags = 1;
     }
     else {
       $result_video = DB::table('vimeo_recommended')->select('url_content')->where('id_article','=',$id)->first();

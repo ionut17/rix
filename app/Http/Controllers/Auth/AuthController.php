@@ -22,7 +22,7 @@ class AuthController extends Controller
     }
 
     public function validate_login()
-    { 
+    {
         if(!Session::has('username'))
         {
             Session::flush();
@@ -53,7 +53,7 @@ class AuthController extends Controller
     }
 
     public function validate_register()
-    { 
+    {
         if(!Session::has('username'))
         {
             Session::flush();
@@ -88,7 +88,7 @@ class AuthController extends Controller
                         if($DB_email_object!=null)
                         {
                             Session::put('error_page','register');
-                            Session::put('error','Email already used.');        
+                            Session::put('error','Email already used.');
                         }
                         else
                         {
@@ -101,4 +101,43 @@ class AuthController extends Controller
        }
        return Redirect::to('mycontent');
    }
-}
+
+   public function ajax_validator(){
+     $username = Request::input('username');
+     if(empty($username)){
+       return 'Username too short';
+     }
+     else{
+       if(strlen($username) < 5){
+         return 'Username too short';
+       }
+     }
+     $result = DB::table('users')->where('username',$username)->first();
+     if(!empty($result)){
+       return 'Username already taken';
+     }
+     $email = Request::input('email');
+     if(empty($email)){
+       return 'Email not entered';
+     }
+     $result = DB::table('users')->where('email',$email)->first();
+     if(!empty($result)){
+       return 'Email already taken';
+     }
+     $password = Request::input('password');
+     $r_password = Request::input('rpassword');
+     if($password != $r_password)
+     {
+       return "Passwords don't match";
+     }
+     else
+     {
+       if(strlen($password) < 6)
+       {
+         return 'Password too short';
+       }
+     }
+
+     return 'ok';
+   }
+ }

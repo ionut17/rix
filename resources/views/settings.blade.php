@@ -19,7 +19,8 @@
         <section class="search" id="search-box">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
           <ul class="search-results" id="search-results"></ul>
-          <i class="fa fa-search" aria-hidden="true"></i>
+          <i class="fa fa-times-circle" aria-hidden="true" id="search-clear"></i>
+          <i class="fa fa-search" aria-hidden="true" id="search-normal"></i>
         </section>
       </div>
     </div>
@@ -51,7 +52,10 @@
           <h2 class="title">Actions</h2>
           <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#addModal">Connect account</button>
           <a href="{{ URL::to('/refresh') }}">
-            <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#refreshModal">Refresh content</button>
+            <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#refreshModal" id="refresh-content">Refresh content</button>
+          </a>
+          <a href="{{ URL::to('/generatetoken') }}">
+            <button type="button" name="view-btn" class="article-button">Generate API token</button>
           </a>
         </div>
       </div>

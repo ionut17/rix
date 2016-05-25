@@ -15,13 +15,14 @@
       <div class="status-container">
         <ul class="status-list">
           <li><a href="{{ URL::to('/mycontent') }}">My Content</a></li>
-          <li><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
+          <li id="recommended-generate"><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
           <li><a href="">More</a></li>
         </ul>
         <section class="search">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
           <ul class="search-results" id="search-results"></ul>
-          <i class="fa fa-search" aria-hidden="true"></i>
+          <i class="fa fa-times-circle" aria-hidden="true" id="search-clear"></i>
+          <i class="fa fa-search" aria-hidden="true" id="search-normal"></i>
         </section>
       </div>
     </div>
@@ -33,9 +34,7 @@
   <div class="container">
     <div class="filter-container">
       <div class="filters">
-        <div>Filters:</div>
-        <span>Sort by</span>
-        <span>Tags</span>
+        <span id="filter-option">Filters</span>
       </div>
       <ul class="pagination">
         @for ($i=1;$i<=$page_count;$i++)
@@ -47,11 +46,58 @@
         @endfor
       </ul>
     </div>
+    <div class="filter-content" id="filter-content" style="display: none;">
+      <label class="tag">Filters:</label>
+      <ul>
+        <li>
+          <input type="checkbox" name="github" id="github-opt" checked>
+          <label for="github">Github</label>
+        </li>
+        <li>
+          <input type="checkbox" name="pocket" id="pocket-opt" checked>
+          <label for="pocket">Pocket</label>
+        </li>
+        <li>
+          <input type="checkbox" name="slideshare" id="slideshare-opt" checked>
+          <label for="slideshare">Slideshare</label>
+        </li>
+        <li>
+          <input type="checkbox" name="vimeo" id="vimeo-opt" checked>
+          <label for="vimeo">Vimeo</label>
+        </li>
+      </ul>
+      <button type="button" name="view-btn" class="article-button" id="filter-save">Filter</button>
+    </div>
     <div class="content-container">
       @if ($has_accounts==true)
         @if (isset($content))
           @foreach ($content as $entry)
               <div class="article-box">
+                @if ($entry['type']=='github')
+                  @if ($entry['id']!='')
+                    <a href="{{ URL::to('/article/code/'.$entry['type'].'?id='.$entry['id']) }}">
+                  @else
+                    <a href="{{ URL::to('/article/code/'.$entry['type'].'?username='.urlencode($entry['username']).'&repo='.urlencode($entry['repo']).'&path='.urlencode($entry['path'])) }}">
+                  @endif
+                @elseif ($entry['type']=='pocket')
+                  @if (isset($entry['video']))
+                    <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                  @else
+                    <a href="{{ URL::to('/article/image/'.$entry['type'].'?id='.$entry['id']) }}">
+                  @endif
+                @elseif ($entry['type']=='vimeo')
+                    @if (isset($entry['id']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @elseif (isset($entry['tag']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['url'].'&tag='.$entry['tag']) }}">
+                    @endif
+                @elseif ($entry['type']=='slideshare')
+                    @if (isset($entry['id']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['id']) }}">
+                    @elseif (isset($entry['tag']))
+                      <a href="{{ URL::to('/article/video/'.$entry['type'].'?id='.$entry['url'].'&tag='.$entry['tag']) }}">
+                    @endif
+                @endif
                 <section class="image"
                   @if (isset($entry['image']))
                     style="background-image: url('{{ $entry['image'] }}')"
@@ -59,6 +105,7 @@
                     style="background-image: url('{{ asset('img/articles/'.$entry['type'].'.jpg') }}')"
                   @endif
                 ></section>
+                </a>
                 <section class="tag">
                   @if (isset($entry['type'])) {{$entry['type']}} @endif
                 </section>

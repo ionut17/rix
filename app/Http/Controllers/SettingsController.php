@@ -54,14 +54,30 @@ class SettingsController extends BaseController
 
   public function refresh(){
     try{
-      $access_token = DB::table('accounts')->select('access_token')->where('username',Session::get('username'))->first();
-      $vimeo_controller =  new VimeoController();
-      $vimeo_controller->store($access_token->access_token);
-
-      //Refreshing Pocket content
-      $pocket_controller = new PocketController();
-      $pocket_controller->store();
-
+      $username = Session::get('username');
+      $accounts =  DB::table('accounts')->select('source_name')->where('username',$username)->get();
+      foreach($accounts as $account)
+      {
+        switch ($account->source_name) {
+          case 'slideshare':
+            $slideshare_controller = new SlideshareController();
+            $slideshare_controller->authorize();
+          break;
+          case 'vimeo':
+            $access_token = DB::table('accounts')->where('username',$username)->where('source_name','vimeo')->select('access_token')->first();
+            $vimeo_controller =  new VimeoController();
+            $vimeo_controller->store($access_token->access_token);
+          break;
+          case 'pocket':
+            $pocket_controller = new PocketController();
+            $pocket_controller->store();
+            break;
+          case 'github':
+            $github_controller = new GithubController();
+            $github_controller->store();
+            break;
+        }
+      }
     }catch(\Exception $e){
       // dd($e);
       //If you don't have an account attached
@@ -71,7 +87,7 @@ class SettingsController extends BaseController
  }
 
  public function modify(){
-
+    dd(Request::all());
  }
 
 }
