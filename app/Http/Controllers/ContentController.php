@@ -297,7 +297,7 @@ private function contentGithub($id, $username='', $g_repo='', $g_path=''){
      $result = DB::select('SELECT repo, path, owner_name FROM github_recommended WHERE id_article = ?', array($id));
      $account = $result[0]->owner_name;
    }else { 
-    //Aici
+
      $repos = $client->api('current_user')->repositories();
      $account = $repos[0]['owner']['login']; 
    }
@@ -306,7 +306,6 @@ private function contentGithub($id, $username='', $g_repo='', $g_path=''){
    $path = $result[0]->path;
    
    $content = array();
-   //Si aici
    $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
 
 

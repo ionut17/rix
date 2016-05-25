@@ -96,7 +96,9 @@ class SettingsController extends BaseController
  }
 
  public function modify(){
-    dd(Request::all());
+    $username = Request::get('username');
+    $email = Request::get('email');
+    $password = Request::get('password');
  }
 
 }
