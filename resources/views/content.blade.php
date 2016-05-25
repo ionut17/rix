@@ -33,7 +33,7 @@
   <div class="container">
     <div class="filter-container">
         <div class="filters">
-          @if (Request::is('mycontent'))
+          @if (Route::getCurrentRoute()->getPath()=='mycontent' || Route::getCurrentRoute()->getPath()=='mycontent/{page_number?}')
             <span id="filter-option">Filters</span>
           @endif
         </div>

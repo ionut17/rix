@@ -54,7 +54,7 @@
           <a href="{{ URL::to('/refresh') }}">
             <button type="button" name="view-btn" class="article-button" data-toggle="modal" data-target="#refreshModal" id="refresh-content">Refresh content</button>
           </a>
-          <a href="{{ URL::to('/generatetoken') }}">
+          <a href="{{ URL::to('/generatetoken') }}" target="_blank">
             <button type="button" name="view-btn" class="article-button">Generate API token</button>
           </a>
           <a href="{{ URL::to('/showtutorial') }}">
