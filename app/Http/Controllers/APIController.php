@@ -73,16 +73,40 @@ class APIController extends BaseController
       if(!empty($result)){
         switch($service){
           case 'github':
+            $verify = DB::table('accounts')->select('username')->where('username',$result[0]->username)->where('source_name','github')->get();
+            if(!empty($verify)){
             DB::table('accounts')->where('username',$result[0]->username)->where('source_name','github')->delete();
+            }
+            else{
+              return 'The Github account does not exist.';
+            }
             break;
           case 'pocket':
+            $verify = DB::table('accounts')->select('username')->where('username',$result[0]->username)->where('source_name','pocket')->get();
+            if(!empty($verify)){
             DB::table('accounts')->where('username',$result[0]->username)->where('source_name','pocket')->delete();
+            }
+            else{
+              return 'The Pocket account does not exist.';
+            }
             break;
           case 'slideshare':
+            $verify = DB::table('accounts')->select('username')->where('username',$result[0]->username)->where('source_name','slideshare')->get();
+            if(!empty($verify)){
             DB::table('accounts')->where('username',$result[0]->username)->where('source_name','slideshare')->delete();
+            }
+            else{
+              return 'The Slideshare account does not exist.';
+            }
             break;
           case 'vimeo':
+            $verify = DB::table('accounts')->select('username')->where('username',$result[0]->username)->where('source_name','vimeo')->get();
+            if(!empty($verify)){
             DB::table('accounts')->where('username',$result[0]->username)->where('source_name','vimeo')->delete();
+            }
+            else{
+              return 'The Vimeo account does not exist.';
+            }
             break;
           case 'recommend':
             $recommend_controller = new RecommendedController();
@@ -94,7 +118,7 @@ class APIController extends BaseController
         }
 
       }
-      return 'ok';
+      return 'Your account has been deleted';
     }
 
     public function connect($token, $service){
