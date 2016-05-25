@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    $('.button').prop('disabled',true);
+    // $('.button').prop('disabled',true);
     $('.error').hide();
     //AJAX Search
     $(":input").on('blur', function() {
@@ -16,7 +16,7 @@ $( document ).ready(function() {
           console.log(data);
           if (data=='ok'){
             $('.error').hide();
-            $('.button').prop('disabled',false);
+            // $('.button').prop('disabled',false);
           } else{
             $('.error').show();
             $('.error').html(data);
