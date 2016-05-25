@@ -119,6 +119,8 @@ $( document ).ready(function() {
     //Clear on x-click
     $('#search-clear').click(function() {
       searchBox.val("");
+      searchResults.hide();
+      searchResults.empty();
       $('#search-normal').show();
       $('#search-clear').hide();
     });
@@ -196,7 +198,7 @@ $( document ).ready(function() {
         }
       });
     });
-
+    
     //File input handler
     var fileInput = $('#avatar-input');
     fileInput.change(function(evt){

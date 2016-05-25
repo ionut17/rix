@@ -41,7 +41,7 @@
     <section typeof="sa:Abstract" id="abstract">
       <h2>Abstract</h2>
       <p>
-        Acest proiect se dorește a fi un instrument Web de colectare, de regăsire și de vizualizare a informațiilor referitoare la resurse științifice și tehnologice (articole, cărți, rapoarte tehnice, prezentări, cod-sursă și altele) ale utilizatorilor din domeniul informaticii. Dezvoltând o aplicație de tip mash-up, se oferă informații de interes pentru o anumită persoană, pornind de la resursele multimedia deja colectate și clasificate via aplicații Web sociale precum Feedly, GitHub, Google Scholar, Slideshare, Vimeo. Informațiile (structurate pe diverse criterii) vor fi vizualizate în formate precum HTML, SVG sau text obișnuit. De asemenea, sistemul oferă acces la informații prin intermediul unui API REST.
+        Acest proiect se dorește a fi un instrument Web de colectare, de regăsire și de vizualizare a informațiilor referitoare la resurse științifice și tehnologice (articole, cărți, rapoarte tehnice, prezentări, cod-sursă și altele) ale utilizatorilor din domeniul informaticii. Dezvoltând o aplicație de tip mash-up, se oferă informații de interes pentru o anumită persoană, pornind de la resursele multimedia deja colectate și clasificate via aplicații Web sociale precum GitHub, Pocket, Slideshare, Vimeo. Informațiile (structurate pe diverse criterii) vor fi vizualizate în formate precum HTML, SVG sau text obișnuit. De asemenea, sistemul oferă acces la informații prin intermediul unui API REST.
       </p>
     </section>
     <section typeof="sa:MaterialsAndMethods" id="motivation">
@@ -50,12 +50,12 @@
         Aplicațiile existente la momentul actual încadrează informația de specialitate după tipul acesteia (cod, video-uri, articole etc.), astfel fiind dificil utilizatorilor să acceseze informații privind aceeași arie redate sub diferite forme.
       </p>
       <p>
-        Aplicația dorește a ușura procesul de regăsire a informațiilor deja accesate de utilizatori prin colectarea acestora și încadrarea lor în funcție de tematică. Pe baza diferitelor conturi asociate unor aplicații Web (precum: <code>GitHub</code>, <code>Feedly</code>, <code>Slideshare</code>, <code>Google Scholar</code>, <code>Vimeo</code>) introduse de către utilizator, acesta poate beneficia de vizualizarea tuturor informațiilor preferate în același loc. De asemenea, pe baza preferințelor i se vor oferi articole care vizează același subiect.
+        Aplicația dorește a ușura procesul de regăsire a informațiilor deja accesate de utilizatori prin colectarea acestora și încadrarea lor în funcție de tematică. Pe baza diferitelor conturi asociate unor aplicații Web (precum: <code>GitHub</code>, <code>Pocket</code>, <code>Slideshare</code>, <code>Vimeo</code>) introduse de către utilizator, acesta poate beneficia de vizualizarea tuturor informațiilor preferate în același loc. Pe baza preferințelor i se vor oferi articole care vizează același subiect.
       </p>
       <p>
         În continuare vom folosi termenul <code>articol</code> ca un termen general, acesta înglobând orice tip de informație (sub forme diferite) : video, articol - text, prezentare, cod etc.
       </p>
-      <p> Bineînțeles, există posibilitatea recomandării de anumite articole și unui utilizator care nu are nici un cont specificat, aceasta se face în urma selectării anumitor tag-uri favorite de către beneficiar. Ușurința cu care utilizatorul va putea accesa doar informațiile pe care dorește să le vizualizeze, precum și regăsirea lor în același loc reprezintă nu doar un mod de a câștiga timp ci și un instrument util de a manipula informația de care are nevoie.
+      <p> Bineînțeles, există posibilitatea recomandării de anumite articole unui utilizator. Aceasta se face în urma selectării anumitor tag-uri favorite de către beneficiar. Ușurința cu care utilizatorul va putea accesa doar informațiile pe care dorește să le vizualizeze, precum și regăsirea lor în același loc reprezintă nu doar un mod de a câștiga timp ci și un instrument util de a manipula informația de care are nevoie.
       </p>
       <p>
         Principalele țeluri care au motivat crearea unei astfel de aplicații sunt:
@@ -83,7 +83,7 @@
     <section typeof="sa:Results" id="definition">
       <h2>Descrierea aplicatiei</h2>
       <p>
-        RIX este o aplicație dedicată celor interesați de domeniul IT. Aplicația colectează informațiile din conturile utilizatorului și le stochează într-o bază de date SQL, utilizatorul având acces la acestea odată logat. După înregistrarea unui utilizator, acesta își alege ariile de interes și își adaugă apoi conturile aferente diferitelor aplicații. Informațiile deja accesate precum și cele recomandate îi vor fi afișate în pagini diferite, fiecare articol putând fi vizualizat separat.
+        RIX este o aplicație ce colectează informațiile din conturile utilizatorului și le stochează într-o bază de date SQL, utilizatorul având acces la acestea odată logat. După înregistrarea unui utilizator, acesta își adaugă apoi conturile aferente diferitelor aplicații. Informațiile deja accesate precum și cele recomandate îi vor fi afișate în pagini diferite, fiecare articol putând fi vizualizat separat.
       </p>
 
       <p>
@@ -105,21 +105,18 @@
       <p class="imagetext">Fig. 1 - Diagrama arhitecturală a aplicației</p>
 
       <h3> Workflow-ul aplicației</h3>
-      <p>Aplicația oferă userilor diferite articole aparținând aceleiași arii. Pentru a exista și posibilitatea oferirii de informații unor useri care nu au optat să-și introducă conturile aferente altor site-uri și aplicații Web, vor exista și articole deja colectate anterior. Colectarea se face astfel în două momente: înainte de lansarea aplicației și după înregistrarea userilor. Pentru fiecare tag (categorie) se va colecta inițial un anumit număr de articole provenite de pe aplicații deja menționate: GitHub, Feedly, Vimeo, GoogleScholar, SlideShare. </p>
-      <p> Primul contact al unui user cu aplicația noastră va fi prin pagina de înregistrare/autentificare. În momentul în care un user și-a creat un cont (username, password) acesta va putea să își creeze profilul (va putea alege diferite tag-uri preferate și de asemenea, va putea să-și introducă și conturile aferente aplicațiilor menționate mai sus). Un utilizator este restricționat să aleagă cel puțin o categorie preferată, altfel nu i s-ar putea afișa niciun articol.</p>
+      <p>Aplicația oferă userilor diferite articole aparținând aceleiași arii. Pentru a ține cont de schimbările realizate pe parcurs de utilizator în aplicațiile ale căror conturi au fost atașate și în RIX, utilizatorul poate face refresh din pagina de settings. Colectarea se face astfel în două momente: la înregistrarea în aplicație și după înregistrarea userilor, la cererea acestora. Pentru fiecare tag (categorie) se va colecta conținutul inițial al utilizatorului provenit de pe aplicații deja menționate: GitHub, Pocket, Vimeo, SlideShare. </p>
+      <p> Primul contact al unui user cu aplicația noastră va fi prin pagina de înregistrare/autentificare. În momentul în care un user și-a creat un cont (username, password) acesta va putea să își creeze profilul (va putea să-și introducă conturile aferente aplicațiilor menționate mai sus). Pentru a vedea conținut, un utilizator este trebuie să atașeze cel puțin un cont, altfel nu i s-ar putea afișa niciun articol.</p>
       <p>
-        După etapa introductivă, de creare a profilului, utilizatorul are posibilitatea să vizualizeze doar conținutul propriu (diferite articole procurate din propriile conturi) prin pagina <code>My Content</code>  sau doar recomandări (acestea oferite pe baza preferințelor sale) prin pagina <code>Recommended Content</code>. De asemenea, în pagina principală poate vizuliza întregul său conținut, atât recomandări cât și ceea ce ține de profilul său.
+        După etapa introductivă, de creare a profilului, utilizatorul are posibilitatea să vizualizeze doar conținutul propriu (diferite articole procurate din propriile conturi) prin pagina <code>My Content</code>  sau doar recomandări (acestea oferite pe baza preferințelor sale) prin pagina <code>Recommended Content</code>.
       </p>
       <p>
-        În momentul in care un utilizator este interesat să găsească un anumit articol, acesta poate fi căutat prin butonul <code>Search</code>. De asemenea, <code>LOAD MORE</code> va afișa în continuare mai multe articole, în caz de acesta dorește să vizualizeze și restul conținutului. Câmpul <code>Settings</code> permite utilizatorului să își schimbe preferințele, indiferent că dorește să își adauge/șteargă un cont ori își adaugă/șterge anumite tag-uri. Bineînțeles, acesta poate să-și schimbe parola sau numele de utilizator oricând dorește, această facilitate putând fi găsită pe pagina <code>My Account</code>.
+        În momentul in care un utilizator este interesat să găsească un anumit articol, acesta poate fi căutat prin butonul <code>Search</code>. Câmpul <code>Settings</code> permite utilizatorului să își schimbe preferințele, indiferent că dorește să își adauge/șteargă un cont.
       </p>
-      <p> Recomandările se fac pe baza preferințelor utilizatorului. După ce acesta-și va seta tag-urile favorite, în pagina de recomandări i se vor afișa articole pe care acesta nu a avut șansa să le acceseze încă. Bineînțeles, în baza de date sunt stocate pentru toate tag-urile, conținuturi (articole) atât din colectarea inițială, cât și din colectarea prin intermediul informațiilor introduse de utilizatori. Astfel, unui utilizator care și-a ales printre preferințe <code>Java</code>, i se pot oferi, ca și recomandări, articole colectate din conturile altor utilizatori ce au ales și ei <code>Java</code> ca fiind un "domeniu" de interes.
-      </p>
-      <p>
-        Deoarece se dorește ca utilizatorul să beneficieze de o cât mai eficientă vizualizare a articolelor, acesta-și poate filtra conținutul în funcție de tag-urile pe care le dorește, precum și sursa de proveniență. De asemenea, acesta le poate sorta în funcție de data la care au fost publicate și are și posibilitatea să i se afișeze doar conținutul deja citit sau cel încă neaccesat.
+      <p> Recomandările se fac pe baza preferințelor utilizatorului. După ce acesta își va adăuga conturile, în pagina de recomandări i se vor afișa articole pe care acesta nu a avut șansa să le acceseze încă. Bineînțeles, în baza de date sunt stocate pentru toate tag-urile, conținuturi (articole) atât din colectarea inițială, cât și din colectarea prin intermediul informațiilor introduse de utilizatori. Astfel, unui utilizator care și-a ales printre preferințe <code>Java</code>, i se pot oferi, ca și recomandări, articole colectate cu ajutorul aplicațiilor Github, Slideshare, etc. care au drept tag <code>Java</code> ca fiind un "domeniu" de interes.
       </p>
       <p>
-        Fiind o practică destul de întâlnită în zilele noastre, pentru a eficientiza procesul de autentificare nu este necesar ca un utilizator să își introducă datele de fiecare dată când dorește să acceseze aplicația. Astfel, bifarea căsuței specifice câmpului <code>REMEMBER ME</code> va ajuta la reținerea informațiilor legate de utilizator prin memorarea SESSION ID ului, bineînțeles, framework-ul facilitând acestă procedură.
+        Deoarece se dorește ca utilizatorul să beneficieze de o cât mai eficientă vizualizare a articolelor, acesta-și poate filtra conținutul în funcție de sursa de proveniență.
       </p>
 
     </section>
@@ -177,7 +174,7 @@
             <li><code>Detaliile utilizatorului</code></li>
             <li><code>Conturile ataşate</code></li>
           </ul>
-          În secţiunea legată de detaliile utilizatorului se pot modifica setări ca email ataşat sau parola. Conturile ataşate reprezintă serviciile ataşate la contul curent (e.g GitHub, Feedly).
+          În secţiunea legată de detaliile utilizatorului se pot modifica setări ca email ataşat sau parola. Conturile ataşate reprezintă serviciile ataşate la contul curent (e.g GitHub, Slideshare).
         </p>
         <img src=".\IMGS\6-settings.png" alt="Settings Page"/>
         <p class="imagetext">Fig. 5 - Pagina de setări</p>
@@ -273,24 +270,21 @@
             Framework-ul realizează armonios legătura dintre baza de date și backend.
             Am optat să lucrăm cu baza de date Oracle 11g. În figura de jos este prezentată schema bazei de date.
           </p>
-          <img class="kid" src="./BD.jpg" alt ="The database schema"/>
+          <img class="kid" src="./RIX_diagram2.png" alt ="The database schema"/>
           <p class ="imagetext">Fig. 6 - Schema bazei de date </p>
           <p>
-            În momentul înregistrării unui utilizator, în baza de date se stochează <code>username-ul</code> (doar dacă nu există deja), precum și <code>password-ul</code> introdus de acesta. În baza de date parola unui user se va stoca sub formă de text criptat folosind bineînțeles clasa <code>Hash</code> oferită de frameworkul specificat. După cum se observă și în schema bazei de date, facilitatea opțiunii <code>REMEMBER ME</code> este oferită prin reținerea  acestei informațiiîn tabelele aferente aplicației. Dacă utilizatorul bifează căsuța, atunci în coloana <code>REMEMBER ME</code> va fi setată ca având valoarea <code>true</code>.
+            În momentul înregistrării unui utilizator, în baza de date se stochează <code>username-ul</code> (doar dacă nu există deja), precum și <code>password-ul</code> si <code>email-ul</code> introduse de acesta. În baza de date parola unui user se va stoca sub formă de text criptat folosind <code>sha1</code>. După cum se observă și în schema bazei de date, facilitatea opțiunii <code>unseen_tutorial</code> este oferită prin reținerea  acestei informații în tabelele aferente aplicației, permițând afișarea tutorialului doar la început.
             <p>
-              Tabela <code>ACCOUNTS</code> reține toate conturile specifice unui user, doar dacă acesta le-a introdus. Bineînțeles același cont poate aparține mai multor utilizatori. Prin atributul <code>Type</code> se va reține tipul aplicației pentru care este specificat contul respectiv, spre exemplu contul "mynamegit" reprezintă contul de GitHub al utilizatorului, iar contul "mynamefeedly", pe cel de pe Feedly. Un user poate să nu introducă niciun cont asta însemnând că atributele <code>Account</code>, <code>Password</code> și <code>Type</code> putând accepta valori de NULL.
+              Tabela <code>ACCOUNTS</code> reține toate conturile specifice unui user, doar dacă acesta le-a introdus. Același cont nu poate aparține mai multor utilizatori. Prin atributul <code>source_name</code> se va reține tipul aplicației pentru care este specificat contul respectiv, spre exemplu contul "mynamegit" reprezintă contul de GitHub al utilizatorului.
             </p>
             <p>
-              În tabelul <code>ARTICLES</code> se rețin articole, atât provenite de la anumiți useri cât și colectate inițial. Pentru colectarea inițială atributul <code>Id_account</code> va rămâne NULL. Pentru articolele colectate de la useri, valoarea coloanei <code>Source</code> va coincide cu atributul <code>Type</code> din <code>ACCOUNTS</code> pentru utilizatorul respectiv, deși pare redundant, pentru a nu crea încă un tabel cu articolele colectate inițial, am preferat introducerea acestui câmp <code>Source</code>.
+              În tabelele <code>Github_articles</code>, <code>Pocket_articles</code>, <code>Slideshare_articles</code>, <code>Vimeo_articles</code> se rețin articolele specifice fiecăreia dintre cele patru aplicații utilizate, articole provenite de la useri. În tabelul <code>Api_tokens</code> vom avea token-urile generate la apelul routei /generatetoken, token folosit la interogarea api-ului rest.
             </p>
             <p>
               Pentru a fi mult mai ușor să construim o interogare ce ne va returna toate articolele cu un anumit <code>tag</code>, tabelul <code>TAGS</code> reține exact id-urile articolelor de care avem nevoie. Am ales să creăm un tabel special pentru asta deoarece un articol poate avea asociat mai multe tag-uri și ar fi un cost de memorie mult prea mare dacă am introduce mai multe tuple cu aceleași informații doar cu tag-ul diferit. După cum se observă aceasta este o relație de tip <code>many to many</code>.
             </p>
             <p>
               Pentru a lucra cu baza de date cât mai ușor se vor scrie funcții în PLSQL pentru a returna exact ce este necesar unei cereri. Laravel - OCI8 este un pachet Oracle Database Driver special pentru Laravel. Bineînțeles, framework-ul dispune și de un ORM, <code>Eloquent</code>. Fiecare tabel din baza de date are ca și corespondent un <code>"Model"</code> care va interacționa cu tabelul. Aceste modele permit interogări ale tabelelor, precum și inserări de noi date. După cum se știe ORM-urile sunt folosite pentru securitate, astfel oferind siguranță în lucrul cu datele prin ascunderea felului în care acestea sunt stocate. Legat de securitate, prevenind <code>SQL Injection</code>, Eloquent ORM folosește parametri dinamici, <code>PDO</code>, astfel fiind sigur din acest punct de vedere, userii nu pot introduce în interogare informații ce ar putea modifica scopul inițial al acesteia.
-            </p>
-            <p>
-              Pentru a eficientiza căutarea, în baza de date vor fi creați inițial 4 indecși: pe USERS(username) - pentru ușurința în procesul de autentificare , TAGS(tagname) - pentru a se găsi repede toate articolele de la un anumit tag, ARTICLES(name) - facilitează opearția de <code>Search</code> și ARTICLES(Id_account) pentru găsirea rapidă a conținutului unui anumit utilizator.
             </p>
           </p>
 
@@ -330,7 +324,6 @@
             <li><a href="https://laravel.com/docs/5.2">https://laravel.com/docs/5.2</a></li>
             <li><a href="https://laracasts.com/">https://laracasts.com/</a></li>
             <li><a href="https://developer.github.com/v3/">https://developer.github.com/v3/</a></li>
-            <li><a href="https://developer.feedly.com/">https://developer.feedly.com/</a></li>
             <li><a href="http://www.sitepoint.com/use-githubs-api-php/">http://www.sitepoint.com/use-githubs-api-php/</a></li>
             <li><a href="https://github.com/tan-tan-kanarek/github-php-client">https://github.com/tan-tan-kanarek/github-php-client</a></li>
             <li><a href="http://www.slideshare.net/developers/documentation">http://www.slideshare.net/developers/documentation</a></li>

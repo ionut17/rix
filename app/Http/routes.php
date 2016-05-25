@@ -16,19 +16,19 @@ Route::group(['middleware'=>['web']],function(){
 	Route::get('/example', 'DBController@');
 	//Delete this ^
 
-Route::get('/login','PageController@login');
-Route::post('/login','PageController@login');
-Route::post('/login_authorize','Auth\AuthController@validate_login');
+	Route::get('/login','PageController@login');
+	Route::post('/login','PageController@login');
+	Route::post('/login_authorize','Auth\AuthController@validate_login');
 
 
-Route::get('/register','PageController@register');
-Route::post('/register','PageController@register');
+	Route::get('/register','PageController@register');
+	Route::post('/register','PageController@register');
 
 //register ajax route
 	Route::get('/validator','Auth\AuthController@ajax_validator');
-Route::post('/register_authorize','Auth\AuthController@validate_register');
+	Route::post('/register_authorize','Auth\AuthController@validate_register');
 
-Route::get('/logout','PageController@logout');
+	Route::get('/logout','PageController@logout');
 
 //API Rest
 	Route::get('/api/{token}/{service}/get', 'APIController@call');
@@ -59,6 +59,9 @@ Route::get('/logout','PageController@logout');
 		//Save filters
 		Route::get('/filters','FilterController@get');
 		Route::post('/filters','FilterController@save');
+
+		Route::get('/showtutorial', 'TutorialController@show');
+		Route::post('/hidetutorial', 'TutorialController@hide');
 
 
 	//Activate APIs

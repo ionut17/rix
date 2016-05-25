@@ -155,7 +155,18 @@ class ContentController extends BaseController
   }
   $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
-  return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
+  //get tutorial status
+  $username = Session::get('username');
+  $user_info = DB::select('SELECT unseen_tutorial FROM users WHERE username=?',array($username));
+  $show_tutorial = null;
+  if (intval($user_info[0]->unseen_tutorial) == 1){
+    $show_tutorial = true;
+  }
+  else {
+    $show_tutorial = false;
+  }
+  //return
+  return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values,'show_tutorial'=>$show_tutorial]);
 }
 
 public function article($type,$api){
@@ -176,12 +187,23 @@ public function article($type,$api){
     array_push($recommended,$content[$rand_keys[1]]);
   }
 
+  //tutorial
+  $username = Session::get('username');
+  $user_info = DB::select('SELECT unseen_tutorial FROM users WHERE username=?',array($username));
+  $show_tutorial = null;
+  if (intval($user_info[0]->unseen_tutorial) == 1){
+    $show_tutorial = true;
+  }
+  else {
+    $show_tutorial = false;
+  }
+
   //Article
   if ($type=='image'){
     if($api == 'pocket'){
       $article_id = Request::input('id');
       $article = $this->contentPocket($article_id);
-      return View::make('articles.image-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.image-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
   }
   if ($type=='video'){
@@ -189,17 +211,17 @@ public function article($type,$api){
       $article_id = Request::input('id');
       $tag = Request::input('tag');
       $article = $this->contentVimeo($article_id, $tag);
-      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
     if ($api == 'pocket'){
       $article_id = Request::input('id');
       $article = $this->contentPocket($article_id);
-      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
     if ($api == 'slideshare'){
       $article_id = Request::input('id');
       $article = $this->contentSlideshare($article_id);
-      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
+        return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
       // return view('articles.video-article');
   }
@@ -215,7 +237,7 @@ public function article($type,$api){
       else{
         $article = $this->contentGithub($id);
       }
-      return View::make('articles.code-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.code-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
         // dd($article);
   }
