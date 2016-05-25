@@ -60,6 +60,9 @@ Route::group(['middleware'=>['web']],function(){
 		Route::get('/filters','FilterController@get');
 		Route::post('/filters','FilterController@save');
 
+		Route::get('/showtutorial', 'TutorialController@show');
+		Route::post('/hidetutorial', 'TutorialController@hide');
+
 
 	//Activate APIs
 		Route::post('/authorize','PageController@authorizeAPI');

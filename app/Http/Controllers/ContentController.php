@@ -155,7 +155,18 @@ class ContentController extends BaseController
   }
   $select_values =  array('github', 'pocket', 'slideshare', 'vimeo');
     //View
-  return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values]);
+  //get tutorial status
+  $username = Session::get('username');
+  $user_info = DB::select('SELECT unseen_tutorial FROM users WHERE username=?',array($username));
+  $show_tutorial = null;
+  if (intval($user_info[0]->unseen_tutorial) == 1){
+    $show_tutorial = true;
+  }
+  else {
+    $show_tutorial = false;
+  }
+  //return
+  return View::make('content', ['has_accounts' => $has_accounts,'content' => $display_content,'page_count'=>$page_count,'page_number'=>$page_number,'select_values'=>$select_values,'show_tutorial'=>$show_tutorial]);
 }
 
 public function article($type,$api){
@@ -176,12 +187,23 @@ public function article($type,$api){
     array_push($recommended,$content[$rand_keys[1]]);
   }
 
+  //tutorial
+  $username = Session::get('username');
+  $user_info = DB::select('SELECT unseen_tutorial FROM users WHERE username=?',array($username));
+  $show_tutorial = null;
+  if (intval($user_info[0]->unseen_tutorial) == 1){
+    $show_tutorial = true;
+  }
+  else {
+    $show_tutorial = false;
+  }
+
   //Article
   if ($type=='image'){
     if($api == 'pocket'){
       $article_id = Request::input('id');
       $article = $this->contentPocket($article_id);
-      return View::make('articles.image-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.image-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
   }
   if ($type=='video'){
@@ -189,17 +211,17 @@ public function article($type,$api){
       $article_id = Request::input('id');
       $tag = Request::input('tag');
       $article = $this->contentVimeo($article_id, $tag);
-      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
     if ($api == 'pocket'){
       $article_id = Request::input('id');
       $article = $this->contentPocket($article_id);
-      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
     if ($api == 'slideshare'){
       $article_id = Request::input('id');
       $article = $this->contentSlideshare($article_id);
-        return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended]);
+        return View::make('articles.video-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
       // return view('articles.video-article');
   }
@@ -215,7 +237,7 @@ public function article($type,$api){
       else{
         $article = $this->contentGithub($id);
       }
-      return View::make('articles.code-article',['content'=>$article, 'recommended' => $recommended]);
+      return View::make('articles.code-article',['content'=>$article, 'recommended' => $recommended,'show_tutorial'=>$show_tutorial]);
     }
         // dd($article);
   }
@@ -269,54 +291,58 @@ private function contentGithub($id, $username='', $g_repo='', $g_path=''){
     $token = $result[0]->access_token;
     $client->authenticate($token, null, \Github\Client::AUTH_HTTP_TOKEN);
       // Content
-    if ($username!=''){
-      $repos = $client->api('user')->repositories($username);
-      $repo = $g_repo;
-      $path = $g_path;
-      $account = $username;
-    }
-    else {
-      $result = DB::select('SELECT repo, path FROM github_articles WHERE id_article = ?', array($id));
-      $repo = $result[0]->repo;
-      $path = $result[0]->path;
-      $repos = $client->api('current_user')->repositories();
-      $account = $repos[0]['owner']['login'];
-    }
-    $content = array();
-    $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
-        // dd($myfile);
-    $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
-    $file_content['type'] = 'github';
-    $file_content['title'] = $myfile['name'];
-    $file_content['details'] = $repo.'/'.$myfile['path'];
-        // $file_content['path'] = $myfile['path'];
-    $file_content['tag'] = $extension;
-    $file_content['url'] = $myfile['html_url'];
+
+    $result = DB::select('SELECT repo, path FROM github_articles WHERE id_article = ?', array($id));
+    if (empty($result)){
+     $result = DB::select('SELECT repo, path, owner_name FROM github_recommended WHERE id_article = ?', array($id));
+     $account = $result[0]->owner_name;
+   }else { 
+    //Aici
+     $repos = $client->api('current_user')->repositories();
+     $account = $repos[0]['owner']['login']; 
+   }
+
+   $repo = $result[0]->repo;
+   $path = $result[0]->path;
+   
+   $content = array();
+   //Si aici
+   $myfile = $client->api('repo')->contents()->show($account, $repo, $path);
+
+
+   $extension = pathinfo($myfile['name'], PATHINFO_EXTENSION);
+   $file_content['type'] = 'github';
+   $file_content['title'] = $myfile['name'];
+   $file_content['details'] = $repo.'/'.$myfile['path'];
+
+   $file_content['tag'] = $extension;
+   $file_content['url'] = $myfile['html_url'];
         //Get beautiful code and colors (Hilite API)
-    try{
-      $beautify_url = 'http://hilite.me/api';
-      $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
-      $beautify_type = 'default';
-      $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
-      $beautify_options = array(
-        'http' => array(
-          'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-          'method'  => 'POST',
-          'content' => http_build_query($beautify_data)
-          )
-        );
-      $beautify_context  = stream_context_create($beautify_options);
-      $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
-      $file_content['content'] = $beautify_result;
-    }
-    catch (\Exception $e){
-      $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
-    }
+   try{
+    $beautify_url = 'http://hilite.me/api';
+    $beautify_style = 'border:none;border-size:0;padding:0px;border-radius: 0;background: white;';
+    $beautify_type = 'default';
+    $beautify_data = array('code' => base64_decode($myfile['content']), 'lexer' => $extension, 'style' => $beautify_type, 'divstyles' => $beautify_style);
+    $beautify_options = array(
+      'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($beautify_data)
+        )
+      );
+    $beautify_context  = stream_context_create($beautify_options);
+    $beautify_result = file_get_contents($beautify_url, false, $beautify_context);
+    $file_content['content'] = $beautify_result;
   }
   catch (\Exception $e){
-    $file_content = null;
+    // dd($e);
+    $file_content['content'] = "<code>".base64_decode($myfile['content'])."</code>";
   }
-  return $file_content;
+}
+catch (\Exception $e){
+  $file_content = null;
+}
+return $file_content;
 }
 
 

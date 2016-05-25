@@ -33,6 +33,25 @@
           <p id="text">Loading</p>
       </div>
 
+      @if (isset($show_tutorial))
+        @if ($show_tutorial==true)
+          <div class="tutorial-wrapper" style="display: none;">
+            <section class="tutorial">
+              <div class="close" id="close-tutorial"><i class="fa fa-times" aria-hidden="true"></i></div>
+              <section class="tutorial-image"></section> <!--style="background-image: url('{{ asset('img/tutorial/1.jpg') }}');"-->
+              <section class="tutorial-content">
+              </section>
+            </section>
+            <button type="submit" class="button" id="continue-tutorial">
+              Continue
+            </button>
+            <button type="submit" class="button" id="finish-tutorial" style="display:none;">
+              Finish
+            </button>
+          </div>
+        @endif
+      @endif
+
       <div class="main-wrapper">
         @yield('navigation')
 

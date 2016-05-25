@@ -16,7 +16,6 @@
         <ul class="status-list">
           <li><a href="{{ URL::to('/mycontent') }}">My Content</a></li>
           <li id="recommended-generate"><a href="{{ URL::to('/recommended') }}">Recommended Content</a></li>
-          <li><a href="">More</a></li>
         </ul>
         <section class="search" id="search-box">
           <input type="text" name="search" id="search" class="search-box" placeholder="Search">
@@ -141,4 +140,5 @@
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.js"><\/script>')</script>
 
   <script src="{{ asset('js/main.js') }}"></script>
+  <script src="{{ asset('js/tutorial.js') }}"></script>
 @endsection
