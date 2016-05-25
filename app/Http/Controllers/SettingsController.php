@@ -102,12 +102,13 @@ class SettingsController extends BaseController
     $confirmed_password= Request::get('rpassword');
     if ($password == $confirmed_password){
       $username = Session::get('username');
-      DB::table('users')->where('username', $username)->update(['password' => sha1($password)]);
+      DB::table('users')->where('username', $username)->update(['PASSWORD' => sha1($password)]);
     }
     else
     {
       Session::put('error','Passwords do not match.');
     }
+    return Redirect::to('settings');
  }
 
 }
